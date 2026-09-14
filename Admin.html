@@ -63,7 +63,7 @@ h1{margin:0 0 8px}.muted{color:#777b8b}.grid{display:grid;grid-template-columns:
       <div class="row"><div class="field"><label>MAIN TITLE</label><input id="bannerTitle" placeholder="Find a stay that feels like"></div><div class="field"><label>HIGHLIGHT TEXT</label><input id="bannerHighlight" placeholder="home."></div></div>
       <div class="field"><label>SUBTITLE</label><textarea id="bannerSubtitle" placeholder="Verified PGs, hostels and student homes around Delhi University..."></textarea></div>
       <div class="row"><div class="field"><label>BUTTON TEXT</label><input id="bannerCtaText" placeholder="Explore verified stays →"></div><div class="field"><label>BUTTON LINK</label><input id="bannerCtaLink" value="#featured"></div></div>
-      <div class="field"><label>UPLOAD BANNER IMAGE (OPTIONAL)</label><input id="bannerImage" type="file" accept="image/png,image/jpeg,image/webp" onchange="previewBanner()"><div class="logo-help">Apni banner image upload karo. Recommended: 1200×500 ya similar wide image.</div><img id="bannerPreview" class="logo-preview" style="margin-top:10px;width:180px;height:90px" alt="Banner preview"></div>
+      <div class="field"><label>UPLOAD BANNER IMAGE (OPTIONAL)</label><input id="bannerImage" type="file" accept="image/png,image/jpeg,image/webp" onchange="previewBanner()"><div class="logo-help">Apni banner image upload karo. Recommended: 1200×500 ya similar wide image.</div><img id="bannerPreview" class="logo-preview" style="margin-top:10px;width:180px;height:90px;display:none;object-fit:cover" alt="Banner preview" onerror="this.style.display='none';document.getElementById('bannerMsg').textContent='Banner image load nahi hua.'"></div>
       <div class="actions"><button class="btn purple" onclick="saveBannerSettings()">Save Banner</button><button class="btn light" onclick="resetBannerSettings()">Use Default Banner</button></div>
       <div id="bannerMsg"></div>
     </div>
@@ -80,7 +80,7 @@ h1{margin:0 0 8px}.muted{color:#777b8b}.grid{display:grid;grid-template-columns:
       <div id="areaList" style="margin-top:14px"></div>
     </div>
 
-    <div class="panel">
+    <div class="panel" id="propertyManager">
       <h1>Property Manager</h1>
       <p class="muted">Add, edit, feature or remove PG listings. Changes appear on the public Liventa Stay site.</p>
       <div class="grid">
@@ -99,12 +99,12 @@ h1{margin:0 0 8px}.muted{color:#777b8b}.grid{display:grid;grid-template-columns:
           <div class="field"><label>PROPERTY PHOTOS — UP TO 5</label>
             <input id="photos" type="file" accept="image/*" multiple onchange="previewPhotos()">
             <div class="upload-note">Mobile se 4–5 photos ek saath select karein. Pehli photo cover banegi.</div>
-            <div id="photoPreview" class="preview-grid"></div>
+            <div id="photoPreview" class="preview-grid"></div><div class="upload-note">Selected photo ke neeche Remove dabakar save se pehle bhi hata sakte hain.</div>
           </div>
           <div class="field"><label>PROPERTY VIDEO — 1 VIDEO</label>
             <input id="video" type="file" accept="video/*" onchange="previewVideo()">
             <div class="upload-note">Ek short property walkthrough/video. Recommended: MP4, under ~50 MB.</div>
-            <video id="videoPreview" class="video-preview" controls playsinline style="display:none"></video>
+            <video id="videoPreview" class="video-preview" controls playsinline style="display:none"></video><button type="button" class="remove-video" onclick="clearSelectedVideo()" style="display:none" id="selectedVideoRemove">Remove Selected Video</button>
           </div>
           <input id="image_url" type="hidden">
           <div id="currentMedia" class="upload-note"></div>
@@ -137,6 +137,7 @@ const SUPABASE_KEY = "sb_publishable_YEQy-1N5TIok2GB9xi-tSA_U0jtZYvL";
 const { createClient } = window.supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
 let editingId = null;
+let newPhotoFiles = [];
 
 function msg(id,text,ok=false) {
   const el=document.getElementById(id);
@@ -183,9 +184,19 @@ async function loadBannerSettings(){
   const {data,error}=await sb.from('site_settings').select('*').eq('id',1).maybeSingle();
   if(error||!data) return;
   for(const [id,key] of [['bannerKicker','banner_kicker'],['bannerTitle','banner_title'],['bannerHighlight','banner_highlight'],['bannerSubtitle','banner_subtitle'],['bannerCtaText','banner_cta_text'],['bannerCtaLink','banner_cta_link']]) document.getElementById(id).value=data[key]||'';
-  if(data.banner_image_url) document.getElementById('bannerPreview').src=data.banner_image_url;
+  const bp=document.getElementById('bannerPreview');
+  if(data.banner_image_url){ bp.src=data.banner_image_url; bp.style.display='block'; } else { bp.removeAttribute('src'); bp.style.display='none'; }
 }
-function previewBanner(){ const f=document.getElementById('bannerImage').files[0]; if(f) document.getElementById('bannerPreview').src=URL.createObjectURL(f); }
+function previewBanner(){
+  const f=document.getElementById('bannerImage').files[0];
+  const img=document.getElementById('bannerPreview');
+  if(!f){ return; }
+  if(!String(f.type||'').startsWith('image/')) return msg('bannerMsg','Sirf image file select karein.');
+  if(f.size>8*1024*1024) return msg('bannerMsg','Banner image 8 MB se chhoti rakhein.');
+  img.src=URL.createObjectURL(f);
+  img.style.display='block';
+  img.onerror=()=>msg('bannerMsg','Banner preview load nahi hua.');
+}
 async function saveBannerSettings(){
   try{
     const f=document.getElementById('bannerImage').files[0]; let imageUrl=null;
@@ -193,7 +204,7 @@ async function saveBannerSettings(){
     const payload={id:1,banner_kicker:document.getElementById('bannerKicker').value.trim(),banner_title:document.getElementById('bannerTitle').value.trim(),banner_highlight:document.getElementById('bannerHighlight').value.trim(),banner_subtitle:document.getElementById('bannerSubtitle').value.trim(),banner_cta_text:document.getElementById('bannerCtaText').value.trim(),banner_cta_link:document.getElementById('bannerCtaLink').value.trim()||'#featured'};
     if(imageUrl) payload.banner_image_url=imageUrl;
     const r=await sb.from('site_settings').upsert(payload,{onConflict:'id'}); if(r.error) throw r.error;
-    if(imageUrl) document.getElementById('bannerPreview').src=imageUrl;
+    if(imageUrl){ const bp=document.getElementById('bannerPreview'); bp.src=imageUrl; bp.style.display='block'; }
     document.getElementById('bannerImage').value=''; msg('bannerMsg','Banner saved. Public website refresh karne par update ho jayega.',true);
   }catch(e){msg('bannerMsg',e.message||String(e));}
 }
@@ -243,6 +254,8 @@ function showApp(user){
   document.getElementById('who').textContent=user?.email||'Admin';
   loadList();
   loadAreas();
+  loadSiteLogo();
+  loadBannerSettings();
 }
 
 async function loadList(){
@@ -257,7 +270,7 @@ async function loadList(){
         <div>${escapeHtml(p.gender||'Boys & Girls')} • ${escapeHtml(p.room_type||'Sharing')}</div>
         <div><span class="pill">${p.featured?'Featured':'Hidden'}</span><span class="pill">${p.verified?'Verified':'Unverified'}</span><span class="pill">${Array.isArray(p.media_urls)?p.media_urls.length:0} Photos</span><span class="pill">${p.video_url?'Video':'No Video'}</span></div>
         <div class="actions">
-          <button class="btn light" onclick='editProperty(${JSON.stringify(p)})'>Edit</button>
+          <button class="btn light" onclick="editPropertyById(${Number(p.id)})">Edit</button>
           <button class="btn purple" onclick="toggleFeatured(${p.id},${!p.featured})">${p.featured?'Unfeature':'Feature'}</button>
           <button class="btn danger" onclick="deleteProperty(${p.id})">Delete</button>
         </div>
@@ -267,25 +280,40 @@ async function loadList(){
 
 function escapeHtml(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 
+async function editPropertyById(id){
+  const n=Number(id);
+  if(!n) return msg('formMsg','Invalid property ID.');
+  try{
+    const {data,error}=await sb.from('properties').select('*').eq('id',n).maybeSingle();
+    if(error) throw error;
+    if(!data) return msg('formMsg','Property nahi mila. List refresh karke dobara Edit karein.');
+    editProperty(data);
+  }catch(e){
+    msg('formMsg','Edit load failed: '+(e.message||String(e)));
+  }
+}
+
 function editProperty(p){
   editingId=p.id;
   ['name','location','rent','gender','room_type','image_url','amenities','description','whatsapp'].forEach(k=>document.getElementById(k).value=p[k]??'');
   document.getElementById('featured').value=String(p.featured!==false);
+  newPhotoFiles=[];
   document.getElementById('photos').value=''; document.getElementById('video').value='';
-  document.getElementById('photoPreview').innerHTML=''; document.getElementById('videoPreview').style.display='none';
+  document.getElementById('photoPreview').innerHTML=''; document.getElementById('videoPreview').style.display='none'; document.getElementById('selectedVideoRemove').style.display='none';
   showCurrentMedia(p);
-  window.scrollTo({top:0,behavior:'smooth'});
+  document.getElementById('propertyManager')?.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 function clearForm(){
   editingId=null;
   existingMediaUrls=[]; existingVideoUrl=null; removedMediaUrls=[]; removedVideoUrl=null;
+  newPhotoFiles=[];
   ['name','location','rent','room_type','image_url','amenities','description'].forEach(k=>document.getElementById(k).value='');
   document.getElementById('gender').value='Boys';
   document.getElementById('whatsapp').value='917454024119';
   document.getElementById('featured').value='true';
   document.getElementById('photos').value=''; document.getElementById('video').value='';
-  document.getElementById('photoPreview').innerHTML=''; document.getElementById('videoPreview').style.display='none';
+  document.getElementById('photoPreview').innerHTML=''; document.getElementById('videoPreview').style.display='none'; document.getElementById('selectedVideoRemove').style.display='none';
   document.getElementById('currentMedia').textContent='';
   document.getElementById('formMsg').textContent='';
 }
@@ -351,18 +379,62 @@ function removeExistingVideo(){
   renderCurrentMedia();
 }
 
-function selectedPhotos(){
-  return Array.from(document.getElementById('photos').files || []);
+function selectedPhotos(){ return [...newPhotoFiles]; }
+
+function previewPhotos(){
+  const input=document.getElementById('photos');
+  const picked=Array.from(input.files||[]);
+  if(picked.some(f=>!String(f.type||'').startsWith('image/'))) return msg('formMsg','Sirf image files select karein.');
+  if(picked.some(f=>f.size>8*1024*1024)) return msg('formMsg','Har photo 8 MB se chhoti rakhein.');
+  if(existingMediaUrls.length + picked.length > 5) return msg('formMsg','Maximum 5 photos allowed. Pehle kuch existing photos remove karein.');
+  newPhotoFiles=picked;
+  renderNewPhotoPreview();
+}
+
+function renderNewPhotoPreview(){
+  const box=document.getElementById('photoPreview');
+  box.innerHTML='';
+  newPhotoFiles.forEach((f,i)=>{
+    const wrap=document.createElement('div'); wrap.className='media-item';
+    const img=document.createElement('img'); img.src=URL.createObjectURL(f); img.alt='New photo '+(i+1); img.style.cssText='width:100%;height:90px;object-fit:cover;border-radius:10px;display:block';
+    const btn=document.createElement('button'); btn.type='button'; btn.className='remove-media'; btn.textContent='Remove'; btn.onclick=()=>{newPhotoFiles.splice(i,1); syncPhotoInput(); renderNewPhotoPreview();};
+    wrap.append(img,btn); box.appendChild(wrap);
+  });
+}
+
+function syncPhotoInput(){
+  const input=document.getElementById('photos');
+  const dt=new DataTransfer(); newPhotoFiles.forEach(f=>dt.items.add(f)); input.files=dt.files;
+}
+
+function previewVideo(){
+  const input=document.getElementById('video'); const f=input.files[0]; const v=document.getElementById('videoPreview');
+  if(!f){ v.style.display='none'; return; }
+  if(!String(f.type||'').startsWith('video/')) return msg('formMsg','Sirf video file select karein.');
+  if(f.size>50*1024*1024) return msg('formMsg','Video 50 MB se chhota rakhein.');
+  v.src=URL.createObjectURL(f); v.style.display='block'; document.getElementById('selectedVideoRemove').style.display='inline-block';
+}
+
+function clearSelectedVideo(){
+  const input=document.getElementById('video'); input.value='';
+  const v=document.getElementById('videoPreview'); v.pause(); v.removeAttribute('src'); v.load(); v.style.display='none'; document.getElementById('selectedVideoRemove').style.display='none';
 }
 
 async function uploadMedia(files, kind, propertyId){
+  if(!propertyId) throw new Error('Property ID missing.');
   const urls=[];
+  const bucket=sb.storage.from('property-media');
   for(const f of files){
-    const safe=(f.name||'file').replace(/[^a-zA-Z0-9._-]+/g,'-');
-    const path=`${propertyId}/${Date.now()}-${crypto.randomUUID()}-${safe}`;
-    const up=await sb.storage.from('property-media').upload(path,f,{upsert:false,contentType:f.type});
-    if(up.error) throw up.error;
-    urls.push(sb.storage.from('property-media').getPublicUrl(path).data.publicUrl);
+    if(kind==='photo' && !String(f.type||'').startsWith('image/')) throw new Error('Invalid photo file.');
+    if(kind==='video' && !String(f.type||'').startsWith('video/')) throw new Error('Invalid video file.');
+    const safe=(f.name||'file').replace(/[^a-zA-Z0-9._-]+/g,'-').slice(-100);
+    const id=(globalThis.crypto && typeof crypto.randomUUID==='function') ? crypto.randomUUID() : Math.random().toString(36).slice(2)+Date.now();
+    const path=`${propertyId}/${kind}-${Date.now()}-${id}-${safe}`;
+    const up=await bucket.upload(path,f,{upsert:false,contentType:f.type||undefined,cacheControl:'3600'});
+    if(up.error) throw new Error('Media upload failed: '+up.error.message);
+    const pub=bucket.getPublicUrl(path);
+    if(pub.error) throw pub.error;
+    urls.push(pub.data.publicUrl);
   }
   return urls;
 }
@@ -399,7 +471,7 @@ async function saveProperty(){
   try{
     let propertyId=editingId;
     if(editingId){
-      const r=await sb.from('properties').update(payload).eq('id',editingId).select('id').single();
+      const r=await sb.from('properties').update(payload).eq('id',editingId);
       if(r.error) throw r.error;
     }else{
       const r=await sb.from('properties').insert(payload).select('id').single();
@@ -446,14 +518,20 @@ async function toggleFeatured(id,value){
 
 async function deleteProperty(id){
   if(!confirm('Delete this property?')) return;
-  const {error}=await sb.from('properties').delete().eq('id',id);
-  if(error) return msg('formMsg',error.message);
-  loadList();
+  try{
+    const {data:p,error:getErr}=await sb.from('properties').select('media_urls,video_url').eq('id',id).maybeSingle();
+    if(getErr) throw getErr;
+    const all=[...(Array.isArray(p?.media_urls)?p.media_urls:[]), ...(p?.video_url?[p.video_url]:[])];
+    if(all.length) await deleteMediaUrls(all);
+    const {error}=await sb.from('properties').delete().eq('id',id);
+    if(error) throw error;
+    loadList();
+  }catch(e){ msg('formMsg',e.message||String(e)); }
 }
 
 (async()=>{
   const {data}=await sb.auth.getSession();
-  if(data.session){ showApp(data.session.user); loadSiteLogo(); }
+  if(data.session){ showApp(data.session.user); }
 })();
 </script>
 </body>
