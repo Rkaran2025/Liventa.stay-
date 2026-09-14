@@ -108,6 +108,19 @@ h1{margin:0 0 8px}.muted{color:#777b8b}.grid{display:grid;grid-template-columns:
           </div>
           <input id="image_url" type="hidden">
           <div id="currentMedia" class="upload-note"></div>
+          <div class="field"><label>PG / FLAT SPECIFICATIONS</label></div>
+          <div class="row">
+            <div class="field"><label>CARPET AREA</label><input id="carpet_area" placeholder="850 sq.ft"></div>
+            <div class="field"><label>BATHROOMS</label><input id="bathrooms" placeholder="2"></div>
+          </div>
+          <div class="row">
+            <div class="field"><label>ROOMS</label><input id="rooms" placeholder="2"></div>
+            <div class="field"><label>WI-FI</label><input id="wifi" placeholder="Included"></div>
+          </div>
+          <div class="row">
+            <div class="field"><label>AC</label><input id="ac" placeholder="Available"></div>
+            <div class="field"><label>POWER BACKUP</label><input id="power_backup" placeholder="Available"></div>
+          </div>
           <div class="field"><label>AMENITIES</label><input id="amenities" placeholder="Wi-Fi, AC, Meals, Laundry"></div>
           <div class="field"><label>DESCRIPTION</label><textarea id="description" placeholder="Short property description"></textarea></div>
           <div class="row">
@@ -295,7 +308,7 @@ async function editPropertyById(id){
 
 function editProperty(p){
   editingId=p.id;
-  ['name','location','rent','gender','room_type','image_url','amenities','description','whatsapp'].forEach(k=>document.getElementById(k).value=p[k]??'');
+  ['name','location','rent','gender','room_type','image_url','carpet_area','bathrooms','rooms','wifi','ac','power_backup','amenities','description','whatsapp'].forEach(k=>document.getElementById(k).value=p[k]??'');
   document.getElementById('featured').value=String(p.featured!==false);
   newPhotoFiles=[];
   document.getElementById('photos').value=''; document.getElementById('video').value='';
@@ -308,7 +321,7 @@ function clearForm(){
   editingId=null;
   existingMediaUrls=[]; existingVideoUrl=null; removedMediaUrls=[]; removedVideoUrl=null;
   newPhotoFiles=[];
-  ['name','location','rent','room_type','image_url','amenities','description'].forEach(k=>document.getElementById(k).value='');
+  ['name','location','rent','room_type','image_url','carpet_area','bathrooms','rooms','wifi','ac','power_backup','amenities','description'].forEach(k=>document.getElementById(k).value='');
   document.getElementById('gender').value='Boys';
   document.getElementById('whatsapp').value='917454024119';
   document.getElementById('featured').value='true';
@@ -460,6 +473,12 @@ async function saveProperty(){
     gender:document.getElementById('gender').value,
     room_type:document.getElementById('room_type').value.trim(),
     image_url:existingMediaUrls[0] || document.getElementById('image_url').value.trim(),
+    carpet_area:document.getElementById('carpet_area').value.trim(),
+    bathrooms:document.getElementById('bathrooms').value.trim(),
+    rooms:document.getElementById('rooms').value.trim(),
+    wifi:document.getElementById('wifi').value.trim(),
+    ac:document.getElementById('ac').value.trim(),
+    power_backup:document.getElementById('power_backup').value.trim(),
     amenities:document.getElementById('amenities').value.trim(),
     description:document.getElementById('description').value.trim(),
     whatsapp:document.getElementById('whatsapp').value.trim()||'917454024119',
