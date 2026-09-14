@@ -14,7 +14,7 @@ h1{margin:0 0 8px}.muted{color:#777b8b}.grid{display:grid;grid-template-columns:
 .field{margin:10px 0}label{display:block;font-size:12px;font-weight:900;color:#5d22c9;margin-bottom:6px}input,select,textarea{width:100%;border:1px solid #ddd7e8;border-radius:12px;padding:12px;background:#fff;outline:none}textarea{min-height:90px;resize:vertical}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
 .card{border:1px solid #e9e4f0;border-radius:16px;overflow:hidden;background:#fff}.thumb{height:160px;width:100%;object-fit:cover;background:#eee}.body{padding:14px}.body h3{margin:0 0 4px}.pill{display:inline-block;padding:5px 8px;border-radius:99px;background:#eee8f8;color:#5d22c9;font-size:11px;font-weight:800;margin:3px 3px 0 0}
-.media-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:8px}.media-item{border:1px dashed #d9d0e8;border-radius:12px;padding:8px;background:#fbf9ff}.media-item input{padding:8px;font-size:12px}.preview-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px}.preview-grid img{width:100%;height:90px;object-fit:cover;border-radius:10px;background:#eee}.video-preview{width:100%;max-height:180px;border-radius:12px;background:#111;margin-top:10px}.upload-note{font-size:11px;color:#777b8b;margin-top:5px}.login{max-width:430px;margin:12vh auto;padding:18px}.error{color:#b42318;margin-top:10px;font-weight:700}.ok{color:#087443;margin-top:10px;font-weight:700}
+.media-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:8px}.media-item{border:1px dashed #d9d0e8;border-radius:12px;padding:8px;background:#fbf9ff}.media-item input{padding:8px;font-size:12px}.preview-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px}.preview-grid img{width:100%;height:90px;object-fit:cover;border-radius:10px;background:#eee}.current-media-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px}.current-media-item{position:relative;border:1px solid #e6def0;border-radius:12px;padding:6px;background:#fff}.current-media-item img{width:100%;height:82px;object-fit:cover;border-radius:8px}.remove-media{width:100%;margin-top:5px;padding:6px 8px;border:0;border-radius:8px;background:#fff0f0;color:#b42318;font-weight:800;cursor:pointer}.current-video{width:100%;max-height:160px;border-radius:10px;background:#111}.remove-video{margin-top:6px;padding:8px 12px;border:0;border-radius:8px;background:#fff0f0;color:#b42318;font-weight:800}.video-preview{width:100%;max-height:180px;border-radius:12px;background:#111;margin-top:10px}.upload-note{font-size:11px;color:#777b8b;margin-top:5px}.login{max-width:430px;margin:12vh auto;padding:18px}.error{color:#b42318;margin-top:10px;font-weight:700}.ok{color:#087443;margin-top:10px;font-weight:700}
 @media(max-width:720px){.grid,.row{grid-template-columns:1fr}.media-grid,.preview-grid{grid-template-columns:repeat(2,1fr)}.wrap{padding:16px 12px}}
 
 .logo-row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:end}.logo-preview{width:90px;height:90px;border:1px solid #ddd7e8;border-radius:16px;object-fit:contain;background:#fff;padding:8px}.logo-help{font-size:12px;color:#777b8b;line-height:1.5}@media(max-width:600px){.logo-row{grid-template-columns:1fr}.logo-preview{width:78px;height:78px}}
@@ -279,6 +279,7 @@ function editProperty(p){
 
 function clearForm(){
   editingId=null;
+  existingMediaUrls=[]; existingVideoUrl=null; removedMediaUrls=[]; removedVideoUrl=null;
   ['name','location','rent','room_type','image_url','amenities','description'].forEach(k=>document.getElementById(k).value='');
   document.getElementById('gender').value='Boys';
   document.getElementById('whatsapp').value='917454024119';
@@ -289,9 +290,96 @@ function clearForm(){
   document.getElementById('formMsg').textContent='';
 }
 
+
+let existingMediaUrls = [];
+let existingVideoUrl = null;
+let removedMediaUrls = [];
+let removedVideoUrl = null;
+
+function storagePathFromPublicUrl(url, bucket){
+  try{
+    const marker='/storage/v1/object/public/'+bucket+'/';
+    const i=String(url||'').indexOf(marker);
+    return i>=0 ? String(url).slice(i+marker.length) : null;
+  }catch(e){ return null; }
+}
+
+function renderCurrentMedia(){
+  const box=document.getElementById('currentMedia');
+  let html='';
+  if(existingMediaUrls.length){
+    html += '<div><b>Current Photos</b><div class="current-media-grid">';
+    existingMediaUrls.forEach((url,i)=>{
+      html += `<div class="current-media-item">
+        <img src="${escapeHtml(url)}" alt="Property photo ${i+1}">
+        <button type="button" class="remove-media" onclick="removeExistingPhoto(${i})">Remove</button>
+      </div>`;
+    });
+    html += '</div></div>';
+  }
+  if(existingVideoUrl){
+    html += `<div style="margin-top:12px"><b>Current Video</b>
+      <video class="current-video" src="${escapeHtml(existingVideoUrl)}" controls playsinline></video>
+      <button type="button" class="remove-video" onclick="removeExistingVideo()">Remove Video</button>
+    </div>`;
+  }
+  box.innerHTML = html || 'No existing photos/video.';
+}
+
+function showCurrentMedia(p){
+  existingMediaUrls = Array.isArray(p.media_urls) ? [...p.media_urls] : (p.image_url ? [p.image_url] : []);
+  existingVideoUrl = p.video_url || null;
+  removedMediaUrls = [];
+  removedVideoUrl = null;
+  renderCurrentMedia();
+}
+
+function removeExistingPhoto(index){
+  const url=existingMediaUrls[index];
+  if(!url) return;
+  if(!confirm('Is photo ko remove karein?')) return;
+  removedMediaUrls.push(url);
+  existingMediaUrls.splice(index,1);
+  renderCurrentMedia();
+}
+
+function removeExistingVideo(){
+  if(!existingVideoUrl) return;
+  if(!confirm('Property video remove karein?')) return;
+  removedVideoUrl=existingVideoUrl;
+  existingVideoUrl=null;
+  renderCurrentMedia();
+}
+
+function selectedPhotos(){
+  return Array.from(document.getElementById('photos').files || []);
+}
+
+async function uploadMedia(files, kind, propertyId){
+  const urls=[];
+  for(const f of files){
+    const safe=(f.name||'file').replace(/[^a-zA-Z0-9._-]+/g,'-');
+    const path=`${propertyId}/${Date.now()}-${crypto.randomUUID()}-${safe}`;
+    const up=await sb.storage.from('property-media').upload(path,f,{upsert:false,contentType:f.type});
+    if(up.error) throw up.error;
+    urls.push(sb.storage.from('property-media').getPublicUrl(path).data.publicUrl);
+  }
+  return urls;
+}
+
+async function deleteMediaUrls(urls){
+  const paths=(urls||[]).map(u=>storagePathFromPublicUrl(u,'property-media')).filter(Boolean);
+  if(paths.length){
+    const r=await sb.storage.from('property-media').remove(paths);
+    if(r.error) console.warn('Storage cleanup:',r.error.message);
+  }
+}
+
 async function saveProperty(){
-  const photoFiles=selectedPhotos();
-  if(photoFiles.length>5) return msg('formMsg','Maximum 5 photos allowed.');
+  const newPhotos=selectedPhotos();
+  if(existingMediaUrls.length + newPhotos.length > 5)
+    return msg('formMsg','Maximum 5 photos allowed. Pehle kuch existing photos remove karein.');
+
   const videoFile=document.getElementById('video').files[0]||null;
   const payload={
     name:document.getElementById('name').value.trim(),
@@ -299,7 +387,7 @@ async function saveProperty(){
     rent:Number(document.getElementById('rent').value||0),
     gender:document.getElementById('gender').value,
     room_type:document.getElementById('room_type').value.trim(),
-    image_url:document.getElementById('image_url').value.trim(),
+    image_url:existingMediaUrls[0] || document.getElementById('image_url').value.trim(),
     amenities:document.getElementById('amenities').value.trim(),
     description:document.getElementById('description').value.trim(),
     whatsapp:document.getElementById('whatsapp').value.trim()||'917454024119',
@@ -307,29 +395,46 @@ async function saveProperty(){
     verified:true
   };
   if(!payload.name||!payload.location||!payload.rent) return msg('formMsg','Name, location and rent are required.');
+
   try{
-    let result, propertyId=editingId;
+    let propertyId=editingId;
     if(editingId){
-      result=await sb.from('properties').update(payload).eq('id',editingId).select('id').single();
-      if(result.error) throw result.error;
-    } else {
-      result=await sb.from('properties').insert(payload).select('id').single();
-      if(result.error) throw result.error;
-      propertyId=result.data.id;
-    }
-    let mediaUrls=[];
-    if(photoFiles.length){
-      mediaUrls=await uploadMedia(photoFiles,'photo',propertyId);
-      const r=await sb.from('properties').update({media_urls:mediaUrls,image_url:mediaUrls[0]}).eq('id',propertyId);
+      const r=await sb.from('properties').update(payload).eq('id',editingId).select('id').single();
       if(r.error) throw r.error;
+    }else{
+      const r=await sb.from('properties').insert(payload).select('id').single();
+      if(r.error) throw r.error;
+      propertyId=r.data.id;
     }
+
+    let finalPhotos=[...existingMediaUrls];
+    if(newPhotos.length){
+      const uploaded=await uploadMedia(newPhotos,'photo',propertyId);
+      finalPhotos.push(...uploaded);
+    }
+
+    const videoToKeep = videoFile ? null : existingVideoUrl;
     if(videoFile){
-      const videoUrls=await uploadMedia([videoFile],'video',propertyId);
-      const r=await sb.from('properties').update({video_url:videoUrls[0]}).eq('id',propertyId);
-      if(r.error) throw r.error;
+      const uploadedVideo=await uploadMedia([videoFile],'video',propertyId);
+      if(existingVideoUrl) await deleteMediaUrls([existingVideoUrl]);
+      existingVideoUrl=uploadedVideo[0];
+    }else if(removedVideoUrl){
+      await deleteMediaUrls([removedVideoUrl]);
     }
+
+    const mediaUpdate={
+      media_urls:finalPhotos,
+      image_url:finalPhotos[0] || null,
+      video_url:videoFile ? existingVideoUrl : videoToKeep
+    };
+    const r2=await sb.from('properties').update(mediaUpdate).eq('id',propertyId);
+    if(r2.error) throw r2.error;
+
+    if(removedMediaUrls.length) await deleteMediaUrls(removedMediaUrls);
+
     msg('formMsg',editingId?'Property updated.':'Property added.',true);
-    clearForm(); loadList();
+    clearForm();
+    loadList();
   }catch(e){ msg('formMsg',e.message||String(e)); }
 }
 
