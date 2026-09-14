@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Liventa Stay — Admin</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;background:#f7f4fb;color:#202235}
+button,input,select,textarea{font:inherit}.top{background:#fff;border-bottom:1px solid #e8e3ef;position:sticky;top:0;z-index:5}
+.nav{max-width:1100px;margin:auto;padding:14px 18px;display:flex;align-items:center;gap:12px}.logo{font-weight:950;color:#5d22c9;font-size:21px}.logo small{display:block;font-size:9px;letter-spacing:3px;color:#333}
+.spacer{flex:1}.btn{border:0;border-radius:12px;padding:11px 15px;font-weight:800;cursor:pointer}.purple{background:#5d22c9;color:#fff}.light{background:#eee8f8;color:#5d22c9}.danger{background:#ffe7e7;color:#b42318}
+.wrap{max-width:1100px;margin:auto;padding:24px 18px}.panel{background:#fff;border:1px solid #e9e4f0;border-radius:20px;padding:20px;box-shadow:0 8px 30px #4d2b8110;margin-bottom:18px}
+h1{margin:0 0 8px}.muted{color:#777b8b}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.field{margin:10px 0}label{display:block;font-size:12px;font-weight:900;color:#5d22c9;margin-bottom:6px}input,select,textarea{width:100%;border:1px solid #ddd7e8;border-radius:12px;padding:12px;background:#fff;outline:none}textarea{min-height:90px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.card{border:1px solid #e9e4f0;border-radius:16px;overflow:hidden;background:#fff}.thumb{height:160px;width:100%;object-fit:cover;background:#eee}.body{padding:14px}.body h3{margin:0 0 4px}.pill{display:inline-block;padding:5px 8px;border-radius:99px;background:#eee8f8;color:#5d22c9;font-size:11px;font-weight:800;margin:3px 3px 0 0}
+.login{max-width:430px;margin:12vh auto;padding:18px}.error{color:#b42318;margin-top:10px;font-weight:700}.ok{color:#087443;margin-top:10px;font-weight:700}
+@media(max-width:720px){.grid,.row{grid-template-columns:1fr}.wrap{padding:16px 12px}}
+</style>
+</head>
+<body>
+<div id="loginView" class="login">
+  <div class="panel">
+    <div class="logo">LIVENTA <small>STAY ADMIN</small></div>
+    <h1 style="margin-top:25px">Admin Login</h1>
+    <p class="muted">Private management panel. Visitors cannot see this page.</p>
+    <div class="field"><label>EMAIL</label><input id="email" type="email" autocomplete="username"></div>
+    <div class="field"><label>PASSWORD</label><input id="password" type="password" autocomplete="current-password"></div>
+    <button class="btn purple" style="width:100%" onclick="login()">Login</button>
+    <div id="loginMsg"></div>
+  </div>
+</div>
+
+<div id="app" style="display:none">
+  <div class="top"><div class="nav">
+    <div class="logo">LIVENTA <small>STAY ADMIN</small></div>
+    <div class="spacer"></div>
+    <span id="who" class="muted" style="font-size:12px"></span>
+    <button class="btn light" onclick="logout()">Logout</button>
+  </div></div>
+
+  <main class="wrap">
+    <div class="panel">
+      <h1>Property Manager</h1>
+      <p class="muted">Add, edit, feature or remove PG listings. Changes appear on the public Liventa Stay site.</p>
+      <div class="grid">
+        <div>
+          <div class="field"><label>PROPERTY NAME</label><input id="name" placeholder="Aryan Homess"></div>
+          <div class="row">
+            <div class="field"><label>LOCATION</label><input id="location" placeholder="Kamla Nagar"></div>
+            <div class="field"><label>RENT / MONTH</label><input id="rent" type="number" placeholder="10000"></div>
+          </div>
+          <div class="row">
+            <div class="field"><label>GENDER</label><select id="gender"><option>Boys</option><option>Girls</option><option>Boys & Girls</option></select></div>
+            <div class="field"><label>ROOM TYPE</label><input id="room_type" placeholder="Single / Double"></div>
+          </div>
+        </div>
+        <div>
+          <div class="field"><label>PHOTO URL</label><input id="image_url" placeholder="https://...jpg"></div>
+          <div class="field"><label>AMENITIES</label><input id="amenities" placeholder="Wi-Fi, AC, Meals, Laundry"></div>
+          <div class="field"><label>DESCRIPTION</label><textarea id="description" placeholder="Short property description"></textarea></div>
+          <div class="row">
+            <div class="field"><label>WHATSAPP</label><input id="whatsapp" value="917454024119"></div>
+            <div class="field"><label>FEATURED</label><select id="featured"><option value="true">Yes</option><option value="false">No</option></select></div>
+          </div>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn purple" onclick="saveProperty()">Save Property</button>
+        <button class="btn light" onclick="clearForm()">Clear</button>
+      </div>
+      <div id="formMsg"></div>
+    </div>
+
+    <div class="panel">
+      <h2>Current Listings</h2>
+      <div id="list" class="grid"></div>
+    </div>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://oeueypvpswugaqtodzbd.supabase.co";
+const SUPABASE_KEY = "sb_publishable_YEQy-1N5TIok2GB9xi-tSA_U0jtZYvL";
+const { createClient } = window.supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+let editingId = null;
+
+function msg(id,text,ok=false) {
+  const el=document.getElementById(id);
+  el.className=ok?'ok':'error';
+  el.textContent=text;
+}
+
+async function login(){
+  const email=document.getElementById('email').value.trim();
+  const password=document.getElementById('password').value;
+  if(!email||!password) return msg('loginMsg','Email and password required.');
+  const {data,error}=await sb.auth.signInWithPassword({email,password});
+  if(error) return msg('loginMsg',error.message);
+  showApp(data.user);
+}
+
+async function logout(){await sb.auth.signOut(); location.reload()}
+
+function showApp(user){
+  document.getElementById('loginView').style.display='none';
+  document.getElementById('app').style.display='block';
+  document.getElementById('who').textContent=user?.email||'Admin';
+  loadList();
+}
+
+async function loadList(){
+  const {data,error}=await sb.from('properties').select('*').order('created_at',{ascending:false});
+  if(error) return msg('formMsg',error.message);
+  document.getElementById('list').innerHTML=(data||[]).map(p=>`
+    <div class="card">
+      <img class="thumb" src="${escapeHtml(p.image_url||'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1000&q=80')}" alt="">
+      <div class="body">
+        <h3>${escapeHtml(p.name||'Untitled')}</h3>
+        <div class="muted">₹${Number(p.rent||0).toLocaleString('en-IN')}/month • ${escapeHtml(p.location||'Delhi')}</div>
+        <div>${escapeHtml(p.gender||'Boys & Girls')} • ${escapeHtml(p.room_type||'Sharing')}</div>
+        <div><span class="pill">${p.featured?'Featured':'Hidden'}</span><span class="pill">${p.verified?'Verified':'Unverified'}</span></div>
+        <div class="actions">
+          <button class="btn light" onclick='editProperty(${JSON.stringify(p)})'>Edit</button>
+          <button class="btn purple" onclick="toggleFeatured(${p.id},${!p.featured})">${p.featured?'Unfeature':'Feature'}</button>
+          <button class="btn danger" onclick="deleteProperty(${p.id})">Delete</button>
+        </div>
+      </div>
+    </div>`).join('') || '<p class="muted">No properties yet.</p>';
+}
+
+function escapeHtml(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+
+function editProperty(p){
+  editingId=p.id;
+  ['name','location','rent','gender','room_type','image_url','amenities','description','whatsapp'].forEach(k=>document.getElementById(k).value=p[k]??'');
+  document.getElementById('featured').value=String(p.featured!==false);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function clearForm(){
+  editingId=null;
+  ['name','location','rent','room_type','image_url','amenities','description'].forEach(k=>document.getElementById(k).value='');
+  document.getElementById('gender').value='Boys';
+  document.getElementById('whatsapp').value='917454024119';
+  document.getElementById('featured').value='true';
+  document.getElementById('formMsg').textContent='';
+}
+
+async function saveProperty(){
+  const payload={
+    name:document.getElementById('name').value.trim(),
+    location:document.getElementById('location').value.trim(),
+    rent:Number(document.getElementById('rent').value||0),
+    gender:document.getElementById('gender').value,
+    room_type:document.getElementById('room_type').value.trim(),
+    image_url:document.getElementById('image_url').value.trim(),
+    amenities:document.getElementById('amenities').value.trim(),
+    description:document.getElementById('description').value.trim(),
+    whatsapp:document.getElementById('whatsapp').value.trim()||'917454024119',
+    featured:document.getElementById('featured').value==='true',
+    verified:true
+  };
+  if(!payload.name||!payload.location||!payload.rent) return msg('formMsg','Name, location and rent are required.');
+  let result;
+  if(editingId) result=await sb.from('properties').update(payload).eq('id',editingId);
+  else result=await sb.from('properties').insert(payload);
+  if(result.error) return msg('formMsg',result.error.message);
+  msg('formMsg',editingId?'Property updated.':'Property added.',true);
+  clearForm(); loadList();
+}
+
+async function toggleFeatured(id,value){
+  const {error}=await sb.from('properties').update({featured:value}).eq('id',id);
+  if(error) return msg('formMsg',error.message);
+  loadList();
+}
+
+async function deleteProperty(id){
+  if(!confirm('Delete this property?')) return;
+  const {error}=await sb.from('properties').delete().eq('id',id);
+  if(error) return msg('formMsg',error.message);
+  loadList();
+}
+
+(async()=>{
+  const {data}=await sb.auth.getSession();
+  if(data.session) showApp(data.session.user);
+})();
+</script>
+</body>
+</html>
