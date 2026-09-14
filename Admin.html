@@ -14,8 +14,10 @@ h1{margin:0 0 8px}.muted{color:#777b8b}.grid{display:grid;grid-template-columns:
 .field{margin:10px 0}label{display:block;font-size:12px;font-weight:900;color:#5d22c9;margin-bottom:6px}input,select,textarea{width:100%;border:1px solid #ddd7e8;border-radius:12px;padding:12px;background:#fff;outline:none}textarea{min-height:90px;resize:vertical}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
 .card{border:1px solid #e9e4f0;border-radius:16px;overflow:hidden;background:#fff}.thumb{height:160px;width:100%;object-fit:cover;background:#eee}.body{padding:14px}.body h3{margin:0 0 4px}.pill{display:inline-block;padding:5px 8px;border-radius:99px;background:#eee8f8;color:#5d22c9;font-size:11px;font-weight:800;margin:3px 3px 0 0}
-.login{max-width:430px;margin:12vh auto;padding:18px}.error{color:#b42318;margin-top:10px;font-weight:700}.ok{color:#087443;margin-top:10px;font-weight:700}
-@media(max-width:720px){.grid,.row{grid-template-columns:1fr}.wrap{padding:16px 12px}}
+.media-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:8px}.media-item{border:1px dashed #d9d0e8;border-radius:12px;padding:8px;background:#fbf9ff}.media-item input{padding:8px;font-size:12px}.preview-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px}.preview-grid img{width:100%;height:90px;object-fit:cover;border-radius:10px;background:#eee}.video-preview{width:100%;max-height:180px;border-radius:12px;background:#111;margin-top:10px}.upload-note{font-size:11px;color:#777b8b;margin-top:5px}.login{max-width:430px;margin:12vh auto;padding:18px}.error{color:#b42318;margin-top:10px;font-weight:700}.ok{color:#087443;margin-top:10px;font-weight:700}
+@media(max-width:720px){.grid,.row{grid-template-columns:1fr}.media-grid,.preview-grid{grid-template-columns:repeat(2,1fr)}.wrap{padding:16px 12px}}
+
+.logo-row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:end}.logo-preview{width:90px;height:90px;border:1px solid #ddd7e8;border-radius:16px;object-fit:contain;background:#fff;padding:8px}.logo-help{font-size:12px;color:#777b8b;line-height:1.5}@media(max-width:600px){.logo-row{grid-template-columns:1fr}.logo-preview{width:78px;height:78px}}
 </style>
 </head>
 <body>
@@ -41,6 +43,44 @@ h1{margin:0 0 8px}.muted{color:#777b8b}.grid{display:grid;grid-template-columns:
 
   <main class="wrap">
     <div class="panel">
+      <h2>Website Logo</h2>
+      <p class="muted">Yahan se public Liventa Stay website ka logo change karo. PNG/JPG/WebP recommended.</p>
+      <div class="logo-row">
+        <div>
+          <div class="field"><label>UPLOAD NEW LOGO</label><input id="siteLogo" type="file" accept="image/png,image/jpeg,image/webp" onchange="previewLogo()"></div>
+          <div class="logo-help">Logo upload hone ke baad public website par top bar aur footer me automatically update hoga.</div>
+        </div>
+        <img id="logoPreview" class="logo-preview" alt="Current logo">
+      </div>
+      <div class="actions"><button class="btn purple" onclick="saveSiteLogo()">Save Logo</button><button class="btn light" onclick="resetSiteLogo()">Use Default LS Logo</button></div>
+      <div id="logoMsg"></div>
+    </div>
+
+    <div class="panel">
+      <h2>Homepage Banner</h2>
+      <p class="muted">Yahan se top homepage banner ka text, button aur optional banner image change kar sakte ho.</p>
+      <div class="field"><label>BANNER KICKER</label><input id="bannerKicker" placeholder="LIVENTA STAY • 0% BROKERAGE"></div>
+      <div class="row"><div class="field"><label>MAIN TITLE</label><input id="bannerTitle" placeholder="Find a stay that feels like"></div><div class="field"><label>HIGHLIGHT TEXT</label><input id="bannerHighlight" placeholder="home."></div></div>
+      <div class="field"><label>SUBTITLE</label><textarea id="bannerSubtitle" placeholder="Verified PGs, hostels and student homes around Delhi University..."></textarea></div>
+      <div class="row"><div class="field"><label>BUTTON TEXT</label><input id="bannerCtaText" placeholder="Explore verified stays →"></div><div class="field"><label>BUTTON LINK</label><input id="bannerCtaLink" value="#featured"></div></div>
+      <div class="field"><label>UPLOAD BANNER IMAGE (OPTIONAL)</label><input id="bannerImage" type="file" accept="image/png,image/jpeg,image/webp" onchange="previewBanner()"><div class="logo-help">Apni banner image upload karo. Recommended: 1200×500 ya similar wide image.</div><img id="bannerPreview" class="logo-preview" style="margin-top:10px;width:180px;height:90px" alt="Banner preview"></div>
+      <div class="actions"><button class="btn purple" onclick="saveBannerSettings()">Save Banner</button><button class="btn light" onclick="resetBannerSettings()">Use Default Banner</button></div>
+      <div id="bannerMsg"></div>
+    </div>
+
+    <div class="panel">
+      <h2>Browse Areas</h2>
+      <p class="muted">Yahan se public website ke <b>Browse by Area</b> cards manage karo. Area add ya delete kar sakte ho.</p>
+      <div class="row">
+        <div class="field"><label>AREA NAME</label><input id="areaName" placeholder="Kamla Nagar"></div>
+        <div class="field"><label>CAMPUS</label><select id="areaCampus"><option>North Campus</option><option>South Campus</option><option>IIT Delhi Area</option><option>Delhi / NCR</option></select></div>
+      </div>
+      <div class="actions"><button class="btn purple" onclick="addArea()">Add Area</button></div>
+      <div id="areaMsg"></div>
+      <div id="areaList" style="margin-top:14px"></div>
+    </div>
+
+    <div class="panel">
       <h1>Property Manager</h1>
       <p class="muted">Add, edit, feature or remove PG listings. Changes appear on the public Liventa Stay site.</p>
       <div class="grid">
@@ -56,7 +96,18 @@ h1{margin:0 0 8px}.muted{color:#777b8b}.grid{display:grid;grid-template-columns:
           </div>
         </div>
         <div>
-          <div class="field"><label>PHOTO URL</label><input id="image_url" placeholder="https://...jpg"></div>
+          <div class="field"><label>PROPERTY PHOTOS — UP TO 5</label>
+            <input id="photos" type="file" accept="image/*" multiple onchange="previewPhotos()">
+            <div class="upload-note">Mobile se 4–5 photos ek saath select karein. Pehli photo cover banegi.</div>
+            <div id="photoPreview" class="preview-grid"></div>
+          </div>
+          <div class="field"><label>PROPERTY VIDEO — 1 VIDEO</label>
+            <input id="video" type="file" accept="video/*" onchange="previewVideo()">
+            <div class="upload-note">Ek short property walkthrough/video. Recommended: MP4, under ~50 MB.</div>
+            <video id="videoPreview" class="video-preview" controls playsinline style="display:none"></video>
+          </div>
+          <input id="image_url" type="hidden">
+          <div id="currentMedia" class="upload-note"></div>
           <div class="field"><label>AMENITIES</label><input id="amenities" placeholder="Wi-Fi, AC, Meals, Laundry"></div>
           <div class="field"><label>DESCRIPTION</label><textarea id="description" placeholder="Short property description"></textarea></div>
           <div class="row">
@@ -93,6 +144,88 @@ function msg(id,text,ok=false) {
   el.textContent=text;
 }
 
+async function previewLogo(){
+  const f=document.getElementById('siteLogo').files[0];
+  if(!f) return;
+  document.getElementById('logoPreview').src=URL.createObjectURL(f);
+}
+async function loadSiteLogo(){
+  const {data,error}=await sb.from('site_settings').select('logo_url').eq('id',1).maybeSingle();
+  if(error) return;
+  document.getElementById('logoPreview').src=data?.logo_url || '';
+}
+async function saveSiteLogo(){
+  const f=document.getElementById('siteLogo').files[0];
+  if(!f) return msg('logoMsg','Pehle logo select karein.');
+  if(f.size>5*1024*1024) return msg('logoMsg','Logo 5 MB se chhota rakhein.');
+  try{
+    const ext=(f.name.split('.').pop()||'png').toLowerCase();
+    const path='branding/logo-'+Date.now()+'.'+ext;
+    const up=await sb.storage.from('site-assets').upload(path,f,{upsert:false,contentType:f.type});
+    if(up.error) throw up.error;
+    const {data}=sb.storage.from('site-assets').getPublicUrl(path);
+    const r=await sb.from('site_settings').upsert({id:1,logo_url:data.publicUrl},{onConflict:'id'});
+    if(r.error) throw r.error;
+    document.getElementById('logoPreview').src=data.publicUrl;
+    document.getElementById('siteLogo').value='';
+    msg('logoMsg','Logo saved. Public website refresh karne par naya logo dikhega.',true);
+  }catch(e){msg('logoMsg',e.message||String(e));}
+}
+async function resetSiteLogo(){
+  try{
+    const r=await sb.from('site_settings').upsert({id:1,logo_url:null},{onConflict:'id'});
+    if(r.error) throw r.error;
+    document.getElementById('logoPreview').removeAttribute('src');
+    msg('logoMsg','Default LS logo restore ho gaya.',true);
+  }catch(e){msg('logoMsg',e.message||String(e));}
+}
+async function loadBannerSettings(){
+  const {data,error}=await sb.from('site_settings').select('*').eq('id',1).maybeSingle();
+  if(error||!data) return;
+  for(const [id,key] of [['bannerKicker','banner_kicker'],['bannerTitle','banner_title'],['bannerHighlight','banner_highlight'],['bannerSubtitle','banner_subtitle'],['bannerCtaText','banner_cta_text'],['bannerCtaLink','banner_cta_link']]) document.getElementById(id).value=data[key]||'';
+  if(data.banner_image_url) document.getElementById('bannerPreview').src=data.banner_image_url;
+}
+function previewBanner(){ const f=document.getElementById('bannerImage').files[0]; if(f) document.getElementById('bannerPreview').src=URL.createObjectURL(f); }
+async function saveBannerSettings(){
+  try{
+    const f=document.getElementById('bannerImage').files[0]; let imageUrl=null;
+    if(f){ if(f.size>8*1024*1024) return msg('bannerMsg','Banner image 8 MB se chhoti rakhein.'); const ext=(f.name.split('.').pop()||'jpg').toLowerCase(); const path='branding/banner-'+Date.now()+'.'+ext; const up=await sb.storage.from('site-assets').upload(path,f,{upsert:false,contentType:f.type}); if(up.error) throw up.error; imageUrl=sb.storage.from('site-assets').getPublicUrl(path).data.publicUrl; }
+    const payload={id:1,banner_kicker:document.getElementById('bannerKicker').value.trim(),banner_title:document.getElementById('bannerTitle').value.trim(),banner_highlight:document.getElementById('bannerHighlight').value.trim(),banner_subtitle:document.getElementById('bannerSubtitle').value.trim(),banner_cta_text:document.getElementById('bannerCtaText').value.trim(),banner_cta_link:document.getElementById('bannerCtaLink').value.trim()||'#featured'};
+    if(imageUrl) payload.banner_image_url=imageUrl;
+    const r=await sb.from('site_settings').upsert(payload,{onConflict:'id'}); if(r.error) throw r.error;
+    if(imageUrl) document.getElementById('bannerPreview').src=imageUrl;
+    document.getElementById('bannerImage').value=''; msg('bannerMsg','Banner saved. Public website refresh karne par update ho jayega.',true);
+  }catch(e){msg('bannerMsg',e.message||String(e));}
+}
+async function resetBannerSettings(){
+  const r=await sb.from('site_settings').upsert({id:1,banner_kicker:null,banner_title:null,banner_highlight:null,banner_subtitle:null,banner_cta_text:null,banner_cta_link:null,banner_image_url:null},{onConflict:'id'});
+  if(r.error) return msg('bannerMsg',r.error.message);
+  await loadBannerSettings(); msg('bannerMsg','Default banner restore ho gaya.',true);
+}
+
+async function loadAreas(){
+  const {data,error}=await sb.from('site_areas').select('*').order('sort_order',{ascending:true}).order('name',{ascending:true});
+  if(error) return msg('areaMsg','Area table ready nahi hai. Supabase me Area Setup SQL run karein.');
+  document.getElementById('areaList').innerHTML=(data||[]).map(a=>`<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid #eee8f4"><div><b>${escapeHtml(a.name)}</b><div class="muted" style="font-size:12px">${escapeHtml(a.campus||'Delhi / NCR')}</div></div><button class="btn danger" onclick="deleteArea(${a.id})">Delete</button></div>`).join('')||'<div class="muted">No areas added yet.</div>';
+}
+async function addArea(){
+  const name=document.getElementById('areaName').value.trim();
+  const campus=document.getElementById('areaCampus').value;
+  if(!name) return msg('areaMsg','Area name required.');
+  const {error}=await sb.from('site_areas').insert({name,campus});
+  if(error) return msg('areaMsg',error.message);
+  document.getElementById('areaName').value='';
+  msg('areaMsg','Area added. Public website refresh/live update par dikhega.',true);
+  loadAreas();
+}
+async function deleteArea(id){
+  if(!confirm('Is area ko delete karein?')) return;
+  const {error}=await sb.from('site_areas').delete().eq('id',id);
+  if(error) return msg('areaMsg',error.message);
+  msg('areaMsg','Area deleted.',true);
+  loadAreas();
+}
+
 async function login(){
   const email=document.getElementById('email').value.trim();
   const password=document.getElementById('password').value;
@@ -109,6 +242,7 @@ function showApp(user){
   document.getElementById('app').style.display='block';
   document.getElementById('who').textContent=user?.email||'Admin';
   loadList();
+  loadAreas();
 }
 
 async function loadList(){
@@ -116,12 +250,12 @@ async function loadList(){
   if(error) return msg('formMsg',error.message);
   document.getElementById('list').innerHTML=(data||[]).map(p=>`
     <div class="card">
-      <img class="thumb" src="${escapeHtml(p.image_url||'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1000&q=80')}" alt="">
+      <img class="thumb" src="${escapeHtml((Array.isArray(p.media_urls)&&p.media_urls[0])||p.image_url||'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1000&q=80')}" alt="">
       <div class="body">
         <h3>${escapeHtml(p.name||'Untitled')}</h3>
         <div class="muted">₹${Number(p.rent||0).toLocaleString('en-IN')}/month • ${escapeHtml(p.location||'Delhi')}</div>
         <div>${escapeHtml(p.gender||'Boys & Girls')} • ${escapeHtml(p.room_type||'Sharing')}</div>
-        <div><span class="pill">${p.featured?'Featured':'Hidden'}</span><span class="pill">${p.verified?'Verified':'Unverified'}</span></div>
+        <div><span class="pill">${p.featured?'Featured':'Hidden'}</span><span class="pill">${p.verified?'Verified':'Unverified'}</span><span class="pill">${Array.isArray(p.media_urls)?p.media_urls.length:0} Photos</span><span class="pill">${p.video_url?'Video':'No Video'}</span></div>
         <div class="actions">
           <button class="btn light" onclick='editProperty(${JSON.stringify(p)})'>Edit</button>
           <button class="btn purple" onclick="toggleFeatured(${p.id},${!p.featured})">${p.featured?'Unfeature':'Feature'}</button>
@@ -137,6 +271,9 @@ function editProperty(p){
   editingId=p.id;
   ['name','location','rent','gender','room_type','image_url','amenities','description','whatsapp'].forEach(k=>document.getElementById(k).value=p[k]??'');
   document.getElementById('featured').value=String(p.featured!==false);
+  document.getElementById('photos').value=''; document.getElementById('video').value='';
+  document.getElementById('photoPreview').innerHTML=''; document.getElementById('videoPreview').style.display='none';
+  showCurrentMedia(p);
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -146,10 +283,16 @@ function clearForm(){
   document.getElementById('gender').value='Boys';
   document.getElementById('whatsapp').value='917454024119';
   document.getElementById('featured').value='true';
+  document.getElementById('photos').value=''; document.getElementById('video').value='';
+  document.getElementById('photoPreview').innerHTML=''; document.getElementById('videoPreview').style.display='none';
+  document.getElementById('currentMedia').textContent='';
   document.getElementById('formMsg').textContent='';
 }
 
 async function saveProperty(){
+  const photoFiles=selectedPhotos();
+  if(photoFiles.length>5) return msg('formMsg','Maximum 5 photos allowed.');
+  const videoFile=document.getElementById('video').files[0]||null;
   const payload={
     name:document.getElementById('name').value.trim(),
     location:document.getElementById('location').value.trim(),
@@ -164,12 +307,30 @@ async function saveProperty(){
     verified:true
   };
   if(!payload.name||!payload.location||!payload.rent) return msg('formMsg','Name, location and rent are required.');
-  let result;
-  if(editingId) result=await sb.from('properties').update(payload).eq('id',editingId);
-  else result=await sb.from('properties').insert(payload);
-  if(result.error) return msg('formMsg',result.error.message);
-  msg('formMsg',editingId?'Property updated.':'Property added.',true);
-  clearForm(); loadList();
+  try{
+    let result, propertyId=editingId;
+    if(editingId){
+      result=await sb.from('properties').update(payload).eq('id',editingId).select('id').single();
+      if(result.error) throw result.error;
+    } else {
+      result=await sb.from('properties').insert(payload).select('id').single();
+      if(result.error) throw result.error;
+      propertyId=result.data.id;
+    }
+    let mediaUrls=[];
+    if(photoFiles.length){
+      mediaUrls=await uploadMedia(photoFiles,'photo',propertyId);
+      const r=await sb.from('properties').update({media_urls:mediaUrls,image_url:mediaUrls[0]}).eq('id',propertyId);
+      if(r.error) throw r.error;
+    }
+    if(videoFile){
+      const videoUrls=await uploadMedia([videoFile],'video',propertyId);
+      const r=await sb.from('properties').update({video_url:videoUrls[0]}).eq('id',propertyId);
+      if(r.error) throw r.error;
+    }
+    msg('formMsg',editingId?'Property updated.':'Property added.',true);
+    clearForm(); loadList();
+  }catch(e){ msg('formMsg',e.message||String(e)); }
 }
 
 async function toggleFeatured(id,value){
@@ -187,7 +348,7 @@ async function deleteProperty(id){
 
 (async()=>{
   const {data}=await sb.auth.getSession();
-  if(data.session) showApp(data.session.user);
+  if(data.session){ showApp(data.session.user); loadSiteLogo(); }
 })();
 </script>
 </body>
