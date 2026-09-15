@@ -290,6 +290,31 @@ const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
 let DATA = [];
 let FILTERED_DATA = [];
 
+// Save every normal WhatsApp enquiry to Supabase before WhatsApp opens.
+// This does not change the WhatsApp message or the public-page design.
+async function saveEnquiry(property, source='whatsapp'){
+  try{
+    const {data:{user}}=await sb.auth.getUser();
+    const propertyName=property?.name || currentDetailName || 'PG / Student Stay';
+    const propertyId=property?.id || null;
+    const notes=`Source: ${source === 'whatsapp' ? 'WhatsApp' : source} enquiry`;
+    const payload={
+      user_id:user?.id || null,
+      property_id:propertyId,
+      property_name:propertyName,
+      full_name:user?.user_metadata?.full_name || null,
+      phone:user?.user_metadata?.phone || null,
+      visit_date:null,
+      time_slot:null,
+      visitors:null,
+      notes,
+      status:'new'
+    };
+    const {error}=await sb.from('visit_requests').insert(payload);
+    if(error) console.error('Could not save WhatsApp enquiry:',error);
+  }catch(err){ console.error('saveEnquiry failed:',err); }
+}
+
 
 let authMode='login'; let authUser=null; let selectedVisitProperty='';
 function openVisit(propertyName){ selectedVisitProperty=propertyName||currentDetailName||''; document.getElementById('visitProperty').textContent=selectedVisitProperty?selectedVisitProperty:'Choose a property and your preferred time.'; const n=new Date(); n.setDate(n.getDate()+1); const iso=n.toISOString().slice(0,10); const date=document.getElementById('visitDate'); date.min=new Date().toISOString().slice(0,10); if(!date.value) date.value=iso; document.getElementById('visitModal').classList.add('show'); }
