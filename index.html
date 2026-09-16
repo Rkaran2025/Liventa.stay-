@@ -176,6 +176,9 @@ button:active,a:active{transform:scale(.96);}
 .privacy-modal{display:none;position:fixed;inset:0;background:#11101b99;z-index:230;align-items:center;justify-content:center;padding:18px}.privacy-modal.show{display:flex}.privacy-card{width:min(620px,100%);max-height:82vh;overflow:auto;background:#fff;border-radius:24px;padding:22px;box-shadow:0 25px 80px #10081f55}.privacy-card h2{margin:0 0 8px;color:var(--p)}.privacy-card p{font-size:13px;line-height:1.7;color:var(--muted)}.privacy-close{float:right;border:0;background:#f4effb;color:var(--p);width:38px;height:38px;border-radius:50%;font-size:22px;cursor:pointer}
 @media(max-width:900px){.areas-after .area-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:600px){.areas-after{padding-top:34px;padding-bottom:34px}.areas-after .area-grid{grid-template-columns:1fr 1fr;gap:10px}.areas-after .area-card{min-height:150px;padding:15px}.areas-after .area-card h3{font-size:16px;margin-top:16px}.footer-legal{gap:10px 14px;margin-top:22px}}
+.footer-partner{max-width:1200px;margin:22px auto 0;padding-top:18px;border-top:1px solid #ffffff22}.footer-partner a{display:inline-flex!important;align-items:center;gap:7px;color:#ffbd12!important;font-size:14px!important;font-weight:900!important;text-decoration:none!important}.footer-partner a:hover{text-decoration:underline!important}.footer-partner a span{display:inline-block}
+@media(max-width:600px){.footer-partner{margin-top:18px;padding-top:16px}.footer-partner a{font-size:14px!important}}
+
 
 
 /* V23 brand-name balance: Liventa + Stay should read as one unified wordmark. */
@@ -205,14 +208,23 @@ button:active,a:active{transform:scale(.96);}
 .detail-actions{grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}.detail-actions a{padding:14px 10px;border-radius:15px;font-size:13px}.detail-actions .v{background:#ffb000;color:#4d3000}.detail-actions .w{background:#10b878;color:#fff}
 @media(max-width:600px){.detail{width:100%;max-height:95vh;padding:8px;border-radius:26px 26px 0 0}.detail-img{height:245px;border-radius:20px}.detail-content{padding:2px 11px 18px}.detail-topline{margin-top:12px}.detail-rating b{font-size:23px}.detail-rating strong{font-size:19px}.detail-verified{padding:7px 9px;font-size:10px}.detail-badges{justify-content:flex-start;margin-top:6px}.detail-brokerage,.detail-furnished{padding:7px 9px;font-size:10px}.detail h2{font-size:25px;margin-top:11px}.detail-meta{font-size:13px}.detail-tags{margin:10px 0 13px}.detail-tags span{padding:7px 10px;font-size:11px}.detail-price strong{font-size:28px}.detail-spec-title{font-size:20px!important;margin-top:19px!important}.spec{min-height:70px;padding:11px 7px}.spec b{font-size:17px}.detail-actions a{padding:13px 7px;font-size:12px}}
 @media(max-width:390px){.detail-img{height:225px}.detail h2{font-size:23px}.detail-verified{font-size:9px}.detail-badges{gap:5px}.detail-brokerage,.detail-furnished{font-size:9px}.detail-actions{grid-template-columns:1fr 1fr}.detail-actions a{font-size:11px}}
-</style></head><body>
+
+<style>
+.account-profile{display:none;align-items:center;justify-content:center;border:1px solid #e3d9f2;background:#fff;color:#4f1eaa;padding:4px;border-radius:50%;font-weight:900;cursor:pointer;width:42px;height:42px;box-shadow:0 5px 14px #4d1fc212}
+.account-avatar{width:34px;height:34px;border-radius:50%;object-fit:cover;display:grid;place-items:center;background:linear-gradient(135deg,#5d22c9,#ffb000);color:#fff;font-size:12px;font-weight:950;flex:0 0 34px;overflow:hidden}
+.auth-profile{display:none;align-items:center;gap:12px;background:#faf8ff;border:1px solid #e9e0f5;border-radius:18px;padding:12px;margin:10px 0 14px}
+.auth-profile img,.auth-profile .profile-avatar{width:52px;height:52px;border-radius:50%;object-fit:cover;display:grid;place-items:center;background:linear-gradient(135deg,#5d22c9,#ffb000);color:#fff;font-weight:950;font-size:18px;flex:0 0 52px}
+.auth-profile strong{display:block;color:#3e2674;font-size:14px}.auth-profile small{display:block;color:#777d8c;font-size:11px;margin-top:3px;word-break:break-all}
+@media(max-width:700px){.account-profile{display:inline-flex;width:40px;height:40px;padding:3px}.account-avatar{width:32px;height:32px}.signin{display:none!important}}
+@media(max-width:390px){.account-profile{width:38px;height:38px}.account-avatar{width:30px;height:30px}}
+</style></style></head><body>
 <header class="nav"><div class="nav-inner">
 <a class="brand" href="#"><div id="brandMark" class="mark">LS</div><div class="brand-copy"><b>LIVENTA</b><span>STAY</span></div></a>
 <div class="grow"></div>
 <a class="navlink" href="#featured">Featured PGs</a><a class="navlink" href="#areas">Browse Areas</a>
 <button class="round" aria-label="Saved stays" onclick="openSaved()">♡</button>
 <a class="list" href="https://wa.me/917454024119?text=Hi%20Liventa%20Stay%2C%20I%20want%20to%20list%20my%20property." target="_blank">+ List Stay</a><a class="inquiry" href="https://wa.me/917454024119?text=Hi%20Liventa%20Stay%2C%20I%20want%20to%20make%20an%20inquiry%20about%20a%20PG%2Fstudent%20stay." target="_blank">Inquiry</a>
-<button class="signin" onclick="openAuth()">Sign In</button>
+<button class="signin" onclick="openAuth()">Sign In</button><button id="accountProfile" class="account-profile" onclick="openAuth()" aria-label="Open account" title="Account"><span id="accountAvatar" class="account-avatar">?</span></button>
 <button class="hamb" onclick="toggleMenu()">☰</button>
 <div id="menu" class="menu"><a href="#featured">Featured PGs</a><a href="#areas">Browse by Area</a><a href="#all">All PGs & Stays</a><a href="#how">How it works</a><a href="#footer">Contact</a></div>
 </div></header>
@@ -220,7 +232,7 @@ button:active,a:active{transform:scale(.96);}
   <div class="promo-copy"><div id="promoKicker" class="promo-kicker">LIVENTA STAY • VERIFIED STUDENT HOMES</div><h1 class="promo-title" id="promoTitle">Your next stay,<strong>closer to campus.</strong></h1><p class="promo-sub" id="promoSub">Discover verified PGs, hostels and student homes around Delhi University with direct owner enquiries and ₹0 brokerage.</p><a id="promoCta" class="promo-btn" href="#featured">Explore verified stays →</a><div class="demo-banner-note">Demo banner • You can change this from Admin</div></div>
   <div class="promo-art"><div class="promo-person" id="promoImage"><div class="demo-avatar">LS</div><div class="demo-home-title">VERIFIED<br>STUDENT STAYS</div><div class="demo-stat">12+<small>active stays</small></div></div><div class="promo-bubble one">✓ Verified Owners</div><div class="promo-bubble two">₹0 Brokerage</div></div>
 </div></section>
-<section class="tabs-strip"><div class="tabs"><span class="tab active">▥ All Properties <b id="heroCount">0</b></span><span class="tab" onclick="document.getElementById('all').scrollIntoView({behavior:'smooth'})">♧ PGs & Hostels</span><span class="tab" onclick="document.getElementById('all').scrollIntoView({behavior:'smooth'})">⌂ Student Flats (0% Fee)</span></div></section>
+<section class="tabs-strip"><div class="tabs"><span id="tabAll" class="tab active" onclick="setPropertyType('all')">▥ All Properties <b id="heroCount">0</b></span><span id="tabPg" class="tab" onclick="setPropertyType('pg')">♧ PGs & Hostels <b id="pgCount">0</b></span><span id="tabFlat" class="tab" onclick="setPropertyType('flat')">⌂ Student Flats (0% Fee) <b id="flatCount">0</b></span></div></section>
 <section class="hero"><div class="hero-inner">
 <div class="search">
 <div class="field"><label>🎓 COLLEGE / LOCALITY</label><input id="q" placeholder="Search Kamla Nagar, Ramjas, SRCC..."></div>
@@ -240,7 +252,7 @@ button:active,a:active{transform:scale(.96);}
 <section id="areas" class="areas-after"><div class="container"><div class="head"><div><div class="eyebrow">EXPLORE BY LOCATION</div><h2>Browse by Area</h2><p>Choose your preferred campus area and explore nearby verified stays.</p></div></div>
 <div class="area-grid" id="areaGrid"></div></div></section>
 <section id="all"><div class="container"><div class="head"><div><div class="eyebrow">LIVE INVENTORY</div><h2>All PGs & Stays</h2><p>Search and filter all currently active properties.</p></div><span class="count">0 stays</span></div><div id="grid" class="grid"></div><div id="empty" style="display:none;text-align:center;color:#74788b;padding:45px">No matching stays found.</div></div></section>
-<footer class="footer" id="footer"><div class="footer-grid"><div><div class="brand"><div class="mark">🏠</div><div><b style="color:#fff">LIVENTA</b><span style="color:#ddd0fa">STAY</span></div></div><p>Find verified PGs, hostels and student stays around Delhi University.</p><div class="social-label">FOLLOW LIVENTA STAY</div><div class="social"><a href="https://www.instagram.com/" target="_blank" rel="noopener" aria-label="Instagram">◎</a><a href="https://www.facebook.com/" target="_blank" rel="noopener" aria-label="Facebook">f</a><a href="https://www.youtube.com/" target="_blank" rel="noopener" aria-label="YouTube">▶</a></div></div><div><h3>ACCOMMODATIONS</h3><a href="#featured">Student PGs in Delhi</a><a href="#featured">PGs & Hostels</a><a href="#featured">Student Flats</a><a href="#areas">Browse All Stays</a></div><div><h3>TOP LOCALITIES</h3><a href="#areas">North Campus</a><a href="#areas">Kamla Nagar</a><a href="#areas">Mukherjee Nagar</a><a href="#areas">Hudson Lane</a><a href="#areas">Vijay Nagar</a></div></div><div class="footer-legal"><a href="#" onclick="event.preventDefault();openPrivacy()">Privacy Policy</a><span>•</span><a href="#" onclick="event.preventDefault();openTerms()">Terms & Conditions</a><span>•</span><a href="#footer">Contact</a><span>•</span><span>© 2026 Liventa Stay</span></div></footer>
+<footer class="footer" id="footer"><div class="footer-grid"><div><div class="brand"><div class="mark">🏠</div><div><b style="color:#fff">LIVENTA</b><span style="color:#ddd0fa">STAY</span></div></div><p>Find verified PGs, hostels and student stays around Delhi University.</p><div class="social-label">FOLLOW LIVENTA STAY</div><div class="social"><a href="https://www.instagram.com/" target="_blank" rel="noopener" aria-label="Instagram">◎</a><a href="https://www.facebook.com/" target="_blank" rel="noopener" aria-label="Facebook">f</a><a href="https://www.youtube.com/" target="_blank" rel="noopener" aria-label="YouTube">▶</a></div></div><div><h3>ACCOMMODATIONS</h3><a href="#featured">Student PGs in Delhi</a><a href="#featured">PGs & Hostels</a><a href="#featured">Student Flats</a><a href="#areas">Browse All Stays</a></div><div><h3>TOP LOCALITIES</h3><a href="#areas">North Campus</a><a href="#areas">Kamla Nagar</a><a href="#areas">Mukherjee Nagar</a><a href="#areas">Hudson Lane</a><a href="#areas">Vijay Nagar</a></div></div><div class="footer-partner"><a href="Admin.html" aria-label="Partner Sign In">🔒 <span>Partner Sign In</span></a></div><div class="footer-legal"><a href="#" onclick="event.preventDefault();openPrivacy()">Privacy Policy</a><span>•</span><a href="#" onclick="event.preventDefault();openTerms()">Terms & Conditions</a><span>•</span><a href="#footer">Contact</a><span>•</span><span>© 2026 Liventa Stay</span></div></footer>
 <div class="bottom"><a class="bwa" href="https://wa.me/917454024119?text=Hi%20Liventa%20Stay%2C%20I%20want%20help%20finding%20a%20PG." target="_blank">◉ WhatsApp</a><button class="visit" onclick="openVisit()">Schedule Visit</button></div>
 <div id="modal" class="modal" onclick="closeDetails(event)"><div class="detail" onclick="event.stopPropagation()"><div id="detailImgWrap" class="detail-img" ontouchstart="galleryTouchStart(event)" ontouchend="galleryTouchEnd(event)"><img id="dimg"><video id="dvideo" controls playsinline style="display:none"></video><div id="galleryNav" class="gallery-nav" style="display:none"><button onclick="galleryPrev(event)">‹</button><button onclick="galleryNext(event)">›</button></div><div id="galleryDots" class="gallery-dots"></div><span id="galleryCount" class="gallery-count" style="display:none"></span><span class="gallery-hint">← Swipe →</span><button class="close" onclick="closeDetails()">×</button></div>
 <div class="detail-content">
@@ -276,7 +288,7 @@ button:active,a:active{transform:scale(.96);}
   <h2 id="authTitle">Welcome back</h2><p id="authDesc">Login to save your enquiries and manage your visit requests.</p>
   <div class="auth-field"><label>EMAIL</label><input id="authEmail" type="email" placeholder="you@example.com" autocomplete="email"></div>
   <div class="auth-field"><label>PASSWORD</label><input id="authPassword" type="password" placeholder="Minimum 6 characters" autocomplete="current-password"></div>
-  <div id="authMsg" class="auth-msg"></div><button class="auth-btn" onclick="submitAuth()" id="authSubmit">Login</button>
+  <div id="authMsg" class="auth-msg"></div><div id="authProfile" class="auth-profile"><div id="authProfileAvatar" class="profile-avatar">?</div><div><strong id="authProfileName">Account</strong><small id="authProfileEmail"></small></div></div><button class="auth-btn" onclick="submitAuth()" id="authSubmit">Login</button>
   <button class="auth-switch" onclick="toggleAuthMode()" id="authSwitch">New here? Create an account</button>
   <div id="authUser" class="auth-user"></div>
 </div></div>
@@ -289,31 +301,7 @@ const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let DATA = [];
 let FILTERED_DATA = [];
-
-// Save every normal WhatsApp enquiry to Supabase before WhatsApp opens.
-// This does not change the WhatsApp message or the public-page design.
-async function saveEnquiry(property, source='whatsapp'){
-  try{
-    const {data:{user}}=await sb.auth.getUser();
-    const propertyName=property?.name || currentDetailName || 'PG / Student Stay';
-    const propertyId=property?.id || null;
-    const notes=`Source: ${source === 'whatsapp' ? 'WhatsApp' : source} enquiry`;
-    const payload={
-      user_id:user?.id || null,
-      property_id:propertyId,
-      property_name:propertyName,
-      full_name:user?.user_metadata?.full_name || null,
-      phone:user?.user_metadata?.phone || null,
-      visit_date:null,
-      time_slot:null,
-      visitors:null,
-      notes,
-      status:'new'
-    };
-    const {error}=await sb.from('visit_requests').insert(payload);
-    if(error) console.error('Could not save WhatsApp enquiry:',error);
-  }catch(err){ console.error('saveEnquiry failed:',err); }
-}
+let activePropertyType = 'all';
 
 
 let authMode='login'; let authUser=null; let selectedVisitProperty='';
@@ -338,31 +326,60 @@ async function confirmVisit(){
   window.open('https://wa.me/917454024119?text='+msg,'_blank');
   showToast('Visit request saved to your Liventa Stay account.'); closeVisit();
 }
+function getUserDisplay(user){
+  const md=user?.user_metadata||{};
+  const name=md.full_name||md.name||md.user_name||md.preferred_username||(user?.email||'Account').split('@')[0];
+  const avatar=md.avatar_url||md.picture||md.photo_url||'';
+  const initials=String(name||'A').trim().split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase()||'A';
+  return {name,avatar,initials,email:user?.email||''};
+}
+function applyAvatar(el, profile){
+  if(!el) return;
+  if(profile.avatar){el.innerHTML='';el.style.backgroundImage='url("'+String(profile.avatar).replace(/"/g,'')+'")';el.style.backgroundSize='cover';el.style.backgroundPosition='center';}
+  else{el.style.backgroundImage='';el.textContent=profile.initials;}
+}
+function updateAccountProfile(user){
+  const signed=!!user, p=getUserDisplay(user||{});
+  const button=document.getElementById('accountProfile');
+  const sign=document.querySelector('.signin');
+  if(button) button.style.display=signed?'inline-flex':'none';
+  if(sign) sign.style.setProperty('display', signed?'none':'inline-flex', 'important');
+  if(signed){
+    button.title=p.name||'Account';
+    button.setAttribute('aria-label',(p.name||'Account')+' account');
+    applyAvatar(document.getElementById('accountAvatar'),p);
+  }
+}
 async function openAuth(){
   const {data:{user}}=await sb.auth.getUser();
   authUser=user||null;
   document.getElementById('authModal').classList.add('show');
   document.getElementById('authMsg').textContent='';
   const card=document.getElementById('authModal');
+  const profileBox=document.getElementById('authProfile');
   if(authUser){
+    const p=getUserDisplay(authUser);
     document.getElementById('authTitle').textContent='Your Liventa Stay Account';
-    document.getElementById('authDesc').textContent='Signed in as '+authUser.email;
+    document.getElementById('authDesc').textContent='Your account and visit requests are linked here.';
     document.getElementById('authEmail').value=authUser.email||'';
     document.getElementById('authEmail').disabled=true;
     document.getElementById('authPassword').style.display='none';
     document.querySelector('#authModal .auth-field:nth-of-type(2) label').style.display='none';
+    if(profileBox){profileBox.style.display='flex';document.getElementById('authProfileName').textContent=p.name;document.getElementById('authProfileEmail').textContent=p.email;applyAvatar(document.getElementById('authProfileAvatar'),p);}
     document.getElementById('authSubmit').textContent='Logout';
     document.getElementById('authSubmit').onclick=logoutFromModal;
     document.getElementById('authSwitch').textContent='Close';
     document.getElementById('authSwitch').onclick=closeAuth;
   }else{
+    profileBox.style.display='none';
     document.getElementById('authEmail').disabled=false; document.getElementById('authPassword').style.display='';
     document.querySelector('#authModal .auth-field:nth-of-type(2) label').style.display='';
     document.getElementById('authSubmit').onclick=submitAuth;
     document.getElementById('authSwitch').onclick=toggleAuthMode;
+    document.getElementById('authSubmit').textContent=authMode==='login'?'Login':'Create Account';
   }
 }
-async function logoutFromModal(){await logout();closeAuth();openAuth();}
+async function logoutFromModal(){await logout();closeAuth();await openAuth();}
 
 function closeAuth(e){if(!e||e.target.id==='authModal')document.getElementById('authModal').classList.remove('show')}
 function toggleAuthMode(){authMode=authMode==='login'?'signup':'login';document.getElementById('authTitle').textContent=authMode==='login'?'Welcome back':'Create your account';document.getElementById('authDesc').textContent=authMode==='login'?'Login to save your enquiries and manage your visit requests.':'Create a Liventa Stay account for a smoother booking experience.';document.getElementById('authSubmit').textContent=authMode==='login'?'Login':'Create Account';document.getElementById('authSwitch').textContent=authMode==='login'?'New here? Create an account':'Already have an account? Login';document.getElementById('authMsg').textContent='';}
@@ -375,8 +392,8 @@ async function ensureProfile(user, extra={}){
   }catch(e){console.warn('Profile save skipped:',e);}
 }
 async function submitAuth(){const email=document.getElementById('authEmail').value.trim(),password=document.getElementById('authPassword').value;if(!email||password.length<6){document.getElementById('authMsg').textContent='Enter a valid email and password (6+ characters).';return;}const btn=document.getElementById('authSubmit');btn.disabled=true;document.getElementById('authMsg').textContent='Please wait…';try{let res;if(authMode==='login')res=await sb.auth.signInWithPassword({email,password});else res=await sb.auth.signUp({email,password});if(res.error)throw res.error;authUser=res.data.user||null;if(authUser) await ensureProfile(authUser);document.getElementById('authMsg').style.color='#0b8a64';document.getElementById('authMsg').textContent=authMode==='login'?'Logged in successfully.':'Account created. Check your email if confirmation is enabled.';updateAuthUI();if(authMode==='login')setTimeout(closeAuth,700);}catch(e){document.getElementById('authMsg').style.color='#d44b62';document.getElementById('authMsg').textContent=e.message||String(e);}finally{btn.disabled=false;}}
-async function updateAuthUI(){const {data}=await sb.auth.getUser();authUser=data?.user||null;const b=document.querySelector('.signin');if(b)b.textContent=authUser?'Account':'Sign In';}
-async function logout(){await sb.auth.signOut();updateAuthUI();}
+async function updateAuthUI(){const {data}=await sb.auth.getUser();authUser=data?.user||null;const b=document.querySelector('.signin');if(b)b.textContent='Sign In';updateAccountProfile(authUser);}
+async function logout(){await sb.auth.signOut();await updateAuthUI();}
 
 async function loadSiteSettings(){
   try{
@@ -425,7 +442,11 @@ function normalizeRow(r) {
   return {
     id: r.id,
     name: r.name || 'Liventa Stay',
-    loc: r.location || 'Delhi',
+    loc: r.location || r.locality || 'Delhi',
+    locality: r.locality || r.location || '',
+    college: r.college || r.college_name || r.near_college || '',
+    campus: r.campus || r.campus_area || '',
+    property_type: r.property_type || r.type || r.category || r.listing_type || r.accommodation_type || '',
     gender: r.gender || 'Boys & Girls',
     price: Number(r.rent || 0),
     distance: r.distance || 'Near Delhi University',
@@ -448,6 +469,35 @@ function normalizeRow(r) {
   };
 }
 
+function propertyTypeOf(d){
+  const explicit=String(d.property_type||'').toLowerCase().trim();
+  if(/flat|apartment|1bhk|2bhk|3bhk|4bhk|independent/.test(explicit)) return 'flat';
+  if(/pg|hostel|paying guest|student stay|co-living|coliving/.test(explicit)) return 'pg';
+  const text=[d.name,d.description,d.room_type,d.amenities].join(' ').toLowerCase();
+  if(/1bhk|2bhk|3bhk|4bhk|flat|apartment/.test(text)) return 'flat';
+  return 'pg';
+}
+function setPropertyType(type){
+  activePropertyType=type||'all';
+  document.querySelectorAll('.tabs-strip .tab').forEach(x=>x.classList.remove('active'));
+  const id=activePropertyType==='pg'?'tabPg':activePropertyType==='flat'?'tabFlat':'tabAll';
+  document.getElementById(id)?.classList.add('active');
+  filter();
+  document.getElementById('all').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function searchHaystack(d){
+  const aliases={
+    'ramjas':['ramjas','kamla nagar','north campus'],
+    'hansraj':['hansraj','kamla nagar','north campus'],
+    'srcc':['srcc','kamla nagar','north campus'],
+    'kirorimal':['kirori mal','kamla nagar','north campus'],
+    'kmc':['kirori mal','kamla nagar','north campus'],
+    'du':['delhi university','north campus'],
+    'north campus':['north campus','kamla nagar','hudson lane','gtb nagar','vijay nagar'],
+    'south campus':['south campus','satya niketan','anand niketan','moti bagh']
+  };
+  return [d.name,d.loc,d.locality,d.college,d.campus,d.description,d.room_type,d.amenities,d.carpet_area,d.bathrooms,d.rooms,d.wifi,d.ac,d.power_backup,propertyTypeOf(d)].join(' ').toLowerCase();
+}
 function cardHTML(d, i){
   const tags=String(d.amenities||'Wi-Fi, AC, Furnished').split(',').map(x=>x.trim()).filter(Boolean).slice(0,2);
   const safeName=htmlEscape(d.name);
@@ -541,9 +591,13 @@ function render(){
 
   const verified=DATA.filter(d=>d.verified).length;
   const tours=DATA.filter(d=>(Array.isArray(d.media_urls)&&d.media_urls.length)||d.video_url).length;
+  const pgCount=DATA.filter(d=>propertyTypeOf(d)==='pg').length;
+  const flatCount=DATA.filter(d=>propertyTypeOf(d)==='flat').length;
 
   document.querySelector('.count').textContent=DATA.length+' stays';
   animateCounter('heroCount',DATA.length,'','');
+  animateCounter('pgCount',pgCount,'','');
+  animateCounter('flatCount',flatCount,'','');
   animateCounter('statActive',DATA.length,'','');
   animateCounter('statVerified',verified,'','');
   animateCounter('statTours',tours,'','');
@@ -552,25 +606,84 @@ function render(){
   filter();
 }
 function filter(){
-  const q=document.getElementById('q').value.toLowerCase().trim();
+  const raw=document.getElementById('q').value.toLowerCase().trim();
+  const q=raw.replace(/[,\-_/]+/g,' ').replace(/\s+/g,' ').trim();
+  const terms=q.split(/\s+/).filter(Boolean);
   const g=document.getElementById('gender').value;
   const campus=document.getElementById('campus').value;
   let n=0;
+
+  // College/locality aliases intentionally broaden a search to nearby
+  // campus/locality listings, so searching "Hansraj College" does not
+  // hide other PGs serving the same North Campus area.
+  const aliasMap={
+    ramjas:['ramjas','kamla nagar','north campus','vijay nagar','hudson lane'],
+    hansraj:['hansraj','kamla nagar','north campus','vijay nagar','hudson lane'],
+    srcc:['srcc','kamla nagar','north campus','vijay nagar','hudson lane'],
+    kirori:['kirori','kirori mal','kamla nagar','north campus','vijay nagar'],
+    'kirori-mal':['kirori','kirori mal','kamla nagar','north campus','vijay nagar'],
+    kmc:['kirori','kirori mal','kamla nagar','north campus','vijay nagar'],
+    du:['delhi university','north campus'],
+    'north':['north campus','kamla nagar','hudson lane','gtb nagar','vijay nagar'],
+    'north campus':['north campus','kamla nagar','hudson lane','gtb nagar','vijay nagar'],
+    kamla:['kamla nagar','north campus','hudson lane','vijay nagar'],
+    nagar:['kamla nagar','north campus','hudson lane','vijay nagar'],
+    hudson:['hudson lane','north campus','gtb nagar','vijay nagar'],
+    'gtb':['gtb nagar','north campus','hudson lane'],
+    vijay:['vijay nagar','north campus','kamla nagar'],
+    'south campus':['south campus','satya niketan','anand niketan','moti bagh'],
+    satya:['satya niketan','south campus'],
+    saket:['saket','malviya nagar','iit delhi area'],
+    malviya:['malviya nagar','saket','iit delhi area']
+  };
+
+  const hayFor=d=>{
+    return [
+      searchHaystack(d),
+      campusFor(d.loc),
+      d.property_type,
+      d.gender
+    ].join(' ').toLowerCase();
+  };
+
+  const matchesQuery=d=>{
+    if(!terms.length) return true;
+    const hay=hayFor(d);
+    if(hay.includes(q)) return true;
+
+    // A known college/locality query can match its nearby campus area.
+    if(terms.some(t=>aliasMap[t]?.some(a=>hay.includes(a)))) return true;
+
+    // Ignore generic words when checking multi-word searches.
+    const stop=new Set(['college','university','pg','hostel','hostels','stay','stays','student','students','area','homes','home','near','for']);
+    const useful=terms.filter(t=>!stop.has(t));
+    if(!useful.length) return true;
+    return useful.every(t=>hay.includes(t));
+  };
+
+  const matchesType=d=>activePropertyType==='all'||propertyTypeOf(d)===activePropertyType;
+
   document.querySelectorAll('#grid .card').forEach(card=>{
     const d=DATA[Number(card.dataset.i)]||{};
-    const hay=[d.name,d.loc,d.description,d.room_type,d.amenities,d.carpet_area,d.bathrooms,d.rooms,d.wifi,d.ac,d.power_backup].join(' ').toLowerCase();
-    const okq=!q||hay.includes(q);
-    const okg=g==='Anyone'||d.gender===g||d.gender==='Boys & Girls';
-    const okc=!campus||campusFor(d.loc)===campus;
-    const ok=okq&&okg&&okc; card.style.display=ok?'block':'none'; if(ok)n++;
+    const ok=matchesQuery(d)&&(g==='Anyone'||d.gender===g||d.gender==='Boys & Girls')&&(!campus||campusFor(d.loc)===campus)&&matchesType(d);
+    card.style.display=ok?'block':'none';
+    if(ok)n++;
   });
+
   document.querySelectorAll('#featuredGrid .card').forEach(card=>{
     const d=DATA[Number(card.dataset.i)]||{};
-    const hay=[d.name,d.loc,d.description,d.room_type,d.amenities].join(' ').toLowerCase();
-    const okq=!q||hay.includes(q); const okg=g==='Anyone'||d.gender===g||d.gender==='Boys & Girls'; const okc=!campus||campusFor(d.loc)===campus;
-    card.style.display=(okq&&okg&&okc)?'block':'none';
+    const ok=matchesQuery(d)&&(g==='Anyone'||d.gender===g||d.gender==='Boys & Girls')&&(!campus||campusFor(d.loc)===campus)&&matchesType(d);
+    card.style.display=ok?'block':'none';
   });
-  const empty=document.getElementById('empty'); if(empty)empty.style.display=n?'none':'block';
+
+  FILTERED_DATA=DATA.filter(d=>matchesQuery(d)&&(g==='Anyone'||d.gender===g||d.gender==='Boys & Girls')&&(!campus||campusFor(d.loc)===campus)&&matchesType(d));
+  const empty=document.getElementById('empty');
+  if(empty){
+    empty.style.display=n?'none':'block';
+    empty.textContent=raw?'No matching stays found. Try another locality, college or stay type.':(activePropertyType==='flat'?'No student flats are currently listed.':'No matching stays found.');
+  }
+  const countEl=document.querySelector('.count');
+  if(countEl) countEl.textContent=n+' stays';
 }
 ['q','gender','campus'].forEach(id=>document.getElementById(id)?.addEventListener('input',filter));
 document.getElementById('q')?.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();runSearch();}});
@@ -657,7 +770,7 @@ async function loadProperties(){
 loadSiteSettings();
 loadSiteLogo();
 updateAuthUI();
-sb.auth.onAuthStateChange(async (_event, session)=>{authUser=session?.user||null; if(authUser) await ensureProfile(authUser); const b=document.querySelector('.signin'); if(b)b.textContent=authUser?'Account':'Sign In';});
+sb.auth.onAuthStateChange(async (_event, session)=>{authUser=session?.user||null; if(authUser) await ensureProfile(authUser); updateAccountProfile(authUser);});
 loadAreas();
 loadProperties();
 
