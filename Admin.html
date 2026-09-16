@@ -44,11 +44,11 @@ h1{margin:0 0 8px}.muted{color:#777b8b}.grid{display:grid;grid-template-columns:
   <main class="wrap">
     <div class="panel">
       <h2>Website Logo</h2>
-      <p class="muted">Yahan se public Liventa Stay website ka logo change karo. PNG/JPG/WebP recommended.</p>
+      <p class="muted">Change the public Liventa Stay website logo here. PNG/JPG/WebP formats are recommended.</p>
       <div class="logo-row">
         <div>
           <div class="field"><label>UPLOAD NEW LOGO</label><input id="siteLogo" type="file" accept="image/png,image/jpeg,image/webp" onchange="previewLogo()"></div>
-          <div class="logo-help">Logo upload hone ke baad public website par top bar aur footer me automatically update hoga.</div>
+          <div class="logo-help">After saving, the logo will automatically update in the public website header and footer.</div>
         </div>
         <img id="logoPreview" class="logo-preview" alt="Current logo">
       </div>
@@ -58,19 +58,19 @@ h1{margin:0 0 8px}.muted{color:#777b8b}.grid{display:grid;grid-template-columns:
 
     <div class="panel">
       <h2>Homepage Banner</h2>
-      <p class="muted">Yahan se top homepage banner ka text, button aur optional banner image change kar sakte ho.</p>
+      <p class="muted">Manage the homepage banner text, button, and optional banner image here.</p>
       <div class="field"><label>BANNER KICKER</label><input id="bannerKicker" placeholder="LIVENTA STAY • 0% BROKERAGE"></div>
       <div class="row"><div class="field"><label>MAIN TITLE</label><input id="bannerTitle" placeholder="Find a stay that feels like"></div><div class="field"><label>HIGHLIGHT TEXT</label><input id="bannerHighlight" placeholder="home."></div></div>
       <div class="field"><label>SUBTITLE</label><textarea id="bannerSubtitle" placeholder="Verified PGs, hostels and student homes around Delhi University..."></textarea></div>
       <div class="row"><div class="field"><label>BUTTON TEXT</label><input id="bannerCtaText" placeholder="Explore verified stays →"></div><div class="field"><label>BUTTON LINK</label><input id="bannerCtaLink" value="#featured"></div></div>
-      <div class="field"><label>UPLOAD BANNER IMAGE (OPTIONAL)</label><input id="bannerImage" type="file" accept="image/png,image/jpeg,image/webp" onchange="previewBanner()"><div class="logo-help">Apni banner image upload karo. Recommended: 1200×500 ya similar wide image.</div><img id="bannerPreview" class="logo-preview" style="margin-top:10px;width:180px;height:90px;display:none;object-fit:cover" alt="Banner preview" onerror="this.style.display='none';document.getElementById('bannerMsg').textContent='Banner image load nahi hua.'"></div>
+      <div class="field"><label>UPLOAD BANNER IMAGE (OPTIONAL)</label><input id="bannerImage" type="file" accept="image/png,image/jpeg,image/webp" onchange="previewBanner()"><div class="logo-help">Upload your banner image here. Recommended size: 1200×500 or another wide format.</div><img id="bannerPreview" class="logo-preview" style="margin-top:10px;width:180px;height:90px;display:none;object-fit:cover" alt="Banner preview" onerror="this.style.display='none';document.getElementById('bannerMsg').textContent='Banner image load nahi hua.'"></div>
       <div class="actions"><button class="btn purple" onclick="saveBannerSettings()">Save Banner</button><button class="btn light" onclick="resetBannerSettings()">Use Default Banner</button></div>
       <div id="bannerMsg"></div>
     </div>
 
     <div class="panel">
       <h2>Browse Areas</h2>
-      <p class="muted">Yahan se public website ke <b>Browse by Area</b> cards manage karo. Area add ya delete kar sakte ho.</p>
+      <p class="muted">Manage public website <b>Browse by Area</b> cards here. You can add or delete areas.</p>
       <div class="row">
         <div class="field"><label>AREA NAME</label><input id="areaName" placeholder="Kamla Nagar"></div>
         <div class="field"><label>CAMPUS</label><select id="areaCampus"><option>North Campus</option><option>South Campus</option><option>IIT Delhi Area</option><option>Delhi / NCR</option></select></div>
@@ -98,12 +98,12 @@ h1{margin:0 0 8px}.muted{color:#777b8b}.grid{display:grid;grid-template-columns:
         <div>
           <div class="field"><label>PROPERTY PHOTOS — UP TO 5</label>
             <input id="photos" type="file" accept="image/*" multiple onchange="previewPhotos()">
-            <div class="upload-note">Mobile se 4–5 photos ek saath select karein. Pehli photo cover banegi.</div>
-            <div id="photoPreview" class="preview-grid"></div><div class="upload-note">Selected photo ke neeche Remove dabakar save se pehle bhi hata sakte hain.</div>
+            <div class="upload-note">Select 4–5 photos at once on mobile. The first photo will be used as the cover image.</div>
+            <div id="photoPreview" class="preview-grid"></div><div class="upload-note">You can remove selected photos before saving by clicking Remove below the photo.</div>
           </div>
           <div class="field"><label>PROPERTY VIDEO — 1 VIDEO</label>
             <input id="video" type="file" accept="video/*" onchange="previewVideo()">
-            <div class="upload-note">Ek short property walkthrough/video. Recommended: MP4, under ~50 MB.</div>
+            <div class="upload-note">Upload one short property walkthrough video. Recommended format: MP4, up to 100 MB.</div>
             <video id="videoPreview" class="video-preview" controls playsinline style="display:none"></video><button type="button" class="remove-video" onclick="clearSelectedVideo()" style="display:none" id="selectedVideoRemove">Remove Selected Video</button>
           </div>
           <input id="image_url" type="hidden">
@@ -170,8 +170,8 @@ async function loadSiteLogo(){
 }
 async function saveSiteLogo(){
   const f=document.getElementById('siteLogo').files[0];
-  if(!f) return msg('logoMsg','Pehle logo select karein.');
-  if(f.size>5*1024*1024) return msg('logoMsg','Logo 5 MB se chhota rakhein.');
+  if(!f) return msg('logoMsg','Please select a logo first.');
+  if(f.size>20*1024*1024) return msg('logoMsg','The logo must be smaller than 20 MB.');
   try{
     const ext=(f.name.split('.').pop()||'png').toLowerCase();
     const path='branding/logo-'+Date.now()+'.'+ext;
@@ -182,7 +182,7 @@ async function saveSiteLogo(){
     if(r.error) throw r.error;
     document.getElementById('logoPreview').src=data.publicUrl;
     document.getElementById('siteLogo').value='';
-    msg('logoMsg','Logo saved. Public website refresh karne par naya logo dikhega.',true);
+    msg('logoMsg','Logo saved. Refresh the public website to see the new logo.',true);
   }catch(e){msg('logoMsg',e.message||String(e));}
 }
 async function resetSiteLogo(){
@@ -190,7 +190,7 @@ async function resetSiteLogo(){
     const r=await sb.from('site_settings').upsert({id:1,logo_url:null},{onConflict:'id'});
     if(r.error) throw r.error;
     document.getElementById('logoPreview').removeAttribute('src');
-    msg('logoMsg','Default LS logo restore ho gaya.',true);
+    msg('logoMsg','The default LS logo has been restored.',true);
   }catch(e){msg('logoMsg',e.message||String(e));}
 }
 async function loadBannerSettings(){
@@ -204,8 +204,8 @@ function previewBanner(){
   const f=document.getElementById('bannerImage').files[0];
   const img=document.getElementById('bannerPreview');
   if(!f){ return; }
-  if(!String(f.type||'').startsWith('image/')) return msg('bannerMsg','Sirf image file select karein.');
-  if(f.size>8*1024*1024) return msg('bannerMsg','Banner image 8 MB se chhoti rakhein.');
+  if(!String(f.type||'').startsWith('image/')) return msg('bannerMsg','Please select an image file.');
+  if(f.size>20*1024*1024) return msg('bannerMsg','The banner image must be smaller than 20 MB.');
   img.src=URL.createObjectURL(f);
   img.style.display='block';
   img.onerror=()=>msg('bannerMsg','Banner preview load nahi hua.');
@@ -213,23 +213,23 @@ function previewBanner(){
 async function saveBannerSettings(){
   try{
     const f=document.getElementById('bannerImage').files[0]; let imageUrl=null;
-    if(f){ if(f.size>8*1024*1024) return msg('bannerMsg','Banner image 8 MB se chhoti rakhein.'); const ext=(f.name.split('.').pop()||'jpg').toLowerCase(); const path='branding/banner-'+Date.now()+'.'+ext; const up=await sb.storage.from('site-assets').upload(path,f,{upsert:false,contentType:f.type}); if(up.error) throw up.error; imageUrl=sb.storage.from('site-assets').getPublicUrl(path).data.publicUrl; }
+    if(f){ if(f.size>20*1024*1024) return msg('bannerMsg','The banner image must be smaller than 20 MB.'); const ext=(f.name.split('.').pop()||'jpg').toLowerCase(); const path='branding/banner-'+Date.now()+'.'+ext; const up=await sb.storage.from('site-assets').upload(path,f,{upsert:false,contentType:f.type}); if(up.error) throw up.error; imageUrl=sb.storage.from('site-assets').getPublicUrl(path).data.publicUrl; }
     const payload={id:1,banner_kicker:document.getElementById('bannerKicker').value.trim(),banner_title:document.getElementById('bannerTitle').value.trim(),banner_highlight:document.getElementById('bannerHighlight').value.trim(),banner_subtitle:document.getElementById('bannerSubtitle').value.trim(),banner_cta_text:document.getElementById('bannerCtaText').value.trim(),banner_cta_link:document.getElementById('bannerCtaLink').value.trim()||'#featured'};
     if(imageUrl) payload.banner_image_url=imageUrl;
     const r=await sb.from('site_settings').upsert(payload,{onConflict:'id'}); if(r.error) throw r.error;
     if(imageUrl){ const bp=document.getElementById('bannerPreview'); bp.src=imageUrl; bp.style.display='block'; }
-    document.getElementById('bannerImage').value=''; msg('bannerMsg','Banner saved. Public website refresh karne par update ho jayega.',true);
+    document.getElementById('bannerImage').value=''; msg('bannerMsg','Banner saved. Refresh the public website to see the changes.',true);
   }catch(e){msg('bannerMsg',e.message||String(e));}
 }
 async function resetBannerSettings(){
   const r=await sb.from('site_settings').upsert({id:1,banner_kicker:null,banner_title:null,banner_highlight:null,banner_subtitle:null,banner_cta_text:null,banner_cta_link:null,banner_image_url:null},{onConflict:'id'});
   if(r.error) return msg('bannerMsg',r.error.message);
-  await loadBannerSettings(); msg('bannerMsg','Default banner restore ho gaya.',true);
+  await loadBannerSettings(); msg('bannerMsg','The default banner has been restored.',true);
 }
 
 async function loadAreas(){
   const {data,error}=await sb.from('site_areas').select('*').order('sort_order',{ascending:true}).order('name',{ascending:true});
-  if(error) return msg('areaMsg','Area table ready nahi hai. Supabase me Area Setup SQL run karein.');
+  if(error) return msg('areaMsg','The area table is not ready. Run the Area Setup SQL in Supabase.');
   document.getElementById('areaList').innerHTML=(data||[]).map(a=>`<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid #eee8f4"><div><b>${escapeHtml(a.name)}</b><div class="muted" style="font-size:12px">${escapeHtml(a.campus||'Delhi / NCR')}</div></div><button class="btn danger" onclick="deleteArea(${a.id})">Delete</button></div>`).join('')||'<div class="muted">No areas added yet.</div>';
 }
 async function addArea(){
@@ -239,7 +239,7 @@ async function addArea(){
   const {error}=await sb.from('site_areas').insert({name,campus});
   if(error) return msg('areaMsg',error.message);
   document.getElementById('areaName').value='';
-  msg('areaMsg','Area added. Public website refresh/live update par dikhega.',true);
+  msg('areaMsg','Area added. Refresh the public website to see the change.',true);
   loadAreas();
 }
 async function deleteArea(id){
@@ -299,7 +299,7 @@ async function editPropertyById(id){
   try{
     const {data,error}=await sb.from('properties').select('*').eq('id',n).maybeSingle();
     if(error) throw error;
-    if(!data) return msg('formMsg','Property nahi mila. List refresh karke dobara Edit karein.');
+    if(!data) return msg('formMsg','Property not found. Refresh the list and try editing again.');
     editProperty(data);
   }catch(e){
     msg('formMsg','Edit load failed: '+(e.message||String(e)));
@@ -378,7 +378,7 @@ function showCurrentMedia(p){
 function removeExistingPhoto(index){
   const url=existingMediaUrls[index];
   if(!url) return;
-  if(!confirm('Is photo ko remove karein?')) return;
+  if(!confirm('Remove this photo?')) return;
   removedMediaUrls.push(url);
   existingMediaUrls.splice(index,1);
   renderCurrentMedia();
@@ -386,7 +386,7 @@ function removeExistingPhoto(index){
 
 function removeExistingVideo(){
   if(!existingVideoUrl) return;
-  if(!confirm('Property video remove karein?')) return;
+  if(!confirm('Remove this property video?')) return;
   removedVideoUrl=existingVideoUrl;
   existingVideoUrl=null;
   renderCurrentMedia();
@@ -398,8 +398,8 @@ function previewPhotos(){
   const input=document.getElementById('photos');
   const picked=Array.from(input.files||[]);
   if(picked.some(f=>!String(f.type||'').startsWith('image/'))) return msg('formMsg','Sirf image files select karein.');
-  if(picked.some(f=>f.size>8*1024*1024)) return msg('formMsg','Har photo 8 MB se chhoti rakhein.');
-  if(existingMediaUrls.length + picked.length > 5) return msg('formMsg','Maximum 5 photos allowed. Pehle kuch existing photos remove karein.');
+  if(picked.some(f=>f.size>20*1024*1024)) return msg('formMsg','Each photo must be smaller than 20 MB.');
+  if(existingMediaUrls.length + picked.length > 5) return msg('formMsg','Maximum 5 photos are allowed. Photos up to 20 MB each are accepted. Remove some existing photos first.');
   newPhotoFiles=picked;
   renderNewPhotoPreview();
 }
@@ -423,8 +423,8 @@ function syncPhotoInput(){
 function previewVideo(){
   const input=document.getElementById('video'); const f=input.files[0]; const v=document.getElementById('videoPreview');
   if(!f){ v.style.display='none'; return; }
-  if(!String(f.type||'').startsWith('video/')) return msg('formMsg','Sirf video file select karein.');
-  if(f.size>50*1024*1024) return msg('formMsg','Video 50 MB se chhota rakhein.');
+  if(!String(f.type||'').startsWith('video/')) return msg('formMsg','Please select a video file.');
+  if(f.size>100*1024*1024) return msg('formMsg','The video must be smaller than 100 MB.');
   v.src=URL.createObjectURL(f); v.style.display='block'; document.getElementById('selectedVideoRemove').style.display='inline-block';
 }
 
@@ -463,7 +463,7 @@ async function deleteMediaUrls(urls){
 async function saveProperty(){
   const newPhotos=selectedPhotos();
   if(existingMediaUrls.length + newPhotos.length > 5)
-    return msg('formMsg','Maximum 5 photos allowed. Pehle kuch existing photos remove karein.');
+    return msg('formMsg','Maximum 5 photos are allowed. Remove some existing photos first.');
 
   const videoFile=document.getElementById('video').files[0]||null;
   const payload={
