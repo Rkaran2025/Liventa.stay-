@@ -312,6 +312,36 @@ body{color:var(--ink)}
   .card .photo{height:225px!important;min-height:225px!important;}
 }
 </style>
+<style>
+/* V26 — text-only full banner, oversized responsive typography */
+.promo-banner{display:block!important;min-height:430px!important;width:100%!important;max-width:1200px!important;margin:0 auto!important;border-radius:26px!important;background:linear-gradient(135deg,#4320d8 0%,#7135e8 48%,#c84bd0 100%)!important;position:relative!important;overflow:hidden!important;}
+.promo-banner::after{content:"";position:absolute;right:-120px;top:-140px;width:430px;height:430px;border-radius:50%;background:rgba(255,255,255,.10);box-shadow:-180px 300px 0 40px rgba(255,196,0,.08);pointer-events:none}
+.promo-copy{width:100%!important;max-width:none!important;padding:55px clamp(24px,6vw,80px)!important;position:relative!important;z-index:2!important;color:#fff!important;text-shadow:none!important;}
+.promo-kicker{font-size:clamp(12px,1.5vw,18px)!important;letter-spacing:1.5px!important;color:#3b2a00!important;background:#ffd51a!important;display:inline-block!important;padding:10px 16px!important;border-radius:999px!important;margin-bottom:18px!important}
+.promo-title{font-size:clamp(48px,7.2vw,92px)!important;line-height:.98!important;letter-spacing:-3px!important;color:#fff!important;margin:0!important;max-width:1050px!important}
+.promo-title strong{font-size:1.08em!important;color:#ffe817!important;background:none!important;-webkit-text-fill-color:initial!important;display:block!important;margin-top:4px!important}
+.promo-sub{font-size:clamp(16px,2vw,24px)!important;line-height:1.45!important;color:#fff!important;max-width:850px!important;margin:22px 0 26px!important}
+.promo-btn{font-size:clamp(15px,1.5vw,20px)!important;padding:14px 24px!important;border-radius:14px!important;background:#ffd21a!important;color:#352000!important;box-shadow:0 10px 25px rgba(0,0,0,.18)!important}
+.promo-art{display:none!important}
+@media(max-width:700px){
+ .banner-wrap{padding:7px 10px 5px!important}
+ .promo-banner{min-height:410px!important;height:auto!important;max-width:calc(100vw - 20px)!important;border-radius:20px!important}
+ .promo-copy{padding:34px 20px 38px!important}
+ .promo-kicker{font-size:10px!important;padding:8px 12px!important;margin-bottom:14px!important}
+ .promo-title{font-size:clamp(40px,11.5vw,58px)!important;line-height:.98!important;letter-spacing:-1.8px!important}
+ .promo-sub{font-size:15px!important;line-height:1.4!important;margin:18px 0 22px!important;max-width:100%!important}
+ .promo-btn{font-size:14px!important;padding:12px 18px!important}
+}
+@media(max-width:390px){.promo-banner{min-height:390px!important}.promo-copy{padding:30px 17px 34px!important}.promo-title{font-size:39px!important}.promo-sub{font-size:14px!important}}
+</style>
+
+<style id="liventa-final-spec-style">
+.quick-public-specs .quick-public-spec{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;gap:9px!important;text-align:left!important;min-height:72px!important;padding:14px 16px!important}
+.quick-public-specs .quick-spec-icon{font-size:20px!important;line-height:1!important;flex:0 0 auto!important}
+.quick-public-specs .quick-spec-text{font-size:15px!important;color:var(--p)!important;line-height:1.35!important;font-weight:600!important}
+.quick-public-specs .quick-public-spec b,.quick-public-specs .quick-public-spec small{font-size:inherit!important;margin:0!important}
+@media(max-width:700px){.quick-public-specs .quick-public-spec{min-height:64px!important;padding:12px!important}.quick-public-specs .quick-spec-icon{font-size:18px!important}.quick-public-specs .quick-spec-text{font-size:13px!important}}
+</style>
 </head><body>
 <header class="nav"><div class="nav-inner">
 <a class="brand" href="#"><div id="brandMark" class="mark">LS</div><div class="brand-copy"><b>LIVENTA</b><span>STAY</span></div></a>
@@ -353,8 +383,6 @@ body{color:var(--ink)}
 <div class="quick-sort"><span>Sort</span><select id="quickSort" onchange="setQuickSort(this.value)"><option value="featured">Featured</option><option value="newest">Newest</option><option value="priceLow">Rent: Low to High</option><option value="priceHigh">Rent: High to Low</option></select></div>
 </div></div>
 <section class="featured listing-section" id="featured" data-type="pg"><div class="container"><div class="head"><div><div class="eyebrow">TOP PICKS</div><h2>Featured PGs</h2><p>Student PGs with quick enquiry. PG brokerage ₹0.</p></div><span class="count" id="featuredCount">0 PGs</span></div>
-<div class="section-toolbar"><div class="toolbar-left"><span class="toolbar-label">PG FILTER</span><button class="filter-chip" id="featuredPgFilterBtn" onclick="toggleLocalFilter('featuredPgFilter')">⚙ Filter</button><select class="toolbar-select" id="featuredPgSort" onchange="renderAllSections()"><option value="featured">Featured</option><option value="priceLow">Rent: Low to High</option><option value="priceHigh">Rent: High to Low</option></select></div><a class="head-link" href="#pgSection">View all PGs →</a></div>
-<div id="featuredPgFilter" class="filter-panel-local"><div><label>GENDER</label><select id="featuredPgGender" onchange="renderAllSections()"><option>Anyone</option><option>Boys</option><option>Girls</option><option>Boys & Girls</option></select></div><div><label>ROOM / SHARING</label><select id="featuredPgRoom" onchange="renderAllSections()"><option value="">Any</option><option>Single</option><option>Double</option><option>Triple</option><option>Sharing</option></select></div><div><label>AMENITY</label><select id="featuredPgAmenity" onchange="renderAllSections()"><option value="">Any</option><option>Wi-Fi</option><option>AC</option><option>Meals</option><option>Lift</option><option>Power Backup</option></select></div></div>
 <div id="featuredGrid" class="grid"></div></div></section>
 <section id="areas" class="areas-after"><div class="container"><div class="head"><div><div class="eyebrow">EXPLORE BY LOCATION</div><h2>Browse by Area</h2><p>Choose your preferred area and explore nearby PGs, rooms and flats.</p></div></div><div class="area-grid" id="areaGrid"></div></div></section>
 <section id="pgSection" class="listing-section" data-type="pg"><div class="container"><div class="head"><div><div class="eyebrow">PG ACCOMMODATION</div><h2>PGs</h2><p>Girls, boys and co-living PGs. ₹0 brokerage.</p></div><span class="count" id="pgSectionCount">0 PGs</span></div>
@@ -433,21 +461,9 @@ function closeVisit(e){if(!e||e.target.id==='visitModal')document.getElementById
 async function confirmVisit(){
   const name=document.getElementById('visitName').value.trim(), phone=document.getElementById('visitPhone').value.trim(), date=document.getElementById('visitDate').value, time=document.getElementById('visitTime').value, visitors=document.getElementById('visitVisitors').value, notes=document.getElementById('visitNotes').value.trim();
   if(!name||!/^[0-9]{10}$/.test(phone)||!date){alert('Please enter your name, 10-digit mobile number and visit date.');return;}
-  const {data:{user}}=await sb.auth.getUser();
-  if(!user){
-    openAuth();
-    document.getElementById('authMsg').style.color='#6b2acb';
-    document.getElementById('authMsg').textContent='Please sign in first. Your visit request will be saved to your account.';
-    return;
-  }
-  await ensureProfile(user,{full_name:name,phone:phone});
-  const property=DATA.find(x=>String(x.name)===String(selectedVisitProperty));
-  const payload={user_id:user.id,property_id:property?.id||null,property_name:selectedVisitProperty||'PG / Student Stay',full_name:name,phone:phone,visit_date:date,time_slot:time,visitors:visitors,notes:notes||null,status:'new'};
-  const {error}=await sb.from('visit_requests').insert(payload);
-  if(error){showToast('Could not save visit request. Please try again.');console.error(error);return;}
-  const msg=`Hi Liventa Stay, I want to book a free physical visit.%0A%0AProperty: ${encodeURIComponent(selectedVisitProperty||'PG / Student Stay')}%0AName: ${encodeURIComponent(name)}%0AContact: ${encodeURIComponent(phone)}%0ADate: ${encodeURIComponent(date)}%0ATime: ${encodeURIComponent(time)}%0AVisitors: ${encodeURIComponent(visitors)}%0ANotes: ${encodeURIComponent(notes||'None')}`;
+  const msg='Hi Liventa Stay, I want to book a free physical visit.%0A%0AProperty: '+encodeURIComponent(selectedVisitProperty||'PG / Student Stay')+'%0AName: '+encodeURIComponent(name)+'%0AContact: '+encodeURIComponent(phone)+'%0ADate: '+encodeURIComponent(date)+'%0ATime: '+encodeURIComponent(time)+'%0AVisitors: '+encodeURIComponent(visitors)+'%0ANotes: '+encodeURIComponent(notes||'None');
   window.open(waUrl(decodeURIComponent(msg)),'_blank');
-  showToast('Visit request saved to your Liventa Stay account.'); closeVisit();
+  showToast('Visit request sent on WhatsApp.'); closeVisit();
 }
 function getUserDisplay(user){
   const md=user?.user_metadata||{};
@@ -937,7 +953,7 @@ function openDetails(i){
     const normalize=x=>String(x||'').replace(/\s+/g,' ').trim().toLowerCase();
     const selected=wanted.filter(x=>raw.some(r=>normalize(r)===normalize(x)));
     specs.innerHTML=selected.length
-      ? selected.map(x=>{const parts=x.replace(/^\S+\s*/,''); const icon=x.match(/^\S+/)?.[0]||'✓'; return `<div class="spec quick-public-spec"><b>${htmlEscape(parts)}</b><small>${htmlEscape(icon)} Selected</small></div>`;}).join('')
+      ? selected.map(x=>{const parts=x.replace(/^\S+\s*/,''); const icon=x.match(/^\S+/)?.[0]||'✓'; return `<div class="spec quick-public-spec"><span class="quick-spec-icon">${htmlEscape(icon)}</span><span class="quick-spec-text">${htmlEscape(parts)}</span></div>`;}).join('')
       : `<div class="muted" style="padding:10px">${pt==='pg'?'PG':pt==='room'?'Room':'Flat'} specifications will be added soon.</div>`;
   }
   const amen=document.getElementById('detailAmenities');
@@ -994,76 +1010,5 @@ sb.channel('areas-live')
 <div id="leadModal" class="lead-modal" onclick="if(event.target===this)closeLeadForm()"><div class="lead-card"><button class="lead-close" onclick="closeLeadForm()">×</button><div class="eyebrow">PERSONALIZED PROPERTY SEARCH</div><h2>Find Me a Stay</h2><p style="color:#716a7d;margin-top:4px">PG & Room: ₹0 brokerage · Flat: brokerage applicable.</p><div class="lead-grid"><div><label>NAME *</label><input id="leadName" placeholder="Your name"></div><div><label>WHATSAPP / MOBILE *</label><input id="leadPhone" inputmode="numeric" maxlength="10" placeholder="9876543210"></div><div><label>LOOKING FOR *</label><select id="leadType"><option>PG</option><option>Room</option><option>Flat</option></select></div><div><label>AREA *</label><select id="leadArea"><option>Kamla Nagar</option><option>Vijay Nagar</option><option>Hudson Lane</option><option>GTB Nagar</option><option>Mukherjee Nagar</option><option>Roop Nagar</option></select></div><div><label>MAX BUDGET / MONTH *</label><input id="leadBudget" type="number" placeholder="e.g. 15000"></div><div><label>ROOM / BHK</label><input id="leadRoom" placeholder="Single / Double / 1 BHK / 2 BHK"></div><div><label>GENDER</label><select id="leadGender"><option>Anyone</option><option>Boys</option><option>Girls</option><option>Boys & Girls</option></select></div><div><label>MOVE-IN</label><input id="leadMove" type="date"></div><div class="full"><label>OTHER REQUIREMENT</label><textarea id="leadNotes" placeholder="AC, furnished, near college, etc."></textarea></div></div><div class="lead-actions"><button class="lead-secondary" onclick="closeLeadForm()">Cancel</button><button class="lead-primary" onclick="submitLead()">Send Requirement →</button></div><div id="leadMsg" class="lead-note">We’ll use your details only to contact you about matching properties.</div></div></div>
 <div id="privacyModal" class="privacy-modal" onclick="if(event.target===this)closePrivacy()"><div class="privacy-card"><button class="privacy-close" onclick="closePrivacy()">×</button><h2>Privacy Policy</h2><p>Liventa Stay respects your privacy. Information you submit through enquiries, sign-in, or visit requests is used to respond to your request and provide accommodation services. We do not sell your personal information.</p><p>Property photos and listing details are displayed to help visitors evaluate available stays. For questions about your information, please contact Liventa Stay through the enquiry option on this website.</p></div></div>
 <div id="termsModal" class="privacy-modal" onclick="if(event.target===this)closeTerms()"><div class="privacy-card"><button class="privacy-close" onclick="closeTerms()">×</button><h2>Terms & Conditions</h2><p>Property availability, rent, amenities and other listing details may change. Visitors should confirm final details directly with Liventa Stay or the property owner before making any payment or booking decision.</p><p>Liventa Stay provides a platform for accommodation enquiries and does not guarantee availability until confirmed.</p></div></div>
-</body></html>
-<style>
-/* V26 — banner photo and text kept completely separate */
-.promo-banner.has-bg-image{
-  background-image:none!important;
-  background:linear-gradient(120deg,#f3edff,#fff4df 52%,#ecfff8)!important;
-  display:grid;
-  grid-template-columns:1.15fr .85fr;
-}
-.promo-banner.has-bg-image::before{display:none!important;}
-.promo-banner.has-bg-image .promo-copy{
-  max-width:none!important;
-  position:relative;
-  z-index:2;
-  text-shadow:none!important;
-}
-.promo-banner.has-bg-image .promo-art{display:none!important;
-  visibility:visible!important;
-  pointer-events:auto!important;
-  position:relative;
-  z-index:2;
-}
-.promo-banner.has-bg-image .promo-person{
-  background-image:var(--banner-desktop-image)!important;
-  background-size:cover!important;
-  background-position:center!important;
-  background-repeat:no-repeat!important;
-}
-@media(max-width:700px){
-  .promo-banner.has-bg-image{
-    display:flex!important;
-    flex-direction:column!important;
-    background:linear-gradient(180deg,#f3edff,#fff4df 52%,#ecfff8)!important;
-  }
-  .promo-banner.has-bg-image .promo-copy{max-width:100%!important;}
-  .promo-banner.has-bg-image .promo-person{
-    background-image:var(--banner-mobile-image,var(--banner-desktop-image))!important;
-    background-size:cover!important;
-    background-position:center!important;
-  }
-}
-</style>
-
-<style id="banner-photo-disabled">.promo-art,.promo-person{display:none!important;} .promo-banner{grid-template-columns:1fr!important;} </style>
-<style>
-/* V26 — text-only full banner, oversized responsive typography */
-.promo-banner{display:block!important;min-height:430px!important;width:100%!important;max-width:1200px!important;margin:0 auto!important;border-radius:26px!important;background:linear-gradient(135deg,#4320d8 0%,#7135e8 48%,#c84bd0 100%)!important;position:relative!important;overflow:hidden!important;}
-.promo-banner::after{content:"";position:absolute;right:-120px;top:-140px;width:430px;height:430px;border-radius:50%;background:rgba(255,255,255,.10);box-shadow:-180px 300px 0 40px rgba(255,196,0,.08);pointer-events:none}
-.promo-copy{width:100%!important;max-width:none!important;padding:55px clamp(24px,6vw,80px)!important;position:relative!important;z-index:2!important;color:#fff!important;text-shadow:none!important;}
-.promo-kicker{font-size:clamp(12px,1.5vw,18px)!important;letter-spacing:1.5px!important;color:#3b2a00!important;background:#ffd51a!important;display:inline-block!important;padding:10px 16px!important;border-radius:999px!important;margin-bottom:18px!important}
-.promo-title{font-size:clamp(48px,7.2vw,92px)!important;line-height:.98!important;letter-spacing:-3px!important;color:#fff!important;margin:0!important;max-width:1050px!important}
-.promo-title strong{font-size:1.08em!important;color:#ffe817!important;background:none!important;-webkit-text-fill-color:initial!important;display:block!important;margin-top:4px!important}
-.promo-sub{font-size:clamp(16px,2vw,24px)!important;line-height:1.45!important;color:#fff!important;max-width:850px!important;margin:22px 0 26px!important}
-.promo-btn{font-size:clamp(15px,1.5vw,20px)!important;padding:14px 24px!important;border-radius:14px!important;background:#ffd21a!important;color:#352000!important;box-shadow:0 10px 25px rgba(0,0,0,.18)!important}
-.promo-art{display:none!important}
-@media(max-width:700px){
- .banner-wrap{padding:7px 10px 5px!important}
- .promo-banner{min-height:410px!important;height:auto!important;max-width:calc(100vw - 20px)!important;border-radius:20px!important}
- .promo-copy{padding:34px 20px 38px!important}
- .promo-kicker{font-size:10px!important;padding:8px 12px!important;margin-bottom:14px!important}
- .promo-title{font-size:clamp(40px,11.5vw,58px)!important;line-height:.98!important;letter-spacing:-1.8px!important}
- .promo-sub{font-size:15px!important;line-height:1.4!important;margin:18px 0 22px!important;max-width:100%!important}
- .promo-btn{font-size:14px!important;padding:12px 18px!important}
-}
-@media(max-width:390px){.promo-banner{min-height:390px!important}.promo-copy{padding:30px 17px 34px!important}.promo-title{font-size:39px!important}.promo-sub{font-size:14px!important}}
-</style>
-<script>
-/* Text-only banner: never use uploaded banner photos. */
-(function(){
-  const b=document.getElementById('promoBanner');
-  if(b){b.classList.remove('has-bg-image');b.style.removeProperty('--banner-desktop-image');b.style.removeProperty('--banner-mobile-image');}
-})();
-</script>
+</body>
+</html>
