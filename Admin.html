@@ -18,6 +18,23 @@ h1{margin:0 0 8px}.muted{color:#777b8b}.grid{display:grid;grid-template-columns:
 @media(max-width:720px){.grid,.row{grid-template-columns:1fr}.media-grid,.preview-grid{grid-template-columns:repeat(2,1fr)}.wrap{padding:16px 12px}}
 
 .logo-row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:end}.logo-preview{width:90px;height:90px;border:1px solid #ddd7e8;border-radius:16px;object-fit:contain;background:#fff;padding:8px}.logo-help{font-size:12px;color:#777b8b;line-height:1.5}@media(max-width:600px){.logo-row{grid-template-columns:1fr}.logo-preview{width:78px;height:78px}}
+
+.facility-groups{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:10px}
+.facility-group{border:1px solid #e7e0f0;border-radius:14px;padding:12px;background:#fcfbff}
+.facility-group h4{margin:0 0 9px;color:#43258f;font-size:13px}
+.facility-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.facility-check{display:flex;align-items:flex-start;gap:7px;font-size:11px;font-weight:700;color:#4d4a5a;line-height:1.25;cursor:pointer}
+.facility-check input{width:auto;margin-top:2px;accent-color:#5d22c9}
+.quick-specs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:8px}
+.quick-spec{display:flex;gap:7px;align-items:center;border:1px solid #e5def0;background:#fff;border-radius:10px;padding:9px;font-size:11px;font-weight:800}
+.quick-spec input{width:auto}
+.type-note{font-size:11px;color:#777b8b;margin-top:5px}
+.whatsapp-preview{font-size:12px;color:#087443;margin-top:6px}
+.banner-device-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.banner-device-card{border:1px solid #e7e0f0;border-radius:14px;padding:12px;background:#fcfbff}
+.banner-device-card h4{margin:0 0 8px;color:#43258f}
+.banner-device-preview{width:100%;height:120px;object-fit:cover;border-radius:12px;background:#eee;display:none;margin-top:8px}
+@media(max-width:720px){.facility-groups,.banner-device-grid{grid-template-columns:1fr}.facility-grid,.quick-specs{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
@@ -63,9 +80,34 @@ h1{margin:0 0 8px}.muted{color:#777b8b}.grid{display:grid;grid-template-columns:
       <div class="row"><div class="field"><label>MAIN TITLE</label><input id="bannerTitle" placeholder="Find a stay that feels like"></div><div class="field"><label>HIGHLIGHT TEXT</label><input id="bannerHighlight" placeholder="home."></div></div>
       <div class="field"><label>SUBTITLE</label><textarea id="bannerSubtitle" placeholder="Verified PGs, hostels and student homes around Delhi University..."></textarea></div>
       <div class="row"><div class="field"><label>BUTTON TEXT</label><input id="bannerCtaText" placeholder="Explore verified stays →"></div><div class="field"><label>BUTTON LINK</label><input id="bannerCtaLink" value="#featured"></div></div>
-      <div class="field"><label>UPLOAD BANNER IMAGE (OPTIONAL)</label><input id="bannerImage" type="file" accept="image/png,image/jpeg,image/webp" onchange="previewBanner()"><div class="logo-help">Upload your banner image here. Recommended size: 1200×500 or another wide format.</div><img id="bannerPreview" class="logo-preview" style="margin-top:10px;width:180px;height:90px;display:none;object-fit:cover" alt="Banner preview" onerror="this.style.display='none';document.getElementById('bannerMsg').textContent='Banner image load nahi hua.'"></div>
+      <div class="banner-device-grid">
+        <div class="banner-device-card">
+          <h4>🖥️ Desktop Banner</h4>
+          <input id="bannerImageDesktop" type="file" accept="image/png,image/jpeg,image/webp" onchange="previewBanner('desktop')">
+          <div class="logo-help">Recommended: 1600×600 (wide). Desktop par ye image use hogi.</div>
+          <img id="bannerPreviewDesktop" class="banner-device-preview" alt="Desktop banner preview">
+        </div>
+        <div class="banner-device-card">
+          <h4>📱 Mobile Banner</h4>
+          <input id="bannerImageMobile" type="file" accept="image/png,image/jpeg,image/webp" onchange="previewBanner('mobile')">
+          <div class="logo-help">Recommended: 900×1200 (portrait). Mobile par ye image use hogi.</div>
+          <img id="bannerPreviewMobile" class="banner-device-preview" alt="Mobile banner preview">
+        </div>
+      </div>
+      <div class="logo-help" style="margin-top:8px">Agar mobile image nahi doge, website desktop banner ko fallback ke roop me use karegi.</div>
       <div class="actions"><button class="btn purple" onclick="saveBannerSettings()">Save Banner</button><button class="btn light" onclick="resetBannerSettings()">Use Default Banner</button></div>
       <div id="bannerMsg"></div>
+    </div>
+
+    <div class="panel">
+      <h2>WhatsApp Number</h2>
+      <p class="muted">Yahan number change karne par website ke header, enquiry, property WhatsApp buttons, visit requests aur bottom WhatsApp link sab me naya number use hoga.</p>
+      <div class="row">
+        <div class="field"><label>WHATSAPP NUMBER (COUNTRY CODE KE SAATH)</label><input id="globalWhatsapp" inputmode="numeric" placeholder="917454024119"></div>
+        <div class="field"><label>PREVIEW</label><div id="whatsappPreview" class="whatsapp-preview">+91 7454024119</div></div>
+      </div>
+      <div class="actions"><button class="btn purple" onclick="saveGlobalWhatsapp()">Save WhatsApp Number</button></div>
+      <div id="whatsappMsg"></div>
     </div>
 
     <div class="panel">
@@ -91,9 +133,10 @@ h1{margin:0 0 8px}.muted{color:#777b8b}.grid{display:grid;grid-template-columns:
             <div class="field"><label>RENT / MONTH</label><input id="rent" type="number" placeholder="10000"></div>
           </div>
           <div class="row">
-            <div class="field"><label>GENDER</label><select id="gender"><option>Boys</option><option>Girls</option><option>Boys & Girls</option></select></div>
-            <div class="field"><label>ROOM TYPE</label><input id="room_type" placeholder="Single / Double"></div>
+            <div class="field"><label>PROPERTY TYPE</label><select id="property_type" onchange="renderFacilityPanel()"><option value="pg">PG</option><option value="room">Room</option><option value="flat">Flat</option></select><div id="typeNote" class="type-note">PG ke liye student stay options.</div></div>
+            <div class="field"><label>GENDER</label><select id="gender"><option>Boys</option><option>Girls</option><option>Boys & Girls</option><option>Anyone</option></select></div>
           </div>
+          <div class="field"><label>ROOM / BHK TYPE</label><input id="room_type" placeholder="Single / Double / 1 BHK / 2 BHK"></div>
         </div>
         <div>
           <div class="field"><label>PROPERTY PHOTOS — UP TO 5</label>
@@ -108,20 +151,13 @@ h1{margin:0 0 8px}.muted{color:#777b8b}.grid{display:grid;grid-template-columns:
           </div>
           <input id="image_url" type="hidden">
           <div id="currentMedia" class="upload-note"></div>
-          <div class="field"><label>PG / FLAT SPECIFICATIONS</label></div>
-          <div class="row">
-            <div class="field"><label>CARPET AREA</label><input id="carpet_area" placeholder="850 sq.ft"></div>
-            <div class="field"><label>BATHROOMS</label><input id="bathrooms" placeholder="2"></div>
+          <div class="field"><label id="quickSpecLabel">PG SPECIFICATIONS</label><div class="upload-note">Yahin se important property highlights tap karke select karein. Ye public website ke property details me property type ke hisaab se dikhengi.</div>
+            <div id="quickSpecs" class="quick-specs"></div>
           </div>
-          <div class="row">
-            <div class="field"><label>ROOMS</label><input id="rooms" placeholder="2"></div>
-            <div class="field"><label>WI-FI</label><input id="wifi" placeholder="Included"></div>
+          <div class="field"><label>FACILITIES — TAP TO ADD</label>
+            <div id="facilityGroups" class="facility-groups"></div>
           </div>
-          <div class="row">
-            <div class="field"><label>AC</label><input id="ac" placeholder="Available"></div>
-            <div class="field"><label>POWER BACKUP</label><input id="power_backup" placeholder="Available"></div>
-          </div>
-          <div class="field"><label>AMENITIES</label><input id="amenities" placeholder="Wi-Fi, AC, Meals, Laundry"></div>
+          <div class="field"><label>CUSTOM AMENITIES (OPTIONAL)</label><input id="amenities" placeholder="Wi-Fi, AC, Meals, Laundry"></div>
           <div class="field"><label>DESCRIPTION</label><textarea id="description" placeholder="Short property description"></textarea></div>
           <div class="row">
             <div class="field"><label>WHATSAPP</label><input id="whatsapp" value="917454024119"></div>
@@ -138,6 +174,12 @@ h1{margin:0 0 8px}.muted{color:#777b8b}.grid{display:grid;grid-template-columns:
 
     <div class="panel">
       <h2>Current Listings</h2>
+      <div class="type-tabs" style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0">
+        <button type="button" class="btn light list-type-tab active" data-list-type="all" onclick="setListType('all')">All</button>
+        <button type="button" class="btn light list-type-tab" data-list-type="pg" onclick="setListType('pg')">PGs</button>
+        <button type="button" class="btn light list-type-tab" data-list-type="room" onclick="setListType('room')">Rooms</button>
+        <button type="button" class="btn light list-type-tab" data-list-type="flat" onclick="setListType('flat')">Flats</button>
+      </div>
       <div id="list" class="grid"></div>
     </div>
   </main>
@@ -151,6 +193,39 @@ const { createClient } = window.supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
 let editingId = null;
 let newPhotoFiles = [];
+
+const FACILITIES = {
+  room: {
+    "Room Facilities":["🛏️ Fully Furnished Rooms","🪑 Study Table & Chair","👕 Wardrobe","🛌 Bed & Mattress","🚿 Attached/Shared Bathroom","❄️ AC / Cooler","💡 Proper Lighting & Ventilation","📶 Daily Essentials","📶 High-Speed Wi-Fi","💧 RO Drinking Water","⚡ Power Backup","🚿 24×7 Water Supply","🧹 Housekeeping","👕 Laundry Facility","🍽️ Food / Meals","📹 CCTV Surveillance","🔑 Secure Entry","🧯 Fire Safety","👮 Security","🆘 Emergency Assistance","📚 Study Area","🛋️ Common Area","🅿️ Parking","🚇 Metro/College Nearby","🧺 Washing Machine","🍳 Kitchen Access"]
+  },
+  pg: {
+    "PG Facilities":["🛏️ Fully Furnished Rooms","🪑 Study Table & Chair","👕 Wardrobe","🛌 Bed & Mattress","🚿 Attached/Shared Bathroom","❄️ Fully AC / Cooler","💡 Proper Lighting & Ventilation","📶 High-Speed Wi-Fi","💧 RO Drinking Water","⚡ Power Backup","🚿 24×7 Water Supply","🧹 Housekeeping","👕 Laundry Facility","🍽️ Food / Meals","📹 CCTV Surveillance","🔑 Secure Entry","🧯 Fire Safety","👮 Security","🆘 Emergency Assistance","🎓 Student-Friendly","📚 Study Area","🛋️ Common Area","🅿️ Parking","🚇 Metro/College Nearby","🧺 Washing Machine","🍳 Kitchen Access"]
+  },
+  flat: {
+    "Flat Facilities":["🛋️ Fully Furnished / Semi Furnished","🛏️ Bed & Mattress","👕 Wardrobe","🚿 Attached Bathroom","❄️ AC / Cooler","💡 Proper Lighting & Ventilation","📶 High-Speed Wi-Fi","💧 RO Drinking Water","⚡ Power Backup","🚿 24×7 Water Supply","🧹 Housekeeping","👕 Laundry Facility","🍽️ Kitchen / Meals","📹 CCTV Surveillance","🔑 Secure Entry","🧯 Fire Safety","👮 Security","🆘 Emergency Assistance","🅿️ Parking","🚇 Metro/College Nearby","🧺 Washing Machine","🍳 Kitchen Access"]
+  }
+};
+const QUICK_SPECS = {
+  pg:["🚿 Attached Washroom","❄️ Fully AC","📶 High-Speed Wi-Fi","🔐 Full Security","🍽️ Food / Meals","⚡ Power Backup"],
+  room:["🚿 Attached/Shared Washroom","❄️ AC / Cooler","📶 High-Speed Wi-Fi","🔐 Secure Entry","🪑 Study Table & Chair","🧹 Housekeeping"],
+  flat:["🚿 Attached Bathroom","❄️ AC / Cooler","📶 High-Speed Wi-Fi","🔐 Secure Entry","🛋️ Furnished","🍳 Kitchen Access"]
+};
+function renderFacilityPanel(selected=[]){
+  const type=document.getElementById('property_type')?.value||'pg';
+  const data=FACILITIES[type]||FACILITIES.pg;
+  const selectedSet=new Set((selected||[]).map(String));
+  const box=document.getElementById('facilityGroups'); if(!box) return;
+  box.innerHTML=Object.entries(data).map(([group,items])=>`<div class="facility-group"><h4>${escapeHtml(group)}</h4><div class="facility-grid">${items.map((x,i)=>`<label class="facility-check"><input type="checkbox" class="facility-input" value="${escapeHtml(x)}" ${selectedSet.has(x)?'checked':''}> <span>${escapeHtml(x)}</span></label>`).join('')}</div></div>`).join('');
+  const q=document.getElementById('quickSpecs'); const qs=QUICK_SPECS[type]||[];
+  q.innerHTML=qs.map(x=>`<label class="quick-spec"><input type="checkbox" class="quick-spec-input" value="${escapeHtml(x)}" ${selectedSet.has(x)?'checked':''}> <span>${escapeHtml(x)}</span></label>`).join('');
+  const qLabel=document.getElementById('quickSpecLabel'); if(qLabel) qLabel.textContent=type==='pg'?'PG SPECIFICATIONS':type==='room'?'ROOM SPECIFICATIONS':'FLAT SPECIFICATIONS';
+  document.getElementById('typeNote').textContent=type==='pg'?'PG ke liye student stay, food, security aur accommodation options.':type==='room'?'Room ke liye room-specific facilities aur furnishing options.':'Flat ke liye BHK, furnishing, kitchen aur security options.';
+}
+function selectedFacilities(){
+  return [...document.querySelectorAll('.facility-input:checked,.quick-spec-input:checked')].map(x=>x.value);
+}
+function parseAmenities(v){return String(v||'').split(',').map(x=>x.trim()).filter(Boolean);}
+
 
 function msg(id,text,ok=false) {
   const el=document.getElementById(id);
@@ -197,28 +272,48 @@ async function loadBannerSettings(){
   const {data,error}=await sb.from('site_settings').select('*').eq('id',1).maybeSingle();
   if(error||!data) return;
   for(const [id,key] of [['bannerKicker','banner_kicker'],['bannerTitle','banner_title'],['bannerHighlight','banner_highlight'],['bannerSubtitle','banner_subtitle'],['bannerCtaText','banner_cta_text'],['bannerCtaLink','banner_cta_link']]) document.getElementById(id).value=data[key]||'';
-  const bp=document.getElementById('bannerPreview');
-  if(data.banner_image_url){ bp.src=data.banner_image_url; bp.style.display='block'; } else { bp.removeAttribute('src'); bp.style.display='none'; }
+  const bd=document.getElementById('bannerPreviewDesktop'), bm=document.getElementById('bannerPreviewMobile');
+  const du=data.banner_image_desktop_url||data.banner_image_url;
+  const mu=data.banner_image_mobile_url||data.banner_image_url;
+  if(du){bd.src=du;bd.style.display='block'}else{bd.style.display='none'}
+  if(mu){bm.src=mu;bm.style.display='block'}else{bm.style.display='none'}
 }
-function previewBanner(){
-  const f=document.getElementById('bannerImage').files[0];
-  const img=document.getElementById('bannerPreview');
-  if(!f){ return; }
+function previewBanner(device){
+  const input=document.getElementById(device==='mobile'?'bannerImageMobile':'bannerImageDesktop');
+  const img=document.getElementById(device==='mobile'?'bannerPreviewMobile':'bannerPreviewDesktop');
+  const f=input?.files?.[0]; if(!f) return;
   if(!String(f.type||'').startsWith('image/')) return msg('bannerMsg','Please select an image file.');
   if(f.size>20*1024*1024) return msg('bannerMsg','The banner image must be smaller than 20 MB.');
-  img.src=URL.createObjectURL(f);
-  img.style.display='block';
-  img.onerror=()=>msg('bannerMsg','Banner preview load nahi hua.');
+  img.src=URL.createObjectURL(f); img.style.display='block';
 }
 async function saveBannerSettings(){
   try{
-    const f=document.getElementById('bannerImage').files[0]; let imageUrl=null;
-    if(f){ if(f.size>20*1024*1024) return msg('bannerMsg','The banner image must be smaller than 20 MB.'); const ext=(f.name.split('.').pop()||'jpg').toLowerCase(); const path='branding/banner-'+Date.now()+'.'+ext; const up=await sb.storage.from('site-assets').upload(path,f,{upsert:false,contentType:f.type}); if(up.error) throw up.error; imageUrl=sb.storage.from('site-assets').getPublicUrl(path).data.publicUrl; }
+    const fd=document.getElementById('bannerImageDesktop').files[0];
+    const fm=document.getElementById('bannerImageMobile').files[0];
     const payload={id:1,banner_kicker:document.getElementById('bannerKicker').value.trim(),banner_title:document.getElementById('bannerTitle').value.trim(),banner_highlight:document.getElementById('bannerHighlight').value.trim(),banner_subtitle:document.getElementById('bannerSubtitle').value.trim(),banner_cta_text:document.getElementById('bannerCtaText').value.trim(),banner_cta_link:document.getElementById('bannerCtaLink').value.trim()||'#featured'};
-    if(imageUrl) payload.banner_image_url=imageUrl;
+    for(const [f,key,kind] of [[fd,'banner_image_desktop_url','desktop'],[fm,'banner_image_mobile_url','mobile']]){
+      if(f){
+        if(f.size>20*1024*1024) return msg('bannerMsg','Banner image must be smaller than 20 MB.');
+        const ext=(f.name.split('.').pop()||'jpg').toLowerCase();
+        const path='branding/banner-'+kind+'-'+Date.now()+'.'+ext;
+        const up=await sb.storage.from('site-assets').upload(path,f,{upsert:false,contentType:f.type});
+        if(up.error) throw up.error;
+        payload[key]=sb.storage.from('site-assets').getPublicUrl(path).data.publicUrl;
+      }
+    }
+    if(fd && !payload.banner_image_desktop_url) throw new Error('Desktop banner upload failed.');
+    if(fm && !payload.banner_image_mobile_url) throw new Error('Mobile banner upload failed.');
+    if(!fd && !fm){
+      const old=await sb.from('site_settings').select('banner_image_url,banner_image_desktop_url,banner_image_mobile_url').eq('id',1).maybeSingle();
+      if(!old.error){
+        if(old.data?.banner_image_desktop_url) payload.banner_image_desktop_url=old.data.banner_image_desktop_url;
+        if(old.data?.banner_image_mobile_url) payload.banner_image_mobile_url=old.data.banner_image_mobile_url;
+        if(old.data?.banner_image_url) payload.banner_image_url=old.data.banner_image_url;
+      }
+    }
     const r=await sb.from('site_settings').upsert(payload,{onConflict:'id'}); if(r.error) throw r.error;
-    if(imageUrl){ const bp=document.getElementById('bannerPreview'); bp.src=imageUrl; bp.style.display='block'; }
-    document.getElementById('bannerImage').value=''; msg('bannerMsg','Banner saved. Refresh the public website to see the changes.',true);
+    document.getElementById('bannerImageDesktop').value=''; document.getElementById('bannerImageMobile').value='';
+    await loadBannerSettings(); msg('bannerMsg','Desktop + Mobile banner saved. Public website refresh karein.',true);
   }catch(e){msg('bannerMsg',e.message||String(e));}
 }
 async function resetBannerSettings(){
@@ -227,6 +322,24 @@ async function resetBannerSettings(){
   await loadBannerSettings(); msg('bannerMsg','The default banner has been restored.',true);
 }
 
+async function loadGlobalWhatsapp(){
+  const {data,error}=await sb.from('site_settings').select('whatsapp_number').eq('id',1).maybeSingle();
+  const value=(!error && data?.whatsapp_number) ? String(data.whatsapp_number) : '917454024119';
+  const el=document.getElementById('globalWhatsapp'); if(el) el.value=value;
+  updateWhatsappPreview();
+}
+function updateWhatsappPreview(){
+  const v=(document.getElementById('globalWhatsapp')?.value||'').replace(/\D/g,'');
+  const p=document.getElementById('whatsappPreview'); if(p) p.textContent=v?('+'+v):'Enter number';
+}
+async function saveGlobalWhatsapp(){
+  const v=(document.getElementById('globalWhatsapp')?.value||'').replace(/\D/g,'');
+  if(!/^[1-9]\d{9,14}$/.test(v)) return msg('whatsappMsg','Valid country-code WhatsApp number enter karein, e.g. 917454024119.');
+  const r=await sb.from('site_settings').upsert({id:1,whatsapp_number:v},{onConflict:'id'});
+  if(r.error) return msg('whatsappMsg','Database me whatsapp_number column add karein, phir Save karein: '+r.error.message);
+  document.getElementById('globalWhatsapp').value=v; updateWhatsappPreview();
+  msg('whatsappMsg','WhatsApp number saved. Ab website ke sab WhatsApp links isi number ko use karenge.',true);
+}
 async function loadAreas(){
   const {data,error}=await sb.from('site_areas').select('*').order('sort_order',{ascending:true}).order('name',{ascending:true});
   if(error) return msg('areaMsg','The area table is not ready. Run the Area Setup SQL in Supabase.');
@@ -269,19 +382,28 @@ function showApp(user){
   loadAreas();
   loadSiteLogo();
   loadBannerSettings();
+  loadGlobalWhatsapp();
+  renderFacilityPanel();
 }
 
+let currentListType='all';
+function setListType(type){
+  currentListType=type||'all';
+  document.querySelectorAll('.list-type-tab').forEach(b=>b.classList.toggle('active',b.dataset.listType===currentListType));
+  loadList();
+}
 async function loadList(){
   const {data,error}=await sb.from('properties').select('*').order('created_at',{ascending:false});
   if(error) return msg('formMsg',error.message);
-  document.getElementById('list').innerHTML=(data||[]).map(p=>`
+  const rows=(data||[]).filter(p=>currentListType==='all'||String(p.property_type||'pg').toLowerCase()===currentListType);
+  document.getElementById('list').innerHTML=rows.map(p=>`
     <div class="card">
       <img class="thumb" src="${escapeHtml((Array.isArray(p.media_urls)&&p.media_urls[0])||p.image_url||'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1000&q=80')}" alt="">
       <div class="body">
         <h3>${escapeHtml(p.name||'Untitled')}</h3>
         <div class="muted">₹${Number(p.rent||0).toLocaleString('en-IN')}/month • ${escapeHtml(p.location||'Delhi')}</div>
         <div>${escapeHtml(p.gender||'Boys & Girls')} • ${escapeHtml(p.room_type||'Sharing')}</div>
-        <div><span class="pill">${p.featured?'Featured':'Hidden'}</span><span class="pill">${p.verified?'Verified':'Unverified'}</span><span class="pill">${Array.isArray(p.media_urls)?p.media_urls.length:0} Photos</span><span class="pill">${p.video_url?'Video':'No Video'}</span></div>
+        <div><span class="pill">${String(p.property_type||'pg').toUpperCase()}</span><span class="pill">${p.featured?'Featured':'Hidden'}</span><span class="pill">${p.verified?'Verified':'Unverified'}</span><span class="pill">${Array.isArray(p.media_urls)?p.media_urls.length:0} Photos</span><span class="pill">${p.video_url?'Video':'No Video'}</span></div>
         <div class="actions">
           <button class="btn light" onclick="editPropertyById(${Number(p.id)})">Edit</button>
           <button class="btn purple" onclick="toggleFeatured(${p.id},${!p.featured})">${p.featured?'Unfeature':'Feature'}</button>
@@ -308,7 +430,9 @@ async function editPropertyById(id){
 
 function editProperty(p){
   editingId=p.id;
-  ['name','location','rent','gender','room_type','image_url','carpet_area','bathrooms','rooms','wifi','ac','power_backup','amenities','description','whatsapp'].forEach(k=>document.getElementById(k).value=p[k]??'');
+  ['name','location','rent','gender','room_type','image_url','amenities','description','whatsapp'].forEach(k=>document.getElementById(k).value=p[k]??'');
+  document.getElementById('property_type').value=p.property_type||'pg';
+  renderFacilityPanel(parseAmenities(p.amenities));
   document.getElementById('featured').value=String(p.featured!==false);
   newPhotoFiles=[];
   document.getElementById('photos').value=''; document.getElementById('video').value='';
@@ -321,9 +445,11 @@ function clearForm(){
   editingId=null;
   existingMediaUrls=[]; existingVideoUrl=null; removedMediaUrls=[]; removedVideoUrl=null;
   newPhotoFiles=[];
-  ['name','location','rent','room_type','image_url','carpet_area','bathrooms','rooms','wifi','ac','power_backup','amenities','description'].forEach(k=>document.getElementById(k).value='');
+  ['name','location','rent','room_type','image_url','amenities','description'].forEach(k=>document.getElementById(k).value='');
   document.getElementById('gender').value='Boys';
+  document.getElementById('property_type').value='pg';
   document.getElementById('whatsapp').value='917454024119';
+  renderFacilityPanel();
   document.getElementById('featured').value='true';
   document.getElementById('photos').value=''; document.getElementById('video').value='';
   document.getElementById('photoPreview').innerHTML=''; document.getElementById('videoPreview').style.display='none'; document.getElementById('selectedVideoRemove').style.display='none';
@@ -467,19 +593,14 @@ async function saveProperty(){
 
   const videoFile=document.getElementById('video').files[0]||null;
   const payload={
+    property_type:document.getElementById('property_type').value,
     name:document.getElementById('name').value.trim(),
     location:document.getElementById('location').value.trim(),
     rent:Number(document.getElementById('rent').value||0),
     gender:document.getElementById('gender').value,
     room_type:document.getElementById('room_type').value.trim(),
     image_url:existingMediaUrls[0] || document.getElementById('image_url').value.trim(),
-    carpet_area:document.getElementById('carpet_area').value.trim(),
-    bathrooms:document.getElementById('bathrooms').value.trim(),
-    rooms:document.getElementById('rooms').value.trim(),
-    wifi:document.getElementById('wifi').value.trim(),
-    ac:document.getElementById('ac').value.trim(),
-    power_backup:document.getElementById('power_backup').value.trim(),
-    amenities:document.getElementById('amenities').value.trim(),
+    amenities:[...new Set([...selectedFacilities(),...parseAmenities(document.getElementById('amenities').value)])].join(', '),
     description:document.getElementById('description').value.trim(),
     whatsapp:document.getElementById('whatsapp').value.trim()||'917454024119',
     featured:document.getElementById('featured').value==='true',
