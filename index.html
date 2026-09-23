@@ -485,7 +485,7 @@ let activePropertyType = 'all';
 
 
 let authMode='login'; let authUser=null; let selectedVisitProperty='';
-function openVisit(propertyName){ selectedVisitProperty=propertyName||currentDetailName||''; document.getElementById('visitProperty').textContent=selectedVisitProperty?selectedVisitProperty:'Choose a property and your preferred time.'; const n=new Date(); n.setDate(n.getDate()+1); const iso=n.toISOString().slice(0,10); const date=document.getElementById('visitDate'); date.min=new Date().toISOString().slice(0,10); if(!date.value) date.value=iso; document.getElementById('visitModal').classList.add('show'); }
+async function openVisit(propertyName){ const session=(await sb.auth.getSession()).data?.session; if(!session){ authMode='login'; openAuth(); document.getElementById('authMsg').textContent='Please login first to schedule a visit.'; return; } selectedVisitProperty=propertyName||currentDetailName||''; document.getElementById('visitProperty').textContent=selectedVisitProperty?selectedVisitProperty:'Choose a property and your preferred time.'; const n=new Date(); n.setDate(n.getDate()+1); const iso=n.toISOString().slice(0,10); const date=document.getElementById('visitDate'); date.min=new Date().toISOString().slice(0,10); if(!date.value) date.value=iso; document.getElementById('visitModal').classList.add('show'); }
 function closeVisit(e){if(!e||e.target.id==='visitModal')document.getElementById('visitModal').classList.remove('show')}
 async function confirmVisit(){
   const name=document.getElementById('visitName').value.trim(), phone=document.getElementById('visitPhone').value.trim(), date=document.getElementById('visitDate').value, time=document.getElementById('visitTime').value, visitors=document.getElementById('visitVisitors').value, notes=document.getElementById('visitNotes').value.trim();
@@ -664,7 +664,7 @@ function normalizeRow(r) {
 
 function propertyTypeOf(d){ const x=String(d.property_type||'').toLowerCase(); const t=[d.name,d.description,d.room_type,d.amenities].join(' ').toLowerCase(); if(/flat|apartment|1bhk|2bhk|3bhk|4bhk|independent/.test(x+' '+t)) return 'flat'; if(/room|private room|single room|double room|triple room/.test(x+' '+t) && !/pg|hostel|paying guest/.test(x)) return 'room'; return 'pg'; }
 function setPropertyType(type){ activePropertyType=type||'all'; const st=document.getElementById('searchType'); if(st) st.value=activePropertyType; document.querySelectorAll('.tabs-strip .tab').forEach(x=>x.classList.remove('active')); const ids={all:'tabAll',pg:'tabPg',room:'tabRoom',flat:'tabFlat'}; document.getElementById(ids[activePropertyType]||'tabAll')?.classList.add('active'); updateSectionVisibility(); filter(); document.getElementById('featured')?.scrollIntoView({behavior:'smooth',block:'start'}); }
-function updateSectionVisibility(){ const featured=document.getElementById('featured'); if(featured) featured.style.display='block'; document.querySelectorAll('.listing-section[data-type]').forEach(sec=>{ if(sec.id!=='featured') sec.style.display='none'; }); }
+function updateSectionVisibility(){ const featured=document.getElementById('featured'); if(featured) featured.style.display='block'; document.querySelectorAll('.listing-section[data-type]').forEach(sec=>{ if(sec.id!=='featured') sec.style.display='none'; }); document.getElementById('areas')?.style.setProperty('display','block'); }
 function searchHaystack(d){
   const aliases={
     'ramjas':['ramjas','kamla nagar','north campus'],
