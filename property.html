@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Property | Liventa Stay</title>
+<title>Liventa Stay Property | PG, Room & Flat Accommodation in Delhi</title>
 <meta id="metaDescription" name="description" content="View PG, room or flat details on Liventa Stay in Kamla Nagar, Delhi.">
 <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
 <link id="canonical" rel="canonical" href="https://liventastay.in/property.html">
@@ -86,7 +86,7 @@ async function init(){try{
 
   // First use the property cached by the homepage View Details link.
   try{
-    const cached=JSON.parse(sessionStorage.getItem('liventa_selected_property')||'null');
+    const cached=JSON.parse(sessionStorage.getItem('liventa_selected_property')||localStorage.getItem('liventa_selected_property')||'null');
     if(cached && (String(cached.id??'')===wanted || String(cached.property_id??'')===wanted)) data=cached;
   }catch(e){}
 
