@@ -73,71 +73,78 @@ function go(i){gi=(i+gallery.length)%gallery.length;renderGallery()}
 function next(){go(gi+1)}function prev(){go(gi-1)}
 let sx=0;function touchStart(e){sx=e.changedTouches[0].clientX}function touchEnd(e){const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>45){if(dx<0)next();else prev()}}
 function toggleMenu(){document.getElementById('menu').classList.toggle('show')}
-async function init(){try{const s=await sb.from('site_settings').select('whatsapp_number,logo_url').eq('id',1).maybeSingle();if(s.data?.whatsapp_number)SITE_WHATSAPP=String(s.data.whatsapp_number);if(s.data?.logo_url){document.getElementById('brandMark').outerHTML='<img id="brandMark" class="logo-img" src="'+esc(s.data.logo_url)+'" alt="Liventa Stay logo">'}const params=new URLSearchParams(location.search);
-const id=params.get('id')||params.get('property_id')||params.get('propertyId');
-if(!id)throw new Error('missing id');
+async function init(){try{
+  const s=await sb.from('site_settings').select('whatsapp_number,logo_url').eq('id',1).maybeSingle();
+  if(s.data?.whatsapp_number)SITE_WHATSAPP=String(s.data.whatsapp_number);
+  if(s.data?.logo_url){document.getElementById('brandMark').outerHTML='<img id="brandMark" class="logo-img" src="'+esc(s.data.logo_url)+'" alt="Liventa Stay logo">'}
 
-/* Robust property lookup:
-   1) Try the exact URL id.
-   2) If the database uses a numeric id, try the numeric value.
-   3) Fall back to loading the public property rows and matching id/property_id/slug
-      as strings. This prevents a valid property.html?id=4 link from becoming
-      "Property not found" because of an id type mismatch or duplicate-row response. */
-let data=null, lookupError=null;
-const attempts=[id];
-if(/^[0-9]+$/.test(String(id))) attempts.push(Number(id));
+  const params=new URLSearchParams(location.search);
+  const requestedId=params.get('id')||params.get('property_id')||params.get('propertyId');
+  if(!requestedId)throw new Error('missing id');
+  const wanted=String(requestedId);
+  let data=null, lookupError=null;
 
-for(const key of attempts){
+  // First use the property cached by the homepage View Details link.
   try{
-    const res=await sb.from('properties').select('*').eq('id',key).limit(2);
-    if(!res.error && Array.isArray(res.data) && res.data.length){
-      data=res.data[0];
-      break;
-    }
-    if(res.error) lookupError=res.error;
-  }catch(e){lookupError=e}
-}
+    const cached=JSON.parse(sessionStorage.getItem('liventa_selected_property')||'null');
+    if(cached && (String(cached.id??'')===wanted || String(cached.property_id??'')===wanted)) data=cached;
+  }catch(e){}
 
-if(!data){
-  try{
-    const res=await sb.from('properties').select('*').limit(1000);
-    if(!res.error && Array.isArray(res.data)){
-      const wanted=String(id);
-      data=res.data.find(r =>
-        String(r?.id??'')===wanted ||
-        String(r?.property_id??'')===wanted ||
-        String(r?.slug??'')===wanted
-      )||null;
-    }else if(res.error){
-      lookupError=res.error;
-    }
-  }catch(e){lookupError=e}
-}
+  // Then query the database by id / property_id / slug.
+  const keys=[requestedId];
+  if(/^\d+$/.test(wanted)) keys.push(Number(wanted));
+  if(!data) for(const key of keys){
+    try{
+      const res=await sb.from('properties').select('*').eq('id',key).limit(2);
+      if(!res.error && res.data?.length){data=res.data[0];break;}
+      if(res.error)lookupError=res.error;
+    }catch(e){lookupError=e}
+  }
+  if(!data){
+    try{
+      const res=await sb.from('properties').select('*').limit(1000);
+      if(res.error) lookupError=res.error;
+      if(!res.error && Array.isArray(res.data)){
+        data=res.data.find(r=>String(r?.id??'')===wanted || String(r?.property_id??'')===wanted || String(r?.slug??'')===wanted) || null;
+        // Some older Liventa links used the row position as the numeric id.
+        if(!data && /^\d+$/.test(wanted)){
+          const pos=Number(wanted)-1;
+          if(pos>=0 && pos<res.data.length) data=res.data[pos];
+        }
+      }
+    }catch(e){lookupError=e}
+  }
+  if(!data){
+    console.error('Liventa Stay property lookup failed',{requestedId,lookupError});
+    throw new Error('not found');
+  }
 
-if(!data){
-  console.error('Liventa Stay property lookup failed', {id, lookupError});
-  throw new Error('not found');
-}
-const d=norm(data),pt=typeOf(d);window.__currentPropertyName=d.name;window.__currentPropertyLocation=d.loc;const amen=String(d.amenities||'').split(',').map(x=>x.trim()).filter(Boolean);gallery=allMedia(d);gi=0;document.title=d.name+' | '+pt+' Accommodation in '+d.loc+' | Liventa Stay';document.getElementById('metaDescription').content=d.name+' in '+d.loc+'. '+pt+' accommodation with '+d.room+'. Rent ₹'+d.price.toLocaleString('en-IN')+'/month. View photos, amenities and enquire on WhatsApp.';document.getElementById('canonical').href='https://liventastay.in/property.html?id='+encodeURIComponent(id);document.getElementById('ogTitle').content=document.title;document.getElementById('ogDescription').content=document.getElementById('metaDescription').content;document.getElementById('ogUrl').content=location.href;document.getElementById('crumbName').textContent=d.name;
-const gender=d.gender||'Boys & Girls';document.getElementById('specLocation').textContent=d.loc;document.getElementById('specRent').textContent=d.price?'₹'+d.price.toLocaleString('en-IN'):'Rent on enquiry';document.getElementById('specTitle').textContent=pt+' Specifications';const title=d.name+(/\((PG|Room|Flat|Boys|Girls)/i.test(d.name)?'':pt==='PG'?' ('+gender+' PG)':pt==='Room'?' (Room)':' (Flat)');
-const topMedia=gallery.length?gallery[0]:'';const specs=(pt==='PG'?['🚿 Attached Washroom','❄️ Fully AC','📶 High-Speed Wi-Fi','🔐 Full Security','🍽️ Food / Meals','⚡ Power Backup']:pt==='Room'?['🚿 Attached/Shared Washroom','❄️ AC / Cooler','📶 High-Speed Wi-Fi','🔐 Secure Entry','🪑 Study Table & Chair','🧹 Housekeeping','⚡ Power Backup']:['🚿 Attached Bathroom','❄️ AC / Cooler','📶 High-Speed Wi-Fi','🔐 Secure Entry','🛋️ Furnished','🍳 Kitchen Access','⚡ Power Backup']);
-const selected=specs.filter(x=>{const raw=String(d.amenities||'').toLowerCase();const key=x.replace(/^\S+\s*/,'').toLowerCase();return raw.includes(key.split(' ')[0])||raw.includes(key.replace(/[^a-z ]/g,''))}).length?specs.filter(x=>{const raw=String(d.amenities||'').toLowerCase();const key=x.replace(/^\S+\s*/,'').toLowerCase();return raw.includes(key.split(' ')[0])||raw.includes(key.replace(/[^a-z ]/g,''))}).slice(0,3):specs;
-const amenList=[...new Set([...amen])].slice(0,3);
-const nearby=['Delhi University North Campus','Kamla Nagar Market','GTB Nagar Metro Station','Ramakrishna Mission Hospital'];
-document.getElementById('propertyRoot').innerHTML=`<div class="toprow"><div class="heading"><div class="rating-line"><b>★</b><strong>${d.rating.toFixed(1)}</strong><span>(${d.reviews||'Verified'})</span>${d.verified?'<span class="verified">✓ Verified '+pt+'</span>':''}</div><h1>${esc(title)}</h1><div class="subline">📍 <b>${esc(d.loc)}</b>${d.college?' · '+esc(d.college):''}${d.landmark?' · Near '+esc(d.landmark):''} · <b>${esc(gender)}</b></div></div><div class="topprice"><strong>₹${d.price.toLocaleString('en-IN')}</strong><span>/month</span></div></div>
+  const d=norm(data),pt=typeOf(d);
+  window.__currentPropertyName=d.name;window.__currentPropertyLocation=d.loc;
+  const amen=String(d.amenities||'').split(',').map(x=>x.trim()).filter(Boolean);
+  gallery=allMedia(d);gi=0;
+  document.title=d.name+' | '+pt+' Accommodation in '+d.loc+' | Liventa Stay';
+  document.getElementById('metaDescription').content=d.name+' in '+d.loc+'. '+pt+' accommodation with '+d.room+'. Rent ₹'+d.price.toLocaleString('en-IN')+'/month. View photos, amenities and enquire on WhatsApp.';
+  document.getElementById('canonical').href='https://liventastay.in/property.html?id='+encodeURIComponent(String(d.id??requestedId));
+  document.getElementById('ogTitle').content=document.title;document.getElementById('ogDescription').content=document.getElementById('metaDescription').content;document.getElementById('ogUrl').content=location.href;document.getElementById('crumbName').textContent=d.name;
+  const gender=d.gender||'Boys & Girls';
+  const selected=(amen.length?amen.slice(0,8):[]).map(x=>x);
+  const amenList=(amen.length?amen:[]).slice(0,16);
+  const nearby=['Delhi University North Campus','Kamla Nagar Market','GTB Nagar Metro Station','Ramakrishna Mission Hospital'];
+  const topMedia=gallery[0]&&typeof gallery[0]==='object'?'':gallery[0];
+  document.getElementById('propertyRoot').innerHTML=`<div class="property-head"><div class="property-title"><div class="rating">⭐ ${d.rating.toFixed(1)} <span>(Verified)</span></div><h1>${esc(d.name)} (${esc(pt)}${pt!=='Flat'?' • '+esc(gender):''})</h1><div class="property-meta">📍 <b>${esc(d.loc)}</b> · ${esc(d.college)} · <b>${esc(gender)}</b></div></div></div>
 <div class="layout"><div class="gallery-card"><div id="stage" class="gallery-stage" ontouchstart="touchStart(event)" ontouchend="touchEnd(event)"><img src="${esc(topMedia)}" alt="${esc(d.name)} property photo"></div><div class="gallery-nav"><button id="prev" onclick="prev()">‹</button><button id="next" onclick="next()">›</button></div><span id="gcount" class="gallery-count">1 / ${gallery.length}</span><div id="thumbs" class="thumbs"></div></div><aside class="enquiry"><h3>Quick Enquiry</h3><p>Get more details about this ${pt.toLowerCase()}</p><a class="btn wa" target="_blank" href="${wa('Hi Liventa Stay, I want details about '+d.name+' in '+d.loc+'.')}">◉ Chat on WhatsApp</a><button type="button" class="btn visit" onclick="scheduleVisit()">📅 Schedule Visit</button><a class="btn call" href="tel:${SITE_WHATSAPP}">☎ Call Now</a><a class="btn home" href="index.html">Browse More Stays →</a></aside></div>
-<div class="spec-head">
-<div class="spec-location">📍 Location / Area<b id="specLocation"></b></div>
-<div class="spec-rent"><strong id="specRent"></strong><span>/month</span></div>
-</div>
-<h2 class="spec-title" id="specTitle">Property Specifications</h2>
+<div class="spec-head"><div class="spec-location">📍 Location / Area<b id="specLocation"></b></div><div class="spec-rent"><strong id="specRent"></strong><span>/month</span></div></div>
+<h2 class="spec-title" id="specTitle">${esc(pt)} Specifications</h2>
 <div class="quick">${selected.map(x=>{const icon=x.match(/^\S+/)?.[0]||'✓';return '<div class="qitem"><div class="qi">'+esc(icon)+'</div><b>'+esc(x.replace(/^\S+\s*/,''))+'</b></div>'}).join('')}</div>
-<div class="content-grid"><section class="panel main-panel"><div class="tabs"><span class="active">Overview</span><span>Amenities</span><span>Location</span><span>Reviews</span></div><h2>About This ${pt}</h2><p class="about">${esc(d.description)} The property details shown here include monthly rent, room type, locality, amenities and available media. Please confirm current availability, deposit and final terms with Liventa Stay before booking.</p><div class="info-grid"><div class="info">Type<b>${esc(pt)}</b></div><div class="info">Gender<b>${esc(gender)}</b></div><div class="info">Room / Sharing<b>${esc(d.room)}</b></div><div class="info">Available For<b>Students & Working Professionals</b></div></div><h3 style="margin-top:16px">Key Amenities</h3><div class="chips">${amenList.length?amenList.map(x=>'<span class="chip">'+esc(x)+'</span>').join(''):'<span class="chip">Amenities available on enquiry</span>'}</div></section><section class="panel"><h3>Nearby Landmarks</h3><div class="landmarks">${nearby.map((x,i)=>'<div class="landmark"><b>⌖ '+esc(x)+'</b><span>'+(i+1)*0.4+' km</span></div>').join('')}</div><h3 style="margin-top:18px">Location</h3><div class="map">📍 ${esc(d.loc)}<br>Open map from your phone</div><h3 style="margin-top:18px">Description</h3><p class="about">${esc(d.description)}</p></section><aside class="panel"><h3>Why Choose Us?</h3><div class="why"><div>Prime location in ${esc(d.loc)}</div><div>Safe & secure environment</div><div>Hygienic and healthy accommodation</div><div>Friendly support</div><div>Transparent pricing</div></div><div style="margin-top:18px;background:#fff4ff;border-radius:14px;padding:15px;text-align:center"><b style="font-size:11px;color:#5d22c9">Looking for a different stay?</b><p class="about">Explore more PGs, rooms and flats with Liventa Stay.</p><a class="btn home" href="index.html">Browse More →</a></div></aside></div>
-<section class="panel review-box"><h3>Reviews</h3><p class="review-note">Stayed here? Share your experience with Liventa Stay.</p><button class="review-btn" onclick="openReview()">✍ Write a Review</button></section>
-<section class="panel similar"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><div><h3 style="margin-bottom:4px">Similar Stays</h3><p class="review-note" style="margin:0">A few nearby options you may like.</p></div><a class="btn home" style="margin-top:0;padding:9px 12px" href="index.html#featured">View All</a></div><div id="similarGrid" class="similar-grid"></div></section>`;
-document.getElementById('loading').style.display='none';document.getElementById('propertyRoot').style.display='block';loadSimilarStays(d.id,pt,d.loc);document.getElementById('bottomActions').innerHTML='<button type="button" class="visit" onclick="scheduleVisit()">📅 Schedule Visit</button><a class="wa" target="_blank" href="'+wa('Hi Liventa Stay, I want details about '+d.name+' in '+d.loc+'.')+'">● WhatsApp</a>';renderGallery();
-const schema={"@context":"https://schema.org","@type":"Accommodation","name":d.name,"url":location.href,"description":d.description,"address":{"@type":"PostalAddress","addressLocality":d.loc,"addressRegion":"Delhi","addressCountry":"IN"},"offers":{"@type":"Offer","priceCurrency":"INR","price":String(d.price),"availability":"https://schema.org/InStock"},"provider":{"@type":"Organization","name":"Liventa Stay","url":"https://liventastay.in/"}};document.getElementById('propertySchema').textContent=JSON.stringify(schema);
+<div class="content-grid"><section class="panel main-panel"><div class="tabs"><span class="active">Overview</span><span>Amenities</span><span>Location</span><span>Reviews</span></div><h2>About This ${esc(pt)}</h2><p class="about">${esc(d.description)} The property details shown here include monthly rent, room type, locality, amenities and available media. Please confirm current availability, deposit and final terms with Liventa Stay before booking.</p><div class="info-grid"><div class="info">Type<b>${esc(pt)}</b></div><div class="info">Gender<b>${esc(gender)}</b></div><div class="info">Room / Sharing<b>${esc(d.room)}</b></div><div class="info">Available For<b>Students & Working Professionals</b></div></div><h3 style="margin-top:16px">Key Amenities</h3><div class="chips">${amenList.length?amenList.map(x=>'<span class="chip">'+esc(x)+'</span>').join(''):'<span class="chip">Amenities available on enquiry</span>'}</div></section><section class="panel"><h3>Nearby Landmarks</h3><div class="landmarks">${nearby.map((x,i)=>'<div class="landmark"><b>⌖ '+esc(x)+'</b><span>'+((i+1)*0.4).toFixed(1)+' km</span></div>').join('')}</div><h3 style="margin-top:18px">Location</h3><div class="map">📍 ${esc(d.loc)}<br>Open map from your phone</div><h3 style="margin-top:18px">Description</h3><p class="about">${esc(d.description)}</p></section><aside class="panel"><h3>Why Choose Us?</h3><div class="why"><div>Prime location in ${esc(d.loc)}</div><div>Safe & secure environment</div><div>Hygienic and healthy accommodation</div><div>Friendly support</div><div>Transparent pricing</div></div><div style="margin-top:18px;background:#fff4ff;border-radius:14px;padding:15px;text-align:center"><b style="font-size:11px;color:#5d22c9">Looking for a different stay?</b><p class="about">Explore more PGs, rooms and flats with Liventa Stay.</p><a class="btn home" href="index.html">Browse More →</a></div></aside></div>
+<section class="panel review-box"><h3>Reviews</h3><p class="review-note">Stayed here? Share your experience with Liventa Stay.</p><button class="review-btn" onclick="openReview()">✍ Write a Review</button></section><section class="panel similar"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><div><h3 style="margin-bottom:4px">Similar Stays</h3><p class="review-note" style="margin:0">A few nearby options you may like.</p></div><a class="btn home" style="margin-top:0;padding:9px 12px" href="index.html#featured">View All</a></div><div id="similarGrid" class="similar-grid"></div></section>`;
+  document.getElementById('specLocation').textContent=d.loc;document.getElementById('specRent').textContent='₹'+d.price.toLocaleString('en-IN');
+  document.getElementById('loading').style.display='none';document.getElementById('propertyRoot').style.display='block';
+  loadSimilarStays(d.id,pt,d.loc);document.getElementById('bottomActions').innerHTML='<button type="button" class="visit" onclick="scheduleVisit()">📅 Schedule Visit</button><a class="wa" target="_blank" href="'+wa('Hi Liventa Stay, I want details about '+d.name+' in '+d.loc+'.')+'">● WhatsApp</a>';renderGallery();
+  const schema={"@context":"https://schema.org","@type":"Accommodation","name":d.name,"url":location.href,"description":d.description,"address":{"@type":"PostalAddress","addressLocality":d.loc,"addressRegion":"Delhi","addressCountry":"IN"},"offers":{"@type":"Offer","priceCurrency":"INR","price":String(d.price),"availability":"https://schema.org/InStock"},"provider":{"@type":"Organization","name":"Liventa Stay","url":"https://liventastay.in/"}};document.getElementById('propertySchema').textContent=JSON.stringify(schema);
 }catch(e){console.error(e);document.getElementById('loading').innerHTML='<div class="panel"><h2>Property not found</h2><p class="about">We could not load this property right now. Please return to the listings and open View Details again.</p><a class="btn home" href="index.html#featured">Browse Liventa Stay</a></div>'}}
+
 init();
 </script>
 <div id="loginModal" class="review-modal" onclick="if(event.target===this)closeLogin()">
