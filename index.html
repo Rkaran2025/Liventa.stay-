@@ -957,7 +957,7 @@ function amenityIcon(name){
 function cachePropertyForDetails(event,i){
   try{
     const d=DATA[i];
-    if(d) sessionStorage.setItem('liventa_selected_property',JSON.stringify(d));
+    if(d) sessionStorage.setItem('liventa_selected_property',JSON.stringify(d)); localStorage.setItem('liventa_selected_property',JSON.stringify(d));
   }catch(e){console.warn('Property cache skipped',e)}
 }
 function openDetails(i){
