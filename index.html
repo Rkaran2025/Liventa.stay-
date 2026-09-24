@@ -218,8 +218,6 @@ button:active,a:active{transform:scale(.96);}
 .auth-profile strong{display:block;color:#3e2674;font-size:14px}.auth-profile small{display:block;color:#777d8c;font-size:11px;margin-top:3px;word-break:break-all}
 @media(max-width:700px){.account-profile{display:inline-flex;width:40px;height:40px;padding:3px}.account-avatar{width:32px;height:32px}.signin{display:none!important}}
 @media(max-width:390px){.account-profile{width:38px;height:38px}.account-avatar{width:30px;height:30px}}
-
-.view-details-link{display:flex;align-items:center;justify-content:center;text-decoration:none;background:linear-gradient(135deg,#4f1eaa,#7025d6);color:#fff;box-shadow:0 8px 18px #4f1eaa2b;font-weight:950;}
 </style></style>
 <style id="liventa-enhancements">
 .type-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.type-tabs button,.filter-toggle{border:1px solid #e5dff0;background:#fff;border-radius:12px;padding:10px 14px;font-weight:800;cursor:pointer;color:#4b4260}.type-tabs button.active{background:#5d22c9;color:#fff;border-color:#5d22c9}.filter-panel{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;background:#fff;border:1px solid #ece7f4;border-radius:16px;padding:14px;margin-top:12px}.filter-panel label{font-size:10px;font-weight:900;color:#77708a;display:block;margin-bottom:5px}.filter-panel select,.filter-panel input{width:100%;padding:10px;border:1px solid #ddd7e8;border-radius:10px;background:#fff}.filter-actions{display:flex;gap:8px;align-items:end}.filter-actions button{flex:1;padding:10px;border:0;border-radius:10px;font-weight:900;cursor:pointer}.lead-cta{margin:28px 0;padding:24px;border-radius:20px;background:linear-gradient(135deg,#f1eaff,#fff7e6);border:1px solid #e8dcfa;display:flex;justify-content:space-between;gap:16px;align-items:center}.lead-cta button{border:0;border-radius:12px;padding:12px 18px;background:#5d22c9;color:#fff;font-weight:900;cursor:pointer}.brokerage.flat{background:#fff0e0;color:#a55200}.brokerage.free{background:#e7fbf4;color:#087957}.lead-modal{position:fixed;inset:0;background:#170d25a8;display:none;align-items:center;justify-content:center;padding:16px;z-index:9999}.lead-modal.show{display:flex}.lead-card{width:min(720px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:22px;padding:22px;box-shadow:0 24px 70px #0003}.lead-card h2{margin:0 0 5px}.lead-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.lead-grid .full{grid-column:1/-1}.lead-grid label{font-size:11px;font-weight:900;color:#666078;display:block;margin-bottom:5px}.lead-grid input,.lead-grid select,.lead-grid textarea{width:100%;padding:11px;border:1px solid #ddd7e8;border-radius:10px}.lead-grid textarea{min-height:80px}.lead-actions{display:flex;gap:10px;margin-top:14px}.lead-actions button{flex:1;padding:12px;border:0;border-radius:11px;font-weight:900;cursor:pointer}.lead-primary{background:#5d22c9;color:#fff}.lead-secondary{background:#eeeaf5;color:#30283d}.lead-note{font-size:11px;color:#77708a;margin-top:9px}.lead-close{float:right;border:0;background:#f3eef9;border-radius:50%;width:34px;height:34px;font-size:20px;cursor:pointer}@media(max-width:800px){.filter-panel{grid-template-columns:1fr 1fr}}@media(max-width:560px){.filter-panel,.lead-grid{grid-template-columns:1fr}.lead-grid .full{grid-column:auto}.lead-cta{flex-direction:column;align-items:flex-start}}
@@ -383,7 +381,17 @@ body{color:var(--ink)}
   ]
 }
 </script>
-</head><body>
+
+<style id="homeSectionCleanup">
+/* Home stays focused: Featured + Browse by Area; category-specific sections remain hidden. */
+#pgSection,#roomSection,#flatSection{display:none!important}
+</style>
+<style id="pageTransitionStyles">
+body{opacity:0;transition:opacity .22s ease}
+body.page-ready{opacity:1}
+body.page-leaving{opacity:0;transition:opacity .18s ease}
+</style>
+<style>#featuredGrid .section-empty{border:1px dashed #e1d5f2;border-radius:16px;padding:24px;text-align:center;color:#6d7181;background:#fff}</style></head><body>
 <header class="nav"><div class="nav-inner">
 <a class="brand" href="#"><div id="brandMark" class="mark">LS</div><div class="brand-copy"><b>LIVENTA</b><span>STAY</span></div></a>
 <div class="grow"></div>
@@ -426,8 +434,21 @@ body{color:var(--ink)}
 <section class="featured listing-section" id="featured" data-type="all"><div class="container"><div class="head"><div><div class="eyebrow">TOP PICKS</div><h2>Featured Stays</h2><p>Featured PGs, rooms and flats with quick enquiry.</p></div><span class="count" id="featuredCount">0 stays</span></div>
 <div id="featuredGrid" class="grid"></div></div></section>
 <section id="areas" class="areas-after"><div class="container"><div class="head"><div><div class="eyebrow">EXPLORE BY LOCATION</div><h2>Browse by Area</h2><p>Choose your preferred area and explore nearby PGs, rooms and flats.</p></div></div><div class="area-grid" id="areaGrid"></div></div></section>
+<section id="pgSection" class="listing-section" data-type="pg"><div class="container"><div class="head"><div><div class="eyebrow">PG ACCOMMODATION</div><h2>PGs</h2><p>Girls, boys and co-living PGs. ₹0 brokerage.</p></div><span class="count" id="pgSectionCount">0 PGs</span></div>
+<div class="section-toolbar"><div class="toolbar-left"><span class="toolbar-label">PG FILTER</span><button class="filter-chip" onclick="toggleLocalFilter('pgFilterPanel')">⚙ Filter</button><select class="toolbar-select" id="pgSort" onchange="renderAllSections()"><option value="newest">Newest</option><option value="priceLow">Rent: Low to High</option><option value="priceHigh">Rent: High to Low</option></select></div></div>
+<div id="pgFilterPanel" class="filter-panel-local"><div><label>GENDER</label><select id="pgGender" onchange="renderAllSections()"><option>Anyone</option><option>Boys</option><option>Girls</option><option>Boys & Girls</option></select></div><div><label>ROOM / SHARING</label><select id="pgRoom" onchange="renderAllSections()"><option value="">Any</option><option>Single</option><option>Double</option><option>Triple</option><option>Sharing</option></select></div><div><label>AMENITY</label><select id="pgAmenity" onchange="renderAllSections()"><option value="">Any</option><option>Wi-Fi</option><option>AC</option><option>Meals</option><option>Lift</option><option>Power Backup</option></select></div></div>
+<div id="pgGrid" class="grid"></div><div id="pgEmpty" class="section-empty" style="display:none">No PGs match these filters.</div></div></section>
+<section id="roomSection" class="listing-section" data-type="room"><div class="container"><div class="head"><div><div class="eyebrow">PRIVATE ROOMS</div><h2>Rooms</h2><p>Private and sharing rooms with ₹0 brokerage.</p></div><span class="count" id="roomSectionCount">0 Rooms</span></div>
+<div class="section-toolbar"><div class="toolbar-left"><span class="toolbar-label">ROOM FILTER</span><button class="filter-chip" onclick="toggleLocalFilter('roomFilterPanel')">⚙ Filter</button><select class="toolbar-select" id="roomSort" onchange="renderAllSections()"><option value="newest">Newest</option><option value="priceLow">Rent: Low to High</option><option value="priceHigh">Rent: High to Low</option></select></div></div>
+<div id="roomFilterPanel" class="filter-panel-local"><div><label>ROOM TYPE</label><select id="roomTypeLocal" onchange="renderAllSections()"><option value="">Any</option><option>Single</option><option>Double</option><option>Triple</option><option>Sharing</option></select></div><div><label>FURNISHING</label><select id="roomFurnishLocal" onchange="renderAllSections()"><option value="">Any</option><option>Furnished</option><option>Semi Furnished</option><option>Unfurnished</option></select></div><div><label>AMENITY</label><select id="roomAmenity" onchange="renderAllSections()"><option value="">Any</option><option>Wi-Fi</option><option>AC</option><option>Meals</option><option>Power Backup</option></select></div></div>
+<div id="roomGrid" class="grid"></div><div id="roomEmpty" class="section-empty" style="display:none">No rooms match these filters.</div></div></section>
+<section id="flatSection" class="listing-section" data-type="flat"><div class="container"><div class="head"><div><div class="eyebrow">FLAT RENTALS</div><h2>Flats</h2><p>1–4 BHK flats.</p></div><span class="count" id="flatSectionCount">0 Flats</span></div>
+<div class="section-toolbar"><div class="toolbar-left"><span class="toolbar-label">FLAT FILTER</span><button class="filter-chip" onclick="toggleLocalFilter('flatFilterPanel')">⚙ Filter</button><select class="toolbar-select" id="flatSort" onchange="renderAllSections()"><option value="newest">Newest</option><option value="priceLow">Rent: Low to High</option><option value="priceHigh">Rent: High to Low</option></select></div></div>
+<div id="flatFilterPanel" class="filter-panel-local"><div><label>BHK</label><select id="flatBhkLocal" onchange="renderAllSections()"><option value="">Any BHK</option><option>1 BHK</option><option>2 BHK</option><option>3 BHK</option><option>4 BHK</option></select></div><div><label>FURNISHING</label><select id="flatFurnishLocal" onchange="renderAllSections()"><option value="">Any</option><option>Furnished</option><option>Semi Furnished</option><option>Unfurnished</option></select></div><div><label>PROPERTY TYPE</label><select id="flatKindLocal" onchange="renderAllSections()"><option value="">Any</option><option>Apartment</option><option>Independent</option></select></div></div>
+<div id="flatGrid" class="grid"></div><div id="flatEmpty" class="section-empty" style="display:none">No flats match these filters.</div></div></section>
 <section class="container"><div class="lead-cta"><div><div class="eyebrow">CAN'T FIND THE RIGHT PROPERTY?</div><h2 style="margin:5px 0">Tell us what you need</h2><p style="margin:0;color:#6f687b">Share your budget, area and move-in date. We’ll help you find matching PGs, rooms or flats.</p></div><button type="button" onclick="openLeadForm()">Find Me a Stay →</button></div></section>
 <section id="local-seo" class="local-seo-section"><div class="container"><div class="head"><div><div class="eyebrow">LOCAL PG GUIDE</div><h2>PGs in Kamla Nagar, Delhi</h2><p>Explore PGs, hostels, rooms and flats around Kamla Nagar and nearby North Campus areas.</p></div></div><div class="local-seo-grid"><div><h3>Find a PG in Kamla Nagar</h3><p>Liventa Stay helps students and working professionals discover accommodation options in Kamla Nagar, Delhi. Browse listings by area, property type and monthly budget, then check the individual property details for photos, amenities and enquiry options.</p></div><div><h3>Popular nearby areas</h3><p><a href="#areas" onclick="searchArea('Mukherjee Nagar')">Mukherjee Nagar</a> · <a href="#areas" onclick="searchArea('Kamla Nagar')">Kamla Nagar</a> · <a href="#areas" onclick="searchArea('Vijay Nagar')">Vijay Nagar</a> · <a href="#areas" onclick="searchArea('Hudson Lane')">Hudson Lane</a> · <a href="#areas" onclick="searchArea('GTB Nagar')">GTB Nagar</a> · <a href="#areas" onclick="searchArea('Roop Nagar')">Roop Nagar</a></p></div><div><h3>What you can compare</h3><p>Monthly rent, PG or room type, locality, amenities, photos and enquiry options. Always confirm current availability, rent, deposit and terms with the property before booking.</p></div></div></div></section>
+<section id="all" class="listing-section"><div class="container"><div class="head"><div><div class="eyebrow">ALL INVENTORY</div><h2>All Properties</h2><p>Use the main location search to narrow the inventory.</p></div><span class="count" id="allCount">0 stays</span></div><div id="grid" class="grid" style="display:none"></div><div id="empty" class="section-empty" style="display:none;text-align:center;color:#74788b;padding:45px">No matching stays found.</div></div></section>
 <footer class="footer" id="footer"><div class="footer-grid"><div><div class="brand"><div class="mark">🏠</div><div><b style="color:#fff">LIVENTA</b><span style="color:#ddd0fa">STAY</span></div></div><p>Find PGs, rooms and flats around Delhi University. Verify final availability and terms before booking.</p><div class="social-label">FOLLOW LIVENTA STAY</div><div class="social"><a href="https://www.instagram.com/" target="_blank" rel="noopener" aria-label="Instagram">◎</a><a href="https://www.facebook.com/" target="_blank" rel="noopener" aria-label="Facebook">f</a><a href="https://www.youtube.com/" target="_blank" rel="noopener" aria-label="YouTube">▶</a></div></div><div><h3>ACCOMMODATIONS</h3><a href="#featured">Student PGs</a><a href="#featured">PGs</a><a href="#featured">Student Flats</a><a href="#areas">Browse All Stays</a></div><div><h3>TOP LOCALITIES</h3><a href="#areas">North Campus</a><a href="#areas">Kamla Nagar</a><a href="#areas">Mukherjee Nagar</a><a href="#areas">Hudson Lane</a><a href="#areas">Vijay Nagar</a></div></div><div class="footer-partner"><a href="Admin.html" aria-label="Partner Sign In">🔒 <span>Partner Sign In</span></a></div><div class="footer-legal"><a href="#" onclick="event.preventDefault();openPrivacy()">Privacy Policy</a><span>•</span><a href="#" onclick="event.preventDefault();openTerms()">Terms & Conditions</a><span>•</span><a href="#footer">Contact</a><span>•</span><span>© 2026 Liventa Stay</span></div></footer>
 <div class="bottom"><a class="bwa" href="https://wa.me/917454024119?text=Hi%20Liventa%20Stay%2C%20I%20want%20help%20finding%20a%20PG." target="_blank">◉ WhatsApp</a><button class="visit" onclick="openVisit()">Schedule Visit</button></div>
 <div id="modal" class="modal" onclick="closeDetails(event)"><div class="detail" onclick="event.stopPropagation()"><div id="detailImgWrap" class="detail-img" ontouchstart="galleryTouchStart(event)" ontouchend="galleryTouchEnd(event)"><img id="dimg"><video id="dvideo" controls playsinline style="display:none"></video><div id="galleryNav" class="gallery-nav" style="display:none"><button onclick="galleryPrev(event)">‹</button><button onclick="galleryNext(event)">›</button></div><div id="galleryDots" class="gallery-dots"></div><span id="galleryCount" class="gallery-count" style="display:none"></span><span class="gallery-hint">← Swipe →</span><button class="close" onclick="closeDetails()">×</button></div>
@@ -664,7 +685,7 @@ function normalizeRow(r) {
 
 function propertyTypeOf(d){ const x=String(d.property_type||'').toLowerCase(); const t=[d.name,d.description,d.room_type,d.amenities].join(' ').toLowerCase(); if(/flat|apartment|1bhk|2bhk|3bhk|4bhk|independent/.test(x+' '+t)) return 'flat'; if(/room|private room|single room|double room|triple room/.test(x+' '+t) && !/pg|hostel|paying guest/.test(x)) return 'room'; return 'pg'; }
 function setPropertyType(type){ activePropertyType=type||'all'; const st=document.getElementById('searchType'); if(st) st.value=activePropertyType; document.querySelectorAll('.tabs-strip .tab').forEach(x=>x.classList.remove('active')); const ids={all:'tabAll',pg:'tabPg',room:'tabRoom',flat:'tabFlat'}; document.getElementById(ids[activePropertyType]||'tabAll')?.classList.add('active'); updateSectionVisibility(); filter(); document.getElementById('featured')?.scrollIntoView({behavior:'smooth',block:'start'}); }
-function updateSectionVisibility(){ const featured=document.getElementById('featured'); if(featured) featured.style.display='block'; document.querySelectorAll('.listing-section[data-type]').forEach(sec=>{ if(sec.id!=='featured') sec.style.display='none'; }); }
+function updateSectionVisibility(){ document.querySelectorAll('.listing-section[data-type]').forEach(sec=>{ sec.style.display=(activePropertyType==='all'||sec.dataset.type===activePropertyType)?'block':'none'; }); }
 function searchHaystack(d){
   const aliases={
     'ramjas':['ramjas','kamla nagar','north campus'],
@@ -716,7 +737,7 @@ function cardHTML(d, i){
       ${d.landmark?`<p class="landmark"><span class="landmark-icon">${landmarkSvg()}</span><span>Near ${htmlEscape(d.landmark)}</span></p>`:''}
       <div class="card-specs">${specs.map((x,idx)=>`<span class="card-spec"><span class="card-spec-icon">${cardSpecIcon(x,pt,idx)}</span><span>${htmlEscape(x)}</span></span>`).join('')}</div>
       <div class="price-row"><div><small>MONTHLY RENT</small><strong>₹${d.price.toLocaleString('en-IN')}<i>/mo</i></strong></div></div>
-      <div class="actions"><a href="${wa}" target="_blank" class="wa" onclick="saveEnquiry(DATA[${i}],'whatsapp')">◉ WhatsApp</a><a class="view-details-link" href="property.html?id=${encodeURIComponent(String(d.id))}" onclick="cachePropertyForDetails(event,${i})">View Details →</a></div>
+      <div class="actions"><a href="${wa}" target="_blank" class="wa" onclick="saveEnquiry(DATA[${i}],'whatsapp')">◉ WhatsApp</a><button type="button" onclick="openDetails(${i})">View Details →</button></div>
     </div></article>`;
 }
 
@@ -862,8 +883,8 @@ function renderSection(gridId, emptyId, countId, items, sort, label){
 }
 function renderAllSections(){
   const pg=DATA.filter(d=>matchesLocal(d,'pg','pg')); const room=DATA.filter(d=>matchesLocal(d,'room','room')); const flat=DATA.filter(d=>matchesLocal(d,'flat','flat'));
-  const featured=DATA.filter(d=>d.featured && (activePropertyType==='all'||propertyTypeOf(d)===activePropertyType) && matchesCommon(d));
-  renderSection('featuredGrid','featuredEmpty','featuredCount',featured,document.getElementById('featuredPgSort')?.value||'featured','stays');
+  const featured=DATA.filter(d=>d.featured && matchesCommon(d) && (activePropertyType==='all'||propertyTypeOf(d)===activePropertyType));
+  renderSection('featuredGrid','featuredEmpty','featuredCount',featured,document.getElementById('featuredPgSort')?.value||'featured','Stays');
   renderSection('pgGrid','pgEmpty','pgSectionCount',pg,document.getElementById('pgSort')?.value||'newest','PGs');
   renderSection('roomGrid','roomEmpty','roomSectionCount',room,document.getElementById('roomSort')?.value||'newest','Rooms');
   renderSection('flatGrid','flatEmpty','flatSectionCount',flat,document.getElementById('flatSort')?.value||'newest','Flats');
@@ -954,12 +975,6 @@ function amenityIcon(name){
   if(/furnished/.test(x)) return svg('<path d="M4 11h16v7H4zM6 11V8a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v3M6 18v2M18 18v2"/>');
   return svg('<circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>');
 }
-function cachePropertyForDetails(event,i){
-  try{
-    const d=DATA[i];
-    if(d) sessionStorage.setItem('liventa_selected_property',JSON.stringify(d)); localStorage.setItem('liventa_selected_property',JSON.stringify(d));
-  }catch(e){console.warn('Property cache skipped',e)}
-}
 function openDetails(i){
   const d=DATA[i]; if(!d) return;
   currentDetailName=d.name; buildGallery(d);
@@ -1013,17 +1028,27 @@ async function loadSiteLogo(){
     if(data?.logo_url && mark){ mark.outerHTML=`<img id="brandMark" class="logo-img" src="${data.logo_url}" alt="Liventa Stay logo">`; }
   }catch(e){ console.warn('Logo load skipped',e); }
 }
-async function loadProperties(){
-  const {data,error}=await sb.from('properties').select('*').order('created_at',{ascending:false});
-  if(error){
-    console.error(error);
-    DATA=[];
-    document.getElementById('grid').innerHTML='<p class="muted">Unable to load live properties. Please refresh the page.</p>';
-    return;
+async function loadProperties(attempt=0){
+  const loadingTarget=document.getElementById('featuredGrid');
+  if(attempt===0 && loadingTarget && !DATA.length){
+    loadingTarget.innerHTML='<div class="section-empty" style="display:block">Loading stays…</div>';
   }
-  // Database is the source of truth: no fake 20-property fallback.
-  DATA=(data||[]).map(normalizeRow);
-  render();
+  try{
+    const {data,error}=await sb.from('properties').select('*').order('created_at',{ascending:false});
+    if(error) throw error;
+    // Database is the source of truth: no fake 20-property fallback.
+    DATA=(data||[]).map(normalizeRow);
+    render();
+    document.body.classList.add('data-ready');
+  }catch(error){
+    console.error('Liventa Stay property load failed',error);
+    if(attempt<3){
+      setTimeout(()=>loadProperties(attempt+1), 700*(attempt+1));
+      return;
+    }
+    DATA=[];
+    if(loadingTarget) loadingTarget.innerHTML='<div class="section-empty" style="display:block">We’re loading the latest stays. Please try again in a moment.</div>';
+  }
 }
 function openLeadForm(){document.getElementById('leadModal')?.classList.add('show')} function closeLeadForm(){document.getElementById('leadModal')?.classList.remove('show')}
 async function submitLead(){const name=document.getElementById('leadName').value.trim(),phone=document.getElementById('leadPhone').value.trim(),type=document.getElementById('leadType').value,area=document.getElementById('leadArea').value,budget=document.getElementById('leadBudget').value,room=document.getElementById('leadRoom').value.trim(),gender=document.getElementById('leadGender').value,move=document.getElementById('leadMove').value,notes=document.getElementById('leadNotes').value.trim(); if(!name||!/^[0-9]{10}$/.test(phone)||!budget){document.getElementById('leadMsg').textContent='Please enter your name, valid 10-digit mobile number and budget.';return;} const payload={name,phone,property_type:type.toLowerCase(),area,budget:Number(budget),room_requirement:room||null,gender,move_in:move||null,notes:notes||null,status:'new',source:'website'}; try{await sb.from('leads').insert(payload)}catch(e){console.warn('Lead table unavailable',e)} const msg=`Hi Liventa Stay, I need a ${type}.%0AName: ${encodeURIComponent(name)}%0AMobile: ${encodeURIComponent(phone)}%0AArea: ${encodeURIComponent(area)}%0ABudget: ${encodeURIComponent('₹'+budget)}/month%0ARoom/BHK: ${encodeURIComponent(room||'Any')}%0AGender: ${encodeURIComponent(gender)}%0AMove-in: ${encodeURIComponent(move||'Flexible')}%0ARequirement: ${encodeURIComponent(notes||'None')}`; window.open(waUrl(decodeURIComponent(msg)),'_blank'); document.getElementById('leadMsg').textContent='Requirement sent. We’ll contact you on WhatsApp.'; setTimeout(closeLeadForm,900)}
@@ -1045,5 +1070,20 @@ sb.channel('areas-live')
 <div id="leadModal" class="lead-modal" onclick="if(event.target===this)closeLeadForm()"><div class="lead-card"><button class="lead-close" onclick="closeLeadForm()">×</button><div class="eyebrow">PERSONALIZED PROPERTY SEARCH</div><h2>Find Me a Stay</h2><p style="color:#716a7d;margin-top:4px">PG & Room: ₹0 brokerage · Flat: brokerage applicable.</p><div class="lead-grid"><div><label>NAME *</label><input id="leadName" placeholder="Your name"></div><div><label>WHATSAPP / MOBILE *</label><input id="leadPhone" inputmode="numeric" maxlength="10" placeholder="9876543210"></div><div><label>LOOKING FOR *</label><select id="leadType"><option>PG</option><option>Room</option><option>Flat</option></select></div><div><label>AREA *</label><select id="leadArea"><option>Kamla Nagar</option><option>Vijay Nagar</option><option>Hudson Lane</option><option>GTB Nagar</option><option>Mukherjee Nagar</option><option>Roop Nagar</option></select></div><div><label>MAX BUDGET / MONTH *</label><input id="leadBudget" type="number" placeholder="e.g. 15000"></div><div><label>ROOM / BHK</label><input id="leadRoom" placeholder="Single / Double / 1 BHK / 2 BHK"></div><div><label>GENDER</label><select id="leadGender"><option>Anyone</option><option>Boys</option><option>Girls</option><option>Boys & Girls</option></select></div><div><label>MOVE-IN</label><input id="leadMove" type="date"></div><div class="full"><label>OTHER REQUIREMENT</label><textarea id="leadNotes" placeholder="AC, furnished, near college, etc."></textarea></div></div><div class="lead-actions"><button class="lead-secondary" onclick="closeLeadForm()">Cancel</button><button class="lead-primary" onclick="submitLead()">Send Requirement →</button></div><div id="leadMsg" class="lead-note">We’ll use your details only to contact you about matching properties.</div></div></div>
 <div id="privacyModal" class="privacy-modal" onclick="if(event.target===this)closePrivacy()"><div class="privacy-card"><button class="privacy-close" onclick="closePrivacy()">×</button><h2>Privacy Policy</h2><p>Liventa Stay respects your privacy. Information you submit through enquiries, sign-in, or visit requests is used to respond to your request and provide accommodation services. We do not sell your personal information.</p><p>Property photos and listing details are displayed to help visitors evaluate available stays. For questions about your information, please contact Liventa Stay through the enquiry option on this website.</p></div></div>
 <div id="termsModal" class="privacy-modal" onclick="if(event.target===this)closeTerms()"><div class="privacy-card"><button class="privacy-close" onclick="closeTerms()">×</button><h2>Terms & Conditions</h2><p>Property availability, rent, amenities and other listing details may change. Visitors should confirm final details directly with Liventa Stay or the property owner before making any payment or booking decision.</p><p>Liventa Stay provides a platform for accommodation enquiries and does not guarantee availability until confirmed.</p></div></div>
+<script id="pageTransitionScript">
+window.addEventListener('DOMContentLoaded',()=>document.body.classList.add('page-ready'));
+document.addEventListener('click',e=>{
+  const a=e.target.closest('a[href]');
+  if(!a||a.target==='_blank'||a.hasAttribute('download'))return;
+  const href=a.getAttribute('href');
+  if(!href||href.startsWith('#')||href.startsWith('javascript:')||href.startsWith('tel:')||href.startsWith('mailto:'))return;
+  let u; try{u=new URL(href,location.href)}catch(_){return}
+  if(u.origin!==location.origin)return;
+  e.preventDefault();
+  document.body.classList.add('page-leaving');
+  setTimeout(()=>{location.href=u.href},170);
+});
+window.addEventListener('pageshow',()=>document.body.classList.remove('page-leaving'));
+</script>
 </body>
 </html>
