@@ -83,22 +83,38 @@ main{max-width:1200px;margin:auto;padding:18px 16px 110px}.crumb{font-size:11px;
 .property-actions{margin-top:8px}.share-btn{border:1px solid #e5ddf0;background:#fff;color:#5420c5;border-radius:10px;padding:8px 12px;font-size:11px;font-weight:900;cursor:pointer}.stay-snapshot{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0 12px}.stay-snapshot>div{background:#fff;border:1px solid #eee7f4;border-radius:12px;padding:10px}.stay-snapshot span{display:block;color:#858998;font-size:9px;font-weight:800}.stay-snapshot b{display:block;color:#30366a;font-size:11px;margin-top:3px}.trust-property{margin-top:14px}.verification-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.verification-grid>div{background:#fbfaff;border:1px solid #eee7f4;border-radius:12px;padding:11px}.verification-grid b{display:block;color:#4f1eaa;font-size:11px}.verification-grid span{display:block;color:#74788b;font-size:10px;line-height:1.5;margin-top:4px}.tour-btn{display:inline-flex;margin-top:12px;background:#5420c5;color:#fff;border-radius:11px;padding:10px 14px;font-size:11px;font-weight:900}.property-faq{margin-top:14px}.property-faq-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.property-faq details{background:#fbfaff;border:1px solid #eee7f4;border-radius:11px;padding:10px}.property-faq summary{cursor:pointer;color:#30366a;font-size:11px;font-weight:900}.property-faq p{color:#74788b;font-size:10px;line-height:1.55;margin:7px 0 0}@media(max-width:700px){.stay-snapshot{grid-template-columns:1fr 1fr}.verification-grid{grid-template-columns:1fr 1fr}.property-faq-grid{grid-template-columns:1fr}.share-btn{padding:7px 10px}}
 </style>
 <style id="pageTransitionStyles">
-body{opacity:0;transition:opacity .22s ease}
+body{opacity:1;transition:opacity .12s ease}
 body.page-ready{opacity:1}
 body.page-leaving{opacity:0;transition:opacity .18s ease}
 </style>
-</head>
+<style id="final-property-ux">
+/* Same global header as Home: stable across navigation */
+.nav{position:sticky;top:0;z-index:200;height:72px;background:#fff;border-bottom:1px solid #e9e6ef;box-shadow:0 2px 14px rgba(35,20,70,.04)}
+.account-profile{display:none;width:43px;height:43px;border:1px solid #e9e2f2;background:#fff;border-radius:50%;align-items:center;justify-content:center;color:#5420c5;font-weight:900;cursor:pointer}.account-profile span{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:#f1e8ff;color:#5420c5;font-size:12px}
+.property-head{margin:4px 0 16px}.property-title h1{font-size:clamp(28px,4vw,42px);color:#242c62;margin:8px 0 7px;letter-spacing:-1.1px}.property-meta{font-size:14px}.property-meta b:first-of-type{color:#5420c5}.property-rating{font-size:14px}.property-rating .verified{font-size:11px}
+.property-actions{display:none}
+.layout{grid-template-columns:minmax(0,1fr) 300px;gap:16px}.gallery-card{padding:10px;border-radius:20px}.gallery-stage{height:430px;border-radius:14px}.gallery-stage img,.gallery-stage video{object-fit:cover}.gallery-nav{height:430px}.gallery-nav button{width:42px;height:42px}.thumb{width:100px;height:70px}.verified-photo{font-size:12px;padding:9px 12px;box-shadow:0 6px 18px rgba(8,124,91,.14)}
+.property-tools{display:none}.pro-feature-bar{grid-template-columns:repeat(4,1fr);gap:8px}.pro-feature{padding:11px 12px}.pro-feature b{font-size:11px}.pro-feature span{font-size:10px}
+.audit-card{margin:12px 0}.important-grid{grid-template-columns:repeat(3,1fr)}
+.spec-head{margin:14px 0 6px;border:0;background:transparent;padding:0 2px}.spec-location b{font-size:16px}.spec-rent strong{font-size:30px}.spec-title{font-size:25px;margin:16px 2px 9px}
+.quick{grid-template-columns:repeat(4,1fr);border-radius:16px}.qitem{min-height:78px}.qitem b{font-size:11px}
+.content-grid{grid-template-columns:minmax(0,1.45fr) minmax(260px,.85fr)}.content-grid .main-panel{grid-column:auto}.content-grid>aside{grid-column:auto}.tabs{gap:26px}.tabs span{font-size:12px;padding:11px 0}.panel{padding:18px;border-radius:18px}.about{font-size:14px!important;line-height:1.8!important}.info{font-size:11px}.info b{font-size:12px}.chip{font-size:10px;padding:7px 10px}.landmark{font-size:12px!important}.map-card{min-height:150px}.review-box,.similar{margin-top:14px}.similar-grid{grid-template-columns:repeat(3,1fr)!important}.sim img{height:100px}.sim b{font-size:11px}.sim span{font-size:10px}
+.bottom-actions{display:grid;position:fixed;z-index:250;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #ded7e9;padding:10px 14px calc(10px + env(safe-area-inset-bottom));grid-template-columns:1fr 1fr;gap:10px;box-shadow:0 -8px 24px rgba(35,20,70,.08)}.bottom-actions a,.bottom-actions .visit{min-height:48px;border:0;border-radius:15px;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:13px;font-weight:950}.bottom-actions .visit{background:#ffb000;color:#171827;font-family:inherit;cursor:pointer}.bottom-actions .wa{background:#10b878;color:#fff}
+main{padding-bottom:96px}.loading{min-height:55vh;display:grid;place-items:center}.section-empty{border:1px dashed #ded3ef;background:#fff;border-radius:16px;padding:22px;text-align:center}
+@media(max-width:1050px){.layout{grid-template-columns:1fr}.enquiry{position:static}.content-grid{grid-template-columns:1fr}.pro-feature-bar{grid-template-columns:repeat(2,1fr)}.important-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.nav{height:64px}.nav-inner{height:64px}.account-profile{display:none!important}.gallery-stage{height:300px}.gallery-nav{height:300px}.gallery-card{padding:7px;border-radius:18px}.thumb{width:88px;height:62px}.property-title h1{font-size:28px}.property-meta{font-size:12px;line-height:1.6}.property-rating{font-size:12px}.pro-feature-bar{grid-template-columns:1fr 1fr}.important-grid{grid-template-columns:1fr 1fr}.spec-head{padding:0 2px}.spec-rent strong{font-size:25px}.spec-location b{font-size:15px}.spec-title{font-size:23px}.quick{grid-template-columns:1fr 1fr}.qitem{min-height:76px}.content-grid{grid-template-columns:1fr}.panel{padding:15px}.about{font-size:14px!important;line-height:1.75!important}.tabs{gap:18px;overflow-x:auto}.tabs span{white-space:nowrap}.similar-grid{grid-template-columns:1fr 1fr!important}.similar-grid .sim:nth-child(n+3){display:none}.bottom-actions{padding-left:10px;padding-right:10px}.bottom-actions a,.bottom-actions .visit{min-height:50px;font-size:13px;border-radius:16px}}
+</style></head>
 <body>
 <header class="nav"><div class="nav-inner">
 <a class="brand" href="index.html"><div id="brandMark" class="mark">LS</div><div class="brand-copy"><b>LIVENTA</b><span>STAY</span></div></a>
 <div class="grow"></div>
 <a class="navlink" href="index.html#featured">Featured PGs</a><a class="navlink" href="index.html#areas">Browse Areas</a>
-<button class="round" aria-label="Back to listings" onclick="window.location.href='index.html#featured'">♡</button>
+<button class="round" aria-label="Saved stays" onclick="saveProperty()">♡</button>
 <a class="list" href="https://wa.me/917454024119?text=Hi%20Liventa%20Stay%2C%20I%20want%20to%20list%20my%20property." target="_blank" rel="noopener">+ List Stay</a>
 <a class="inquiry" href="https://wa.me/917454024119?text=Hi%20Liventa%20Stay%2C%20I%20want%20to%20make%20an%20inquiry%20about%20a%20PG%2Fstudent%20stay." target="_blank" rel="noopener">Inquiry</a>
-<button class="signin" onclick="document.getElementById('loginModal')?.classList.add('show')">Sign In</button>
+<button class="signin" onclick="openPropertyAuth()">Sign In</button><button class="account-profile" id="accountProfile" onclick="openPropertyAuth()" aria-label="Account"><span id="accountAvatar">?</span></button>
 <button class="hamb" onclick="toggleMenu()">☰</button>
-<div id="menu" class="menu"><a href="index.html#featured">Featured PGs</a><a href="index.html#areas">Browse by Area</a><a href="index.html#footer">Contact</a></div>
+<div id="menu" class="menu"><a href="index.html#featured">Featured PGs</a><a href="index.html#areas">Browse by Area</a><a href="index.html#how">How it works</a><a href="index.html#faq">FAQs</a><a href="index.html#footer">Contact</a></div>
 </div></header>
 <main>
 <noscript id="propertyNoScript"><div class="panel" style="margin-bottom:14px"><h2>Liventa Stay Property</h2><p class="about">Please enable JavaScript to load the latest property details, photos, rent, amenities and enquiry options.</p></div></noscript>
@@ -117,11 +133,12 @@ function typeOf(d){const x=(d.property_type+" "+d.name+" "+d.description+" "+d.r
 function amenityIcon(x){const s=String(x).toLowerCase();if(/wifi|internet/.test(s))return"📶";if(/ac|air conditioning/.test(s))return"❄️";if(/food|meal/.test(s))return"🍽️";if(/security|cctv|gate/.test(s))return"🔐";if(/washroom|bath/.test(s))return"🚿";if(/power|backup/.test(s))return"⚡";if(/laundry|clean/.test(s))return"🧺";if(/study|desk/.test(s))return"🪑";if(/furnish/.test(s))return"🛋️";return"✓"}
 let gallery=[],gi=0;
 function allMedia(d){const a=[...(Array.isArray(d.media)?d.media:[])];if(d.video)a.push({video:d.video});if(!a.length)a.push("https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1400&q=88");return a}
-function renderGallery(){const stage=document.getElementById('stage');const thumbs=document.getElementById('thumbs');const count=document.getElementById('gcount');if(!stage)return;const item=gallery[gi];if(item&&typeof item==='object'&&item.video){stage.innerHTML='<video id="mainVideo" controls playsinline src="'+esc(item.video)+'"></video><div class="gallery-type">VIDEO</div>'}else{stage.innerHTML='<img id="mainImage" src="'+esc(item)+'" alt="Property photo"><div class="verified-photo">✓ Verified PG</div>'}document.getElementById('prev').style.display=gallery.length>1?'block':'none';document.getElementById('next').style.display=gallery.length>1?'block':'none';count.textContent=(gi+1)+' / '+gallery.length;thumbs.innerHTML=gallery.map((x,i)=>typeof x==='object'?'<button class="thumb video-thumb '+(i===gi?'active':'')+'" onclick="go('+i+')">▶</button>':'<button class="thumb '+(i===gi?'active':'')+'" onclick="go('+i+')"><img src="'+esc(x)+'" alt="Property thumbnail"></button>').join('')}
+function renderGallery(){const stage=document.getElementById('stage');const thumbs=document.getElementById('thumbs');const count=document.getElementById('gcount');if(!stage)return;const item=gallery[gi];if(item&&typeof item==='object'&&item.video){stage.innerHTML='<video id="mainVideo" controls playsinline src="'+esc(item.video)+'"></video><div class="gallery-type">VIDEO</div>'}else{stage.innerHTML='<img id="mainImage" src="'+esc(item)+'" alt="Property photo"><div class="verified-photo">✓ Verified PG</div>'}document.getElementById('prev').style.display=gallery.length>1?'block':'none';document.getElementById('next').style.display=gallery.length>1?'block':'none';count.textContent=(gi+1)+' / '+gallery.length;thumbs.innerHTML=gallery.map((x,i)=>typeof x==='object'?'<button class="thumb video-thumb '+(i===gi?'active':'')+'" onclick="go('+i+')">▶</button>':'<button class="thumb '+(i===gi?'active':'')+'" onclick="go('+i+')"><img loading="lazy" decoding="async" src="'+esc(x)+'" alt="Property thumbnail"></button>').join('')}
 function go(i){gi=(i+gallery.length)%gallery.length;renderGallery()}
 function next(){go(gi+1)}function prev(){go(gi-1)}
 let sx=0;function touchStart(e){sx=e.changedTouches[0].clientX}function touchEnd(e){const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>45){if(dx<0)next();else prev()}}
 function toggleMenu(){document.getElementById('menu').classList.toggle('show')}
+function openPropertyAuth(){ const m=document.getElementById('loginModal'); if(m){loginPurpose='visit';m.classList.add('show');const t=m.querySelector('h3');if(t)t.textContent='Sign in to continue';} }
 async function init(){try{
   const s=await sb.from('site_settings').select('whatsapp_number,logo_url').eq('id',1).maybeSingle();
   if(s.data?.whatsapp_number)SITE_WHATSAPP=String(s.data.whatsapp_number);
@@ -189,8 +206,7 @@ async function init(){try{
 <div class="property-actions"><button type="button" class="share-btn" onclick="shareProperty()">↗ Share</button></div>
 </div></div>
 <div class="layout"><div class="gallery-card"><div id="stage" class="gallery-stage" ontouchstart="touchStart(event)" ontouchend="touchEnd(event)"><img src="${esc(topMedia)}" alt="${esc(d.name)} property photo"></div><div class="gallery-nav"><button id="prev" onclick="prev()">‹</button><button id="next" onclick="next()">›</button></div><span id="gcount" class="gallery-count">1 / ${gallery.length}</span><div id="thumbs" class="thumbs"></div></div><aside class="enquiry"><h3>Quick Enquiry</h3><p>Get more details about this ${pt.toLowerCase()}</p><a class="btn wa" target="_blank" href="${wa('Hi Liventa Stay, I want details about '+d.name+' in '+d.loc+'.')}">◉ Chat on WhatsApp</a><button type="button" class="btn visit" onclick="scheduleVisit()">📅 Schedule Visit</button><a class="btn call" href="tel:${SITE_WHATSAPP}">☎ Call Now</a><a class="btn home" href="index.html#featured">Browse More Stays →</a></aside></div>
-<div class="property-tools"><button type="button" onclick="saveProperty()">♡ Save</button><button type="button" onclick="shareProperty()">↗ Share</button><button type="button" onclick="scheduleVisit()">📅 Schedule Visit</button></div>
-<div class="pro-feature-bar"><div class="pro-feature"><b>🏠 Property type</b><span>${esc(pt)} · ${esc(d.room)}</span></div><div class="pro-feature"><b>👥 Suitable for</b><span>${esc(gender)}</span></div><div class="pro-feature"><b>🛡️ Verification</b><span>${esc(verifiedText)}</span></div><div class="pro-feature"><b>📍 Locality</b><span>${esc(d.loc)}</span></div></div>
+<div class="pro-feature-bar"><div class="pro-feature"><b>🏠 Type</b><span>${esc(pt)} · ${esc(d.room)}</span></div><div class="pro-feature"><b>👥 For</b><span>${esc(gender)}</span></div><div class="pro-feature"><b>🛡️ Status</b><span>${esc(verifiedText)}</span></div><div class="pro-feature"><b>🎓 Near</b><span>${esc(d.college)}</span></div></div>
 <div class="audit-card"><div class="audit-head"><div><h3 style="margin:0">Liventa Stay verification</h3><p class="review-note" style="margin:4px 0 0">Only display claims that are recorded for this property.</p></div><span class="audit-badge">${d.verified?'✓ Verified':'Pending'}</span></div><div class="audit-grid"><div class="audit-item"><b>Wi-Fi</b>${esc(d.wifi||'Not specified')}</div><div class="audit-item"><b>Security</b>${esc((amen.find(x=>/security|cctv|gate/i.test(x)))||'Not specified')}</div><div class="audit-item"><b>Power backup</b>${esc(d.power||'Not specified')}</div><div class="audit-item"><b>Verification note</b>${esc(d.verification_note||'Not specified')}</div></div></div>
 <div class="panel"><h3 style="margin:0">Important information</h3><div class="important-grid"><div class="important-item"><small>Security deposit</small><b>${esc(d.deposit||'Contact Liventa Stay')}</b></div><div class="important-item"><small>Notice period</small><b>${esc(d.notice||'Contact Liventa Stay')}</b></div><div class="important-item"><small>Furnishing</small><b>${esc(d.furnishing||'Not specified')}</b></div><div class="important-item"><small>Food / meals</small><b>${esc(d.food||'Not specified')}</b></div><div class="important-item"><small>Gate / curfew</small><b>${esc(d.curfew||'Not specified')}</b></div><div class="important-item"><small>Availability</small><b>${esc(d.availability||'Check with Liventa Stay')}</b></div></div></div>
 <div class="spec-head"><div class="spec-location">📍 Location / Area<b id="specLocation"></b></div><div class="spec-rent"><strong id="specRent"></strong><span>/month</span></div></div>
@@ -287,6 +303,9 @@ async function scheduleVisit(){
   const {data}=await sb.auth.getSession();
   if(!data?.session){loginPurpose='visit';document.getElementById('loginModal')?.classList.add('show');return;}
   document.getElementById('visitProperty').textContent=currentPropertyForVisit;
+  const date=document.getElementById('visitDate');
+  const now=new Date(); const min=now.toISOString().slice(0,10); date.min=min;
+  if(!date.value || date.value<min){const tomorrow=new Date(now);tomorrow.setDate(now.getDate()+1);date.value=tomorrow.toISOString().slice(0,10);}
   document.getElementById('scheduleModal')?.classList.add('show');
 }
 function closeSchedule(){document.getElementById('scheduleModal')?.classList.remove('show')}
@@ -321,13 +340,13 @@ function showToast(msg){const x=document.getElementById('shareToast');if(!x)retu
 async function loadApprovedReviews(propertyId){
   const box=document.getElementById('reviewList'); if(!box)return;
   const {data,error}=await sb.from('property_reviews').select('name,rating,review,created_at').eq('property_id',propertyId).eq('status','approved').order('created_at',{ascending:false}).limit(5);
-  if(error||!data?.length){box.innerHTML='';return;}
+  if(error||!data?.length){box.innerHTML='<p class="review-note">No approved reviews yet. Verified users can be the first to share an experience.</p>';return;}
   box.innerHTML=data.map(r=>'<div class="review-item"><div><b>'+esc(r.name||'Verified user')+'</b> <span class="review-stars">'+('★'.repeat(Math.max(1,Math.min(5,Number(r.rating)||5))))+'</span></div><p>'+esc(r.review||'')+'</p></div>').join('');
 }
 async function loadSimilarStays(currentId,currentType,currentLoc){
   const box=document.getElementById('similarGrid'); if(!box)return;
   const {data,error}=await sb.from('properties').select('id,name,location,locality,rent,monthly_rent,price,image_url,media_urls,gender,property_type').neq('id',currentId).limit(12);
-  if(error||!data?.length){box.innerHTML='';return;}
+  if(error||!data?.length){box.innerHTML='<p class="review-note">No approved reviews yet. Verified users can be the first to share an experience.</p>';return;}
   const loc=String(currentLoc||'').toLowerCase();
   const rows=data.filter(x=>String(x.location||x.locality||'').toLowerCase().includes(loc.split(',')[0].trim())).slice(0,3);
   const use=(rows.length?rows:data).slice(0,2);
