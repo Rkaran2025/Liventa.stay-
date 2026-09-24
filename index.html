@@ -218,6 +218,10 @@ button:active,a:active{transform:scale(.96);}
 .auth-profile strong{display:block;color:#3e2674;font-size:14px}.auth-profile small{display:block;color:#777d8c;font-size:11px;margin-top:3px;word-break:break-all}
 @media(max-width:700px){.account-profile{display:inline-flex;width:40px;height:40px;padding:3px}.account-avatar{width:32px;height:32px}.signin{display:none!important}}
 @media(max-width:390px){.account-profile{width:38px;height:38px}.account-avatar{width:30px;height:30px}}
+
+/* Home layout: keep the public landing page focused on Featured Stays + Browse by Area. */
+#pgSection,#roomSection,#flatSection,#all{display:none!important}
+.view-details-link{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
 </style></style>
 <style id="liventa-enhancements">
 .type-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.type-tabs button,.filter-toggle{border:1px solid #e5dff0;background:#fff;border-radius:12px;padding:10px 14px;font-weight:800;cursor:pointer;color:#4b4260}.type-tabs button.active{background:#5d22c9;color:#fff;border-color:#5d22c9}.filter-panel{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;background:#fff;border:1px solid #ece7f4;border-radius:16px;padding:14px;margin-top:12px}.filter-panel label{font-size:10px;font-weight:900;color:#77708a;display:block;margin-bottom:5px}.filter-panel select,.filter-panel input{width:100%;padding:10px;border:1px solid #ddd7e8;border-radius:10px;background:#fff}.filter-actions{display:flex;gap:8px;align-items:end}.filter-actions button{flex:1;padding:10px;border:0;border-radius:10px;font-weight:900;cursor:pointer}.lead-cta{margin:28px 0;padding:24px;border-radius:20px;background:linear-gradient(135deg,#f1eaff,#fff7e6);border:1px solid #e8dcfa;display:flex;justify-content:space-between;gap:16px;align-items:center}.lead-cta button{border:0;border-radius:12px;padding:12px 18px;background:#5d22c9;color:#fff;font-weight:900;cursor:pointer}.brokerage.flat{background:#fff0e0;color:#a55200}.brokerage.free{background:#e7fbf4;color:#087957}.lead-modal{position:fixed;inset:0;background:#170d25a8;display:none;align-items:center;justify-content:center;padding:16px;z-index:9999}.lead-modal.show{display:flex}.lead-card{width:min(720px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:22px;padding:22px;box-shadow:0 24px 70px #0003}.lead-card h2{margin:0 0 5px}.lead-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.lead-grid .full{grid-column:1/-1}.lead-grid label{font-size:11px;font-weight:900;color:#666078;display:block;margin-bottom:5px}.lead-grid input,.lead-grid select,.lead-grid textarea{width:100%;padding:11px;border:1px solid #ddd7e8;border-radius:10px}.lead-grid textarea{min-height:80px}.lead-actions{display:flex;gap:10px;margin-top:14px}.lead-actions button{flex:1;padding:12px;border:0;border-radius:11px;font-weight:900;cursor:pointer}.lead-primary{background:#5d22c9;color:#fff}.lead-secondary{background:#eeeaf5;color:#30283d}.lead-note{font-size:11px;color:#77708a;margin-top:9px}.lead-close{float:right;border:0;background:#f3eef9;border-radius:50%;width:34px;height:34px;font-size:20px;cursor:pointer}@media(max-width:800px){.filter-panel{grid-template-columns:1fr 1fr}}@media(max-width:560px){.filter-panel,.lead-grid{grid-template-columns:1fr}.lead-grid .full{grid-column:auto}.lead-cta{flex-direction:column;align-items:flex-start}}
@@ -737,7 +741,7 @@ function cardHTML(d, i){
       ${d.landmark?`<p class="landmark"><span class="landmark-icon">${landmarkSvg()}</span><span>Near ${htmlEscape(d.landmark)}</span></p>`:''}
       <div class="card-specs">${specs.map((x,idx)=>`<span class="card-spec"><span class="card-spec-icon">${cardSpecIcon(x,pt,idx)}</span><span>${htmlEscape(x)}</span></span>`).join('')}</div>
       <div class="price-row"><div><small>MONTHLY RENT</small><strong>₹${d.price.toLocaleString('en-IN')}<i>/mo</i></strong></div></div>
-      <div class="actions"><a href="${wa}" target="_blank" class="wa" onclick="saveEnquiry(DATA[${i}],'whatsapp')">◉ WhatsApp</a><button type="button" onclick="openDetails(${i})">View Details →</button></div>
+      <div class="actions"><a href="${wa}" target="_blank" class="wa" onclick="saveEnquiry(DATA[${i}],'whatsapp')">◉ WhatsApp</a><a class="view-details-link" href="property.html?id=${encodeURIComponent(DATA[i].id)}" onclick="preparePropertyNavigation(event, DATA[${i]})">View Details →</a></div>
     </div></article>`;
 }
 
@@ -975,47 +979,15 @@ function amenityIcon(name){
   if(/furnished/.test(x)) return svg('<path d="M4 11h16v7H4zM6 11V8a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v3M6 18v2M18 18v2"/>');
   return svg('<circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>');
 }
+function preparePropertyNavigation(e,d){
+  if(e) e.stopPropagation();
+  if(!d) return;
+  try{sessionStorage.setItem('liventa_selected_property',JSON.stringify(d));}catch(_){ }
+}
 function openDetails(i){
   const d=DATA[i]; if(!d) return;
-  currentDetailName=d.name; buildGallery(d);
-  const pt=propertyTypeOf(d), gender=String(d.gender||'Boys & Girls').trim();
-  const genderLabel=gender.toLowerCase().includes('boys')&&gender.toLowerCase().includes('girls')?'Boys & Girls':gender.toLowerCase().includes('boys')?'Boys':gender.toLowerCase().includes('girls')?'Girls':'';
-  const titleSuffix=pt==='pg' ? (genderLabel?` (${genderLabel} PG)`:' (PG)') : pt==='room'?' (Room)':' (Flat)';
-  document.getElementById('dname').textContent=/\((PG|Room|Flat|Boys|Girls)/i.test(String(d.name))?d.name:String(d.name)+titleSuffix;
-  document.getElementById('dRating').textContent=d.rating.toFixed(1); document.getElementById('dReviews').textContent='('+((d.review_count!==''&&d.review_count!=null)?d.review_count:'Verified')+')';
-  const ver=document.getElementById('dVerified'); if(ver){ver.style.display=d.verified?'inline-flex':'none';ver.textContent='✓ Verified '+(pt==='flat'?'Property':pt==='room'?'Room':(genderLabel?genderLabel+' PG':'PG'));}
-  const furn=document.getElementById('dFurnished'); if(furn){const a=String(d.amenities||'').toLowerCase();furn.style.display=a.includes('furnished')?'inline-flex':'none';}
-  document.getElementById('dmeta').innerHTML='<span class="location-icon detail-location-icon">'+locationSvg()+'</span> <b>'+htmlEscape(d.distance)+'</b> from Delhi University • '+htmlEscape(d.loc)+(d.landmark?' <span class="detail-landmark">• Near '+htmlEscape(d.landmark)+'</span>':'')+(genderLabel?' <span class="detail-gender">• '+htmlEscape(genderLabel)+'</span>':'');
-  const typeLine=document.getElementById('detailTypeLine'); if(typeLine){typeLine.innerHTML=`<span class="detail-type-pill">${pt==='flat'?'⌂ Flat':pt==='room'?'▣ Room':'♙ PG'}</span>${genderLabel&&pt!=='flat'?`<span class="detail-type-pill">♙ ${htmlEscape(genderLabel)}</span>`:''}${d.room_type?`<span class="detail-type-pill">▣ ${htmlEscape(d.room_type)}</span>`:''}`;}
-  const roomBox=document.getElementById('dRoomTags');
-  if(roomBox){const parts=String(d.room_type||'Private / Sharing').split(/[\/|,]+/).map(x=>x.trim()).filter(Boolean);const labels=parts.filter(x=>/single|double|triple|sharing/i.test(x)).slice(0,2);roomBox.innerHTML=(labels.length?labels:[String(d.room_type||'Sharing').trim()]).map(x=>`<span>${htmlEscape(x)}</span>`).join('');}
-  document.getElementById('dprice').innerHTML='<strong>₹'+d.price.toLocaleString('en-IN')+'</strong><span>/month</span>';
-  const title=document.getElementById('detailSpecTitle'); if(title) title.textContent=pt==='pg'?'PG Specifications':pt==='room'?'Room Specifications':'Flat Specifications';
-  const specs=document.getElementById('propertySpecs');
-  if(specs){
-    const raw=String(d.amenities||'').split(',').map(x=>x.trim()).filter(Boolean);
-    const quickMap={
-      pg:['🚿 Attached Washroom','❄️ Fully AC','📶 High-Speed Wi-Fi','🔐 Full Security','🍽️ Food / Meals','⚡ Power Backup'],
-      room:['🚿 Attached/Shared Washroom','❄️ AC / Cooler','📶 High-Speed Wi-Fi','🔐 Secure Entry','🪑 Study Table & Chair','🧹 Housekeeping'],
-      flat:['🚿 Attached Bathroom','❄️ AC / Cooler','📶 High-Speed Wi-Fi','🔐 Secure Entry','🛋️ Furnished','🍳 Kitchen Access']
-    };
-    const wanted=quickMap[pt]||quickMap.pg;
-    const normalize=x=>String(x||'').replace(/\s+/g,' ').trim().toLowerCase();
-    const selected=wanted.filter(x=>raw.some(r=>normalize(r)===normalize(x)));
-    specs.innerHTML=selected.length
-      ? selected.map(x=>{const parts=x.replace(/^\S+\s*/,''); const icon=x.match(/^\S+/)?.[0]||'✓'; return `<div class="spec quick-public-spec"><span class="quick-spec-icon">${htmlEscape(icon)}</span><span class="quick-spec-text">${htmlEscape(parts)}</span></div>`;}).join('')
-      : `<div class="muted" style="padding:10px">${pt==='pg'?'PG':pt==='room'?'Room':'Flat'} specifications will be added soon.</div>`;
-  }
-  const amen=document.getElementById('detailAmenities');
-  if(amen){
-    const raw=String(d.amenities||'').split(',').map(x=>x.trim()).filter(Boolean);
-    const extras=[]; if(d.wifi) extras.push('Wi-Fi '+d.wifi); if(d.ac) extras.push('Air Conditioning'); if(d.power_backup) extras.push('Power Backup '+d.power_backup);
-    const list=[...new Set([...raw,...extras])].slice(0,12);
-    amen.innerHTML=list.length?list.map(x=>`<div class="amenity-item"><span class="amenity-icon">${amenityIcon(x)}</span><b>${htmlEscape(x)}</b></div>`).join(''):'<div class="muted" style="padding:10px">Amenities will be added soon.</div>';
-  }
-  document.getElementById('dwa').href=waUrl('Hi Liventa Stay, I want details for '+d.name+' in '+d.loc+'.');
-  const db=document.querySelector('.detail-brokerage'); if(db) db.remove();
-  document.getElementById('modal').classList.add('show');
+  preparePropertyNavigation(null,d);
+  window.location.href='property.html?id='+encodeURIComponent(d.id);
 }
 function closeDetails(e){if(!e||e.target.id==='modal'){document.getElementById('modal').classList.remove('show'); const v=document.getElementById('dvideo'); if(v){v.pause();v.removeAttribute('src');}}}
 document.addEventListener('click',e=>{if(!e.target.closest('.nav-inner'))document.getElementById('menu').classList.remove('show')});
@@ -1028,6 +1000,7 @@ async function loadSiteLogo(){
     if(data?.logo_url && mark){ mark.outerHTML=`<img id="brandMark" class="logo-img" src="${data.logo_url}" alt="Liventa Stay logo">`; }
   }catch(e){ console.warn('Logo load skipped',e); }
 }
+try{const cached=JSON.parse(sessionStorage.getItem('liventa_properties_cache')||'null');if(Array.isArray(cached)&&cached.length){DATA=cached;render();document.body.classList.add('data-ready');}}catch(_){ }
 async function loadProperties(attempt=0){
   const loadingTarget=document.getElementById('featuredGrid');
   if(attempt===0 && loadingTarget && !DATA.length){
@@ -1038,12 +1011,13 @@ async function loadProperties(attempt=0){
     if(error) throw error;
     // Database is the source of truth: no fake 20-property fallback.
     DATA=(data||[]).map(normalizeRow);
+    try{sessionStorage.setItem('liventa_properties_cache',JSON.stringify(DATA));}catch(_){ }
     render();
     document.body.classList.add('data-ready');
   }catch(error){
     console.error('Liventa Stay property load failed',error);
-    if(attempt<3){
-      setTimeout(()=>loadProperties(attempt+1), 700*(attempt+1));
+    if(attempt<5){
+      setTimeout(()=>loadProperties(attempt+1), 800*(attempt+1));
       return;
     }
     DATA=[];
