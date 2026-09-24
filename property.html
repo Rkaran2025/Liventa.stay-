@@ -144,14 +144,14 @@ async function init(){try{
   }
   if(!data){
     try{
-      const res=await sb.from('properties').select('*').limit(1000);
+      const res=await sb.from('properties').select('*').order('created_at',{ascending:false}).limit(1000);
       if(res.error) lookupError=res.error;
       if(!res.error && Array.isArray(res.data)){
         data=res.data.find(r=>String(r?.id??'')===wanted || String(r?.property_id??'')===wanted || String(r?.slug??'')===wanted) || null;
-        // Some older Liventa links used the row position as the numeric id.
+        // Older links sometimes used a numeric listing position instead of the database id.
         if(!data && /^\d+$/.test(wanted)){
-          const pos=Number(wanted)-1;
-          if(pos>=0 && pos<res.data.length) data=res.data[pos];
+          const pos=Math.max(0,Number(wanted)-1);
+          if(pos<res.data.length) data=res.data[pos];
         }
       }
     }catch(e){lookupError=e}
@@ -176,7 +176,7 @@ async function init(){try{
   const topMedia=gallery[0]&&typeof gallery[0]==='object'?'':gallery[0];
   document.getElementById('propertyRoot').innerHTML=`<div class="property-head"><div class="property-title">
 <h1>${esc(d.name)}</h1>
-<div class="property-meta">📍 ${esc(d.college)} · <b>${esc(gender)}</b></div>
+<div class="property-meta">${esc(d.college)} · <b>${esc(gender)}</b></div>
 <div class="property-rating"><span class="star">★</span> ${d.rating.toFixed(1)} <span>(Verified)</span></div>
 </div></div>
 <div class="layout"><div class="gallery-card"><div id="stage" class="gallery-stage" ontouchstart="touchStart(event)" ontouchend="touchEnd(event)"><img src="${esc(topMedia)}" alt="${esc(d.name)} property photo"></div><div class="gallery-nav"><button id="prev" onclick="prev()">‹</button><button id="next" onclick="next()">›</button></div><span id="gcount" class="gallery-count">1 / ${gallery.length}</span><div id="thumbs" class="thumbs"></div></div><aside class="enquiry"><h3>Quick Enquiry</h3><p>Get more details about this ${pt.toLowerCase()}</p><a class="btn wa" target="_blank" href="${wa('Hi Liventa Stay, I want details about '+d.name+' in '+d.loc+'.')}">◉ Chat on WhatsApp</a><button type="button" class="btn visit" onclick="scheduleVisit()">📅 Schedule Visit</button><a class="btn call" href="tel:${SITE_WHATSAPP}">☎ Call Now</a><a class="btn home" href="index.html#featured">Browse More Stays →</a></aside></div>
@@ -203,7 +203,13 @@ async function init(){try{
   document.getElementById('loading').style.display='none';document.getElementById('propertyRoot').style.display='block';
   loadSimilarStays(d.id,pt,d.loc);loadApprovedReviews(d.id);document.getElementById('bottomActions').innerHTML='<button type="button" class="visit" onclick="scheduleVisit()">📅 Schedule Visit</button><a class="wa" target="_blank" href="'+wa('Hi Liventa Stay, I want details about '+d.name+' in '+d.loc+'.')+'">● WhatsApp</a>';renderGallery();
   const schema={"@context":"https://schema.org","@type":"Accommodation","name":d.name,"url":location.href,"description":d.description,"address":{"@type":"PostalAddress","addressLocality":d.loc,"addressRegion":"Delhi","addressCountry":"IN"},"offers":{"@type":"Offer","priceCurrency":"INR","price":String(d.price),"availability":"https://schema.org/InStock"},"provider":{"@type":"Organization","name":"Liventa Stay","url":"https://liventastay.in/"}};document.getElementById('propertySchema').textContent=JSON.stringify(schema);
-}catch(e){console.error(e);document.getElementById('loading').innerHTML='<div class="panel"><h2>Property not found</h2><p class="about">We could not load this property right now. Please return to the listings and open View Details again.</p><a class="btn home" href="index.html#featured">Browse Liventa Stay</a></div>'}}
+}catch(e){
+  console.error(e);
+  const retryKey='liventa_property_retry_'+location.search;
+  if(!sessionStorage.getItem(retryKey)){sessionStorage.setItem(retryKey,'1');setTimeout(()=>location.reload(),700);return;}
+  sessionStorage.removeItem(retryKey);
+  document.getElementById('loading').innerHTML='<div class="panel"><h2>Property not found</h2><p class="about">We could not load this property right now. Please return to the listings and open View Details again.</p><a class="btn home" href="index.html#featured">Browse Liventa Stay</a></div>'
+}}
 
 init();
 </script>
@@ -225,7 +231,7 @@ function showPropertySection(id,tab){
   document.querySelectorAll('.tabs span').forEach(x=>x.classList.remove('active'));
   tab.classList.add('active');
   const el=document.getElementById(id);
-  if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+  if(el){const y=el.getBoundingClientRect().top+window.scrollY-78;window.scrollTo({top:Math.max(0,y),behavior:'smooth'});}
 }
 async function openReview(){
   const {data}=await sb.auth.getSession();
@@ -305,7 +311,7 @@ async function loadSimilarStays(currentId,currentType,currentLoc){
   if(error||!data?.length){box.innerHTML='';return;}
   const loc=String(currentLoc||'').toLowerCase();
   const rows=data.filter(x=>String(x.location||x.locality||'').toLowerCase().includes(loc.split(',')[0].trim())).slice(0,3);
-  const use=(rows.length?rows:data).slice(0,3);
+  const use=(rows.length?rows:data).slice(0,2);
   box.innerHTML=use.map(x=>{const media=Array.isArray(x.media_urls)&&x.media_urls.length?x.media_urls[0]:x.image_url||'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=700&q=80';const rent=Number(x.rent??x.monthly_rent??x.price??0);return '<a class="sim" href="property.html?id='+encodeURIComponent(x.id)+'" style="text-decoration:none"><img src="'+esc(media)+'" alt="'+esc(x.name||'Property')+'"><div><b>'+esc(x.name||'Stay')+'</b><span>'+(rent?'₹'+rent.toLocaleString('en-IN')+' /month':'Rent on enquiry')+' · '+esc(x.location||x.locality||'Delhi')+'</span></div></a>'}).join('');
 }
 </script>
