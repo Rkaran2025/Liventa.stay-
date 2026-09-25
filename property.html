@@ -143,6 +143,26 @@ main{padding-bottom:96px}.loading{min-height:55vh;display:grid;place-items:cente
 @media(max-width:700px){.bottom-actions{grid-template-columns:minmax(0,1fr) 62px minmax(0,1.35fr);gap:8px;padding:9px 12px calc(9px + env(safe-area-inset-bottom));}.bottom-actions .rent-mini{min-height:58px}.bottom-actions .rent-mini b{font-size:22px}.bottom-actions .wa{width:58px;height:58px;min-height:58px;border-radius:16px;font-size:27px}.bottom-actions .visit{min-height:58px;border-radius:16px;font-size:15px}.property-page main{padding-bottom:105px}}
 @media(min-width:701px){.property-page main{padding-bottom:110px}}
 </style>
+
+<style id="liventa-schedule-polish">
+.schedule-modal{align-items:flex-end!important;padding:0!important;background:rgba(20,12,38,.58)!important}
+.schedule-modal .schedule-sheet{width:min(720px,100%);max-height:min(92vh,820px);overflow:auto;background:#fff;border-radius:28px 28px 0 0;padding:22px 22px calc(22px + env(safe-area-inset-bottom));box-shadow:0 -18px 70px rgba(25,10,55,.25);position:relative;border-top:4px solid #6b28df}
+.schedule-close{position:absolute;right:18px;top:16px;width:42px;height:42px;border:0;border-radius:50%;background:#f3f4f8;color:#7b7e8b;font-size:27px;cursor:pointer}
+.schedule-badge{display:inline-flex;align-items:center;gap:7px;background:#f7efff;border:1px solid #eadcf9;color:#5d22c9;border-radius:999px;padding:9px 13px;font-size:12px;font-weight:950;margin-bottom:14px}
+.schedule-sheet h3{font-size:30px;line-height:1.15;color:#202235;margin:0 48px 7px 0;letter-spacing:-.7px}
+.schedule-sheet .schedule-sub{margin:0 0 20px;color:#74788b;font-size:14px}
+.schedule-property{background:#faf8ff;border:1px solid #eee5fa;border-radius:14px;padding:10px 12px;margin-bottom:18px;color:#5420c5;font-size:12px;font-weight:850}
+.schedule-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px 18px}
+.schedule-field{display:flex;flex-direction:column;gap:7px}.schedule-field.full{grid-column:1/-1}
+.schedule-field label{font-size:11px;font-weight:950;color:#55596a;text-transform:uppercase;letter-spacing:.3px}
+.schedule-field input,.schedule-field select,.schedule-field textarea{width:100%;border:1px solid #e2e4ea;background:#fbfcfe;border-radius:17px;padding:15px 16px;outline:none;color:#303442;font:inherit;font-size:15px;min-height:54px;box-sizing:border-box}
+.schedule-field textarea{resize:vertical;min-height:82px}.schedule-field input:focus,.schedule-field select:focus,.schedule-field textarea:focus{border-color:#8b59dc;box-shadow:0 0 0 3px #6b28df12}
+.phone-row{display:grid;grid-template-columns:112px 1fr;gap:9px}.phone-prefix{display:grid;place-items:center;background:#f1f3f7;border:1px solid #e2e4ea;border-radius:17px;font-weight:950;color:#303442}
+.schedule-submit{width:100%;border:0;border-radius:18px;background:linear-gradient(135deg,#6b28df,#7d2fe8);color:#fff;padding:16px 18px;font:inherit;font-size:16px;font-weight:950;cursor:pointer;box-shadow:0 10px 25px #6b28df2b;margin-top:18px}
+.schedule-help{text-align:center;color:#8a8d99;font-size:11px;margin:10px 0 0}.schedule-error{min-height:18px;color:#c0392b;font-size:12px;margin-top:7px}
+@media(max-width:700px){.schedule-sheet{padding:18px 16px calc(18px + env(safe-area-inset-bottom))!important;border-radius:24px 24px 0 0}.schedule-sheet h3{font-size:28px}.schedule-grid{gap:13px 12px}.schedule-field input,.schedule-field select,.schedule-field textarea{padding:14px 13px;font-size:14px}.phone-row{grid-template-columns:92px 1fr}}
+@media(max-width:480px){.schedule-grid{grid-template-columns:1fr}.schedule-field.full{grid-column:auto}.schedule-sheet h3{font-size:26px}.schedule-sub{font-size:13px!important}.schedule-badge{font-size:11px}}
+</style>
 </head>
 <body class="property-page">
 <header class="nav"><div class="nav-inner">
@@ -197,6 +217,18 @@ async function init(){try{
     const cached=JSON.parse(sessionStorage.getItem('liventa_selected_property')||'null');
     if(cached && (String(cached.id??'')===wanted || String(cached.property_id??'')===wanted)) data=cached;
   }catch(e){}
+
+  // If the visitor opened a property directly, also look inside the homepage's
+  // last successful listing cache. This prevents a temporary network/API delay
+  // from turning a valid property URL into a blank/not-found page.
+  if(!data){
+    try{
+      const cachedRows=JSON.parse(localStorage.getItem('liventa_properties_cache')||sessionStorage.getItem('liventa_properties_cache')||'null');
+      if(Array.isArray(cachedRows)){
+        data=cachedRows.find(r=>String(r?.id??'')===wanted || String(r?.property_id??'')===wanted || String(r?.slug??'')===wanted) || null;
+      }
+    }catch(e){}
+  }
 
   // Then query the database by id. If older records use property_id/slug, try those too.
   const keys=[requestedId];
@@ -300,8 +332,8 @@ init();
 <div id="loginModal" class="review-modal" onclick="if(event.target===this)closeLogin()">
   <div class="review-card">
     <button type="button" onclick="closeLogin()" style="float:right;border:0;background:#f3eef9;border-radius:50%;width:34px;height:34px;font-size:20px">×</button>
-    <h3>Login to Schedule a Visit</h3>
-    <p class="review-note">Please login first. Booking without login is not available.</p>
+    <h3>Sign in</h3>
+    <p class="review-note">Login is only required for submitting reviews. You can schedule a visit without an account.</p>
     <input id="loginEmail" class="review-field" type="email" placeholder="Email">
     <input id="loginPassword" class="review-field" type="password" placeholder="Password (6+ characters)">
     <div id="loginMsg" class="review-note"></div>
@@ -355,22 +387,38 @@ async function submitReview(){
 let currentPropertyForVisit=''; let loginPurpose='visit';
 async function scheduleVisit(){
   currentPropertyForVisit=(window.__currentPropertyName||'')+' in '+(window.__currentPropertyLocation||'');
-  const {data}=await sb.auth.getSession();
-  if(!data?.session){loginPurpose='visit';document.getElementById('loginModal')?.classList.add('show');return;}
+  /* Scheduling a visit is intentionally available without login. */
   document.getElementById('visitProperty').textContent=currentPropertyForVisit;
   const date=document.getElementById('visitDate');
   const now=new Date(); const min=now.toISOString().slice(0,10); date.min=min;
   if(!date.value || date.value<min){const tomorrow=new Date(now);tomorrow.setDate(now.getDate()+1);date.value=tomorrow.toISOString().slice(0,10);}
+  const existingName=(sessionStorage.getItem('liventa_visit_name')||'').trim();
+  const existingPhone=(sessionStorage.getItem('liventa_visit_phone')||'').replace(/\D/g,'');
+  if(existingName)document.getElementById('visitName').value=existingName;
+  if(existingPhone)document.getElementById('visitPhone').value=existingPhone;
+  document.getElementById('scheduleError').textContent='';
   document.getElementById('scheduleModal')?.classList.add('show');
 }
 function closeSchedule(){document.getElementById('scheduleModal')?.classList.remove('show')}
 function sendSchedule(){
+  const name=document.getElementById('visitName').value.trim();
+  const phone=document.getElementById('visitPhone').value.replace(/\D/g,'');
   const date=document.getElementById('visitDate').value;
   const time=document.getElementById('visitTime').value;
+  const visitors=document.getElementById('visitVisitors').value;
   const note=document.getElementById('visitNote').value.trim();
-  if(!date||!time){alert('Please select a preferred date and time.');return}
-  const msg='Hi Liventa Stay, I want to schedule a visit.\nProperty: '+currentPropertyForVisit+'\nPreferred date: '+date+'\nPreferred time: '+time+'\nAdditional note: '+(note||'None');
-  window.open(wa(msg),'_blank');closeSchedule();
+  const err=document.getElementById('scheduleError');
+  if(err) err.textContent='';
+  if(!name){if(err)err.textContent='Please enter your full name.';return}
+  if(!/^[0-9]{10}$/.test(phone)){if(err)err.textContent='Please enter a valid 10-digit WhatsApp/contact number.';return}
+  if(!date){if(err)err.textContent='Please select a visit date.';return}
+  const chosen=new Date(date+'T00:00:00'); const today=new Date(); today.setHours(0,0,0,0);
+  if(chosen<today){if(err)err.textContent='Please choose today or a future date.';return}
+  if(!time){if(err)err.textContent='Please select a time slot.';return}
+  sessionStorage.setItem('liventa_visit_name',name); sessionStorage.setItem('liventa_visit_phone',phone);
+  const msg='Hi Liventa Stay, I want to schedule a visit.\n\nProperty: '+currentPropertyForVisit+'\nName: '+name+'\nWhatsApp / Contact: +91 '+phone+'\nVisit date: '+date+'\nTime slot: '+time+'\nVisitors: '+visitors+'\nNotes: '+(note||'None');
+  window.open(wa(msg),'_blank');
+  closeSchedule();
 }
 function closeLogin(){document.getElementById('loginModal')?.classList.remove('show')}
 async function propertyLogin(){
@@ -409,7 +457,26 @@ async function loadSimilarStays(currentId,currentType,currentLoc){
 }
 </script>
 <div id="shareToast" class="share-toast">Link copied</div>
-<div id="scheduleModal" class="review-modal schedule-modal" onclick="if(event.target===this)closeSchedule()"><div class="review-card"><h3>Schedule a Visit</h3><p class="review-note">Property: <b id="visitProperty"></b></p><label class="review-note">Preferred date</label><input id="visitDate" class="review-field" type="date"><label class="review-note">Preferred time</label><input id="visitTime" class="review-field" type="time"><textarea id="visitNote" class="review-field" rows="3" placeholder="Any message for Liventa Stay (optional)"></textarea><button class="review-submit" onclick="sendSchedule()">Continue to WhatsApp</button><button type="button" class="review-submit secondary" onclick="closeSchedule()">Cancel</button></div></div><script>
+<div id="scheduleModal" class="review-modal schedule-modal" onclick="if(event.target===this)closeSchedule()">
+  <div class="schedule-sheet" role="dialog" aria-modal="true" aria-labelledby="scheduleTitle">
+    <button type="button" class="schedule-close" aria-label="Close" onclick="closeSchedule()">×</button>
+    <div class="schedule-badge">📅 Free Physical Walkthrough</div>
+    <h3 id="scheduleTitle">Schedule a Visit</h3>
+    <p class="schedule-sub">Choose a property and your preferred time.</p>
+    <div class="schedule-property">Property: <span id="visitProperty"></span></div>
+    <div class="schedule-grid">
+      <div class="schedule-field full"><label for="visitName">Your full name</label><input id="visitName" type="text" autocomplete="name" placeholder="e.g. Aarav Sharma"></div>
+      <div class="schedule-field full"><label for="visitPhone">WhatsApp / contact number</label><div class="phone-row"><div class="phone-prefix">+91</div><input id="visitPhone" type="tel" inputmode="numeric" maxlength="10" autocomplete="tel" placeholder="9876543210"></div></div>
+      <div class="schedule-field"><label for="visitDate">Visit date</label><input id="visitDate" type="date"></div>
+      <div class="schedule-field"><label for="visitTime">Time slot</label><select id="visitTime"><option value="10:00 AM (Morning)">10:00 AM (Morning)</option><option value="11:30 AM (Morning)">11:30 AM (Morning)</option><option value="1:00 PM (Afternoon)">1:00 PM (Afternoon)</option><option value="2:30 PM (Afternoon)">2:30 PM (Afternoon)</option><option value="4:00 PM (Evening)">4:00 PM (Evening)</option><option value="5:30 PM (Evening)">5:30 PM (Evening)</option><option value="7:00 PM (Evening)">7:00 PM (Evening)</option></select></div>
+      <div class="schedule-field"><label for="visitVisitors">Visitors</label><select id="visitVisitors"><option value="1 (Self)">1 (Self)</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></div>
+      <div class="schedule-field"><label for="visitNote">Notes (optional)</label><input id="visitNote" type="text" placeholder="e.g. Inspect single room"></div>
+      <div class="schedule-field full"><div id="scheduleError" class="schedule-error" aria-live="polite"></div></div>
+    </div>
+    <button type="button" class="schedule-submit" onclick="sendSchedule()">Confirm Free Visit Appointment →</button>
+    <p class="schedule-help">We’ll confirm the visit on WhatsApp. No brokerage.</p>
+  </div>
+</div><script>
 document.documentElement.classList.add('liventa-transition');
 window.addEventListener('DOMContentLoaded',()=>document.body.classList.add('page-ready'));
 document.addEventListener('click',e=>{
