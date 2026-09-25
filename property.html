@@ -103,8 +103,48 @@ body.page-leaving{opacity:0;transition:opacity .18s ease}
 main{padding-bottom:96px}.loading{min-height:55vh;display:grid;place-items:center}.section-empty{border:1px dashed #ded3ef;background:#fff;border-radius:16px;padding:22px;text-align:center}
 @media(max-width:1050px){.layout{grid-template-columns:1fr}.enquiry{position:static}.content-grid{grid-template-columns:1fr}.pro-feature-bar{grid-template-columns:repeat(2,1fr)}.important-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:700px){.nav{height:64px}.nav-inner{height:64px}.account-profile{display:none!important}.gallery-stage{height:300px}.gallery-nav{height:300px}.gallery-card{padding:7px;border-radius:18px}.thumb{width:88px;height:62px}.property-title h1{font-size:28px}.property-meta{font-size:12px;line-height:1.6}.property-rating{font-size:12px}.pro-feature-bar{grid-template-columns:1fr 1fr}.important-grid{grid-template-columns:1fr 1fr}.spec-head{padding:0 2px}.spec-rent strong{font-size:25px}.spec-location b{font-size:15px}.spec-title{font-size:23px}.quick{grid-template-columns:1fr 1fr}.qitem{min-height:76px}.content-grid{grid-template-columns:1fr}.panel{padding:15px}.about{font-size:14px!important;line-height:1.75!important}.tabs{gap:18px;overflow-x:auto}.tabs span{white-space:nowrap}.similar-grid{grid-template-columns:1fr 1fr!important}.similar-grid .sim:nth-child(n+3){display:none}.bottom-actions{padding-left:10px;padding-right:10px}.bottom-actions a,.bottom-actions .visit{min-height:50px;font-size:13px;border-radius:16px}}
-</style></head>
-<body>
+</style>
+<style id="liventa-final-property-ux">
+/* Exact home-header geometry on the property page. */
+.nav{height:72px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:8px 20px;gap:12px;position:sticky;top:0;z-index:250}
+.nav-inner{width:100%;max-width:1200px;margin:auto;height:auto;padding:0;display:flex;align-items:center;gap:12px}
+.brand{display:flex;align-items:center;gap:9px;color:var(--p);font-weight:950;text-decoration:none}
+.mark{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#5d22c9,#ffb000);color:#fff;display:grid;place-items:center;font-size:14px;font-weight:950;letter-spacing:-1px;box-shadow:0 7px 16px #5d22c922}
+.logo-img{width:48px;height:48px;border-radius:14px;object-fit:contain;background:#fff;border:1px solid var(--line);box-shadow:0 7px 16px #5d22c922}
+.navlink{color:var(--p);font-size:13px;font-weight:900;text-decoration:none}
+.brand b,.brand-copy b{font-family:"Outfit","Plus Jakarta Sans",sans-serif;font-weight:800;letter-spacing:-.7px;background:linear-gradient(100deg,#4d1fc2 0%,#7a32e8 48%,#f09b16 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.brand span,.brand-copy span{font-family:"Outfit","Plus Jakarta Sans",sans-serif;font-weight:800;letter-spacing:-.3px;color:#353047}
+.brand b{font-size:19px;line-height:20px;display:inline-block}.brand span{font-size:15px;margin-left:3px;vertical-align:baseline}
+.grow{flex:1}.round,.hamb{width:43px;height:43px;border:1px solid var(--line);background:#fff;border-radius:50%;color:var(--p);font-size:21px;cursor:pointer}
+.list{background:linear-gradient(135deg,#ffab00,#ffc532);padding:12px 17px;border-radius:24px;font-weight:950;color:#553000;box-shadow:0 7px 18px #ffad0030;text-decoration:none}
+.inquiry{display:inline-flex;align-items:center;justify-content:center;background:#efe8ff;color:var(--p);border:1px solid #ded0ff;padding:11px 14px;border-radius:22px;font-weight:950;text-decoration:none;white-space:nowrap}
+.signin{border:1px solid var(--line);background:#fff;color:var(--p);padding:12px 18px;border-radius:24px;font-weight:950;box-shadow:0 5px 16px #3d20530a;cursor:pointer}
+.menu{display:none;position:absolute;right:12px;top:62px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:8px;width:220px;box-shadow:0 20px 60px #20142d25}.menu.show{display:block}.menu a{display:block;padding:12px;border-radius:10px;font-weight:800;text-decoration:none}.menu a:hover{background:#f5efff;color:var(--p)}
+/* Zivo-style mobile action bar: rent + WhatsApp + schedule. */
+.bottom-actions{position:fixed;z-index:260;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #ded7e9;padding:9px 12px calc(9px + env(safe-area-inset-bottom));grid-template-columns:1fr 1fr 1.55fr;gap:8px;box-shadow:0 -8px 24px rgba(35,20,70,.10)}
+.bottom-actions .rent-mini{display:flex;flex-direction:column;justify-content:center;padding:6px 9px;border-radius:14px;background:#fff;font-weight:950;color:var(--p)}
+.bottom-actions .rent-mini small{font-size:8px;color:#777;letter-spacing:.4px;text-transform:uppercase}.bottom-actions .rent-mini b{font-size:17px;line-height:1.1}
+.bottom-actions a,.bottom-actions .visit{min-height:48px;border:0;border-radius:15px;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:12px;font-weight:950}
+.bottom-actions .wa{background:#10b878;color:#fff}.bottom-actions .visit{background:#ffb000;color:#171827;font-family:inherit;cursor:pointer}
+/* Less crowded property content on mobile. */
+@media(max-width:700px){
+ .nav{height:72px;padding:8px 11px}.nav-inner{height:auto;gap:12px}.brand{gap:9px}.logo-img,.mark{width:42px;height:42px}.brand b{font-size:16px}.brand span{font-size:15px}.navlink,.list,.inquiry,.signin,.account-profile,.round{display:none!important}.hamb{display:grid;place-items:center;width:43px;height:43px;margin-left:auto}
+ main{padding-bottom:105px}.heading h1{font-size:27px}.subline{font-size:12px}.property-head{padding-bottom:8px}.gallery-stage{height:285px}.quick{margin-top:10px}.qitem{min-height:70px}.panel{padding:16px}.about{font-size:14px!important;line-height:1.72!important}.tabs{gap:20px;overflow-x:auto}.tabs span{font-size:12px;white-space:nowrap}.similar-grid{grid-template-columns:1fr 1fr!important}.similar-grid .sim:nth-child(n+3){display:none}
+ .bottom-actions{display:grid}.bottom-actions .rent-mini b{font-size:15px}
+}
+@media(min-width:701px){.bottom-actions{display:none!important}}
+</style>
+
+<style id="property-sticky-v2">
+.bottom-actions{position:fixed;left:0;right:0;bottom:0;z-index:1000;display:grid;grid-template-columns:minmax(180px,260px) 74px minmax(260px,1fr);align-items:center;gap:12px;padding:12px 18px calc(12px + env(safe-area-inset-bottom));background:rgba(255,255,255,.97);border-top:1px solid #e9e4ef;box-shadow:0 -8px 28px rgba(48,34,76,.10);backdrop-filter:blur(12px)}
+.bottom-actions .rent-mini{min-height:64px;display:flex;flex-direction:column;justify-content:center;padding:0 8px}.bottom-actions .rent-mini small{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#6d6878}.bottom-actions .rent-mini b{font-size:28px;line-height:1.05;color:#4d1cc4}.bottom-actions .rent-mini b span{font-size:12px!important;color:#777!important;font-weight:600}
+.bottom-actions .wa,.bottom-actions .visit{min-height:64px;border:0;border-radius:18px;font-weight:900;text-decoration:none;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:17px}.bottom-actions .wa{width:64px;height:64px;min-height:64px;padding:0;background:#20c46b;color:#fff;border-radius:18px;font-size:30px;justify-self:center;box-shadow:0 8px 18px rgba(32,196,107,.18)}
+.bottom-actions .visit{background:linear-gradient(135deg,#6321d5,#7428e8);color:#fff;box-shadow:0 8px 18px rgba(99,33,213,.20)}
+@media(max-width:700px){.bottom-actions{grid-template-columns:minmax(0,1fr) 62px minmax(0,1.35fr);gap:8px;padding:9px 12px calc(9px + env(safe-area-inset-bottom));}.bottom-actions .rent-mini{min-height:58px}.bottom-actions .rent-mini b{font-size:22px}.bottom-actions .wa{width:58px;height:58px;min-height:58px;border-radius:16px;font-size:27px}.bottom-actions .visit{min-height:58px;border-radius:16px;font-size:15px}.property-page main{padding-bottom:105px}}
+@media(min-width:701px){.property-page main{padding-bottom:110px}}
+</style>
+</head>
+<body class="property-page">
 <header class="nav"><div class="nav-inner">
 <a class="brand" href="index.html"><div id="brandMark" class="mark">LS</div><div class="brand-copy"><b>LIVENTA</b><span>STAY</span></div></a>
 <div class="grow"></div>
@@ -148,7 +188,9 @@ async function init(){try{
   const requestedId=params.get('id')||params.get('property_id')||params.get('propertyId');
   if(!requestedId)throw new Error('missing id');
   const wanted=String(requestedId);
+  const cacheKey='liventa_property_cache_'+wanted;
   let data=null, lookupError=null;
+  try{const cachedOne=JSON.parse(sessionStorage.getItem(cacheKey)||'null'); if(cachedOne && String(cachedOne.id??cachedOne.property_id??'')===wanted) data=cachedOne;}catch(e){}
 
   // First use the property cached by the homepage View Details link.
   try{
@@ -156,7 +198,7 @@ async function init(){try{
     if(cached && (String(cached.id??'')===wanted || String(cached.property_id??'')===wanted)) data=cached;
   }catch(e){}
 
-  // Then query the database by id / property_id / slug.
+  // Then query the database by id. If older records use property_id/slug, try those too.
   const keys=[requestedId];
   if(/^\d+$/.test(wanted)) keys.push(Number(wanted));
   if(!data) for(const key of keys){
@@ -165,6 +207,15 @@ async function init(){try{
       if(!res.error && res.data?.length){data=res.data[0];break;}
       if(res.error)lookupError=res.error;
     }catch(e){lookupError=e}
+  }
+  if(!data){
+    for(const field of ['property_id','slug']){
+      try{
+        const res=await sb.from('properties').select('*').eq(field,wanted).limit(2);
+        if(!res.error && res.data?.length){data=res.data[0];break;}
+        if(res.error)lookupError=res.error;
+      }catch(e){lookupError=e}
+    }
   }
   if(!data){
     try{
@@ -184,6 +235,7 @@ async function init(){try{
     console.error('Liventa Stay property lookup failed',{requestedId,lookupError});
     throw new Error('not found');
   }
+  try{sessionStorage.setItem(cacheKey,JSON.stringify(data));}catch(e){}
 
   const d=norm(data),pt=typeOf(d);
   window.__currentPropertyName=d.name;window.__currentPropertyLocation=d.loc;
@@ -233,14 +285,14 @@ async function init(){try{
 <section class="panel similar"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><div><h3 style="margin-bottom:4px">Similar Stays</h3><p class="review-note" style="margin:0">Nearby options you may like.</p></div><a class="btn home" style="margin-top:0;padding:9px 12px" href="index.html#featured">View All</a></div><div id="similarGrid" class="similar-grid"></div></section>`;
   document.getElementById('specLocation').textContent=d.loc;document.getElementById('specRent').textContent='₹'+d.price.toLocaleString('en-IN');
   document.getElementById('loading').style.display='none';document.getElementById('propertyRoot').style.display='block';
-  loadSimilarStays(d.id,pt,d.loc);loadApprovedReviews(d.id);document.getElementById('bottomActions').innerHTML='<button type="button" class="visit" onclick="scheduleVisit()">📅 Schedule Visit</button><a class="wa" target="_blank" href="'+wa('Hi Liventa Stay, I want details about '+d.name+' in '+d.loc+'.')+'">● WhatsApp</a>';renderGallery();
+  loadSimilarStays(d.id,pt,d.loc);loadApprovedReviews(d.id);document.getElementById('bottomActions').innerHTML='<div class="rent-mini"><small>Rent</small><b>₹'+d.price.toLocaleString('en-IN')+'<span>/month</span></b></div><a class="wa" aria-label="WhatsApp" target="_blank" rel="noopener" href="'+wa('Hi Liventa Stay, I want details about '+d.name+' in '+d.loc+'.')+'">◉</a><button type="button" class="visit" onclick="scheduleVisit()">📅 Schedule Visit</button>';renderGallery();
   const schema={"@context":"https://schema.org","@type":"Accommodation","name":d.name,"url":location.href,"description":d.description,"address":{"@type":"PostalAddress","addressLocality":d.loc,"addressRegion":"Delhi","addressCountry":"IN"},"offers":{"@type":"Offer","priceCurrency":"INR","price":String(d.price),"availability":"https://schema.org/InStock"},"provider":{"@type":"Organization","name":"Liventa Stay","url":"https://liventastay.in/"}};document.getElementById('propertySchema').textContent=JSON.stringify(schema);
 }catch(e){
   console.error(e);
   const retryKey='liventa_property_retry_'+location.search;
   if(!sessionStorage.getItem(retryKey)){sessionStorage.setItem(retryKey,'1');setTimeout(()=>location.reload(),700);return;}
   sessionStorage.removeItem(retryKey);
-  document.getElementById('loading').innerHTML='<div class="panel"><h2>Property not found</h2><p class="about">We could not load this property right now. Please return to the listings and open View Details again.</p><a class="btn home" href="index.html#featured">Browse Liventa Stay</a></div>'
+  document.getElementById('loading').innerHTML='<div class="panel"><h2>Property could not be loaded</h2><p class="about">The property could not be loaded right now. Please try again or return to the listings.</p><button class="btn home" type="button" onclick="location.reload()">Try Again</button><a class="btn home" href="index.html#featured">Browse Liventa Stay</a></div>'
 }}
 
 init();
@@ -261,9 +313,12 @@ init();
 <script>
 function showPropertySection(id,tab){
   document.querySelectorAll('.tabs span').forEach(x=>x.classList.remove('active'));
-  tab.classList.add('active');
+  if(tab) tab.classList.add('active');
   const el=document.getElementById(id);
-  if(el){const y=el.getBoundingClientRect().top+window.scrollY-78;window.scrollTo({top:Math.max(0,y),behavior:'smooth'});}
+  if(!el)return;
+  const y=el.getBoundingClientRect().top+window.scrollY-88;
+  window.scrollTo({top:Math.max(0,y),behavior:'smooth'});
+  history.replaceState(null,'','#'+id);
 }
 async function openReview(){
   const {data}=await sb.auth.getSession();
