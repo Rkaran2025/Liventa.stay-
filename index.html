@@ -428,16 +428,25 @@ section.listing-section:not(#featured),section#pgSection,section#roomSection,sec
 /* Sticky contact bar belongs on property view, not the homepage. */
 body.home-page .bottom-actions, body:not(.property-page) .bottom-actions { display:none !important; }
 </style>
-</head><body class="data-pending">
+<style id="liventa-category-fix">
+.category-hub{padding:26px 0 10px;background:#fff}.category-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.category-card{min-height:154px;text-align:left;text-decoration:none;border:1px solid #e7def4;border-radius:20px;background:linear-gradient(145deg,#fff,#faf7ff);padding:18px;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;cursor:pointer;box-shadow:0 8px 26px #4320700d;transition:transform .18s ease,box-shadow .18s ease}.category-card:hover{transform:translateY(-2px);box-shadow:0 14px 32px #43207018}.category-icon{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;background:#f0e7ff;color:#5d22c9;font-size:22px;margin-bottom:12px}.category-card strong{font-size:18px;color:#27253a}.category-card small{font-size:11px;color:#74788b;margin-top:4px;line-height:1.4}.category-card b{font-size:11px;color:#5d22c9;margin-top:auto;padding-top:14px}.category-card.tiffin-card .category-icon{background:#e9fff5;color:#07895d}.category-card.tiffin-card b{color:#07895d}.tiffin-tab{color:#07895d!important;border-color:#ccefe0!important}.tabs-strip .tab{cursor:pointer}
+@media(max-width:800px){.category-grid{grid-template-columns:1fr 1fr}.category-card{min-height:145px}}
+@media(max-width:520px){.category-hub{padding:20px 0 5px}.category-grid{gap:9px}.category-card{min-height:138px;padding:14px;border-radius:17px}.category-icon{width:36px;height:36px;font-size:19px;margin-bottom:9px}.category-card strong{font-size:16px}.category-card small{font-size:10px}.category-card b{font-size:10px;padding-top:10px}}
+
+<style>
+.logo-fallback{display:grid!important;place-items:center!important;width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#5d22c9,#873de4)!important;color:#fff!important;font-weight:950;font-size:16px;box-shadow:0 7px 16px #5d22c922}
+.logo-img{display:block!important;width:42px!important;height:42px!important;object-fit:contain!important;border-radius:13px!important;background:#fff!important;border:1px solid #e8e5f0!important}
+.photo img,.detail-img img{display:block!important;width:100%!important;height:100%!important;object-fit:cover!important}
+</style></head><body class="data-pending home-page">
 <header class="nav"><div class="nav-inner">
-<a class="brand" href="#"><div id="brandMark" class="mark">LS</div><div class="brand-copy"><b>LIVENTA</b><span>STAY</span></div></a>
+<a class="brand" href="/"><div id="brandMark" class="mark logo-fallback">LS</div><div class="brand-copy"><b>LIVENTA</b><span>STAY</span></div></a>
 <div class="grow"></div>
-<a class="navlink" href="#featured">Featured PGs</a><a class="navlink" href="#areas">Browse Areas</a>
+<a class="navlink" href="#featured">PGs</a><a class="navlink" href="#roomSection">Rooms</a><a class="navlink" href="#flatSection">Flats</a><a class="navlink" href="tiffin.html">Tiffin</a><a class="navlink" href="#areas">Areas</a>
 <button class="round" aria-label="Saved stays" onclick="openSaved()">♡</button>
 <a class="list" href="https://wa.me/917454024119?text=Hi%20Liventa%20Stay%2C%20I%20want%20to%20list%20my%20property." target="_blank">+ List Stay</a><a class="inquiry" href="https://wa.me/917454024119?text=Hi%20Liventa%20Stay%2C%20I%20want%20to%20make%20an%20inquiry%20about%20a%20PG%2Fstudent%20stay." target="_blank">Inquiry</a>
 <button class="signin" onclick="openAuth()">Sign In</button><button id="accountProfile" class="account-profile" onclick="openAuth()" aria-label="Open account" title="Account"><span id="accountAvatar" class="account-avatar">?</span></button>
 <button class="hamb" onclick="toggleMenu()">☰</button>
-<div id="menu" class="menu"><a href="#featured">Featured PGs</a><a href="#areas">Browse by Area</a><a href="#how">How it works</a><a href="#faq">FAQs</a><a href="#footer">Contact</a></div>
+<div id="menu" class="menu"><a href="#featured">PGs</a><a href="#roomSection">Rooms</a><a href="#flatSection">Flats</a><a href="tiffin.html">Tiffin Services</a><a href="#areas">Browse by Area</a><a href="#how">How it works</a><a href="#faq">FAQs</a><a href="#footer">Contact</a></div>
 </div></header>
 <section class="banner-wrap"><div id="promoBanner" class="promo-banner">
   <div class="promo-copy"><div id="promoKicker" class="promo-kicker">LIVENTA STAY • VERIFIED STUDENT HOMES</div><h1 class="promo-title" id="promoTitle">Your next stay,<strong>closer to campus.</strong></h1><p class="promo-sub" id="promoSub">Find PGs, rooms and flats near North Campus. PG & room brokerage ₹0; flat brokerage applicable.</p><a id="promoCta" class="promo-btn" href="#featured">Explore stays →</a></div>
@@ -445,7 +454,7 @@ body.home-page .bottom-actions, body:not(.property-page) .bottom-actions { displ
 </div></section>
 
 <section class="hero"><div class="hero-inner"><div class="search"><div class="field"><label>WHAT ARE YOU LOOKING FOR?</label><select id="searchType"><option value="all">All Properties</option><option value="pg">PG</option><option value="room">Room</option><option value="flat">Flat</option></select></div><div class="field location-field"><label>LOCATION / COLLEGE</label><div class="location-row"><input id="q" list="locationSuggestions" placeholder="Kamla Nagar, Vijay Nagar..." autocomplete="off"></div><datalist id="locationSuggestions"></datalist></div><div class="field"><label>BUDGET / MONTH</label><select id="budget"><option value="">Any Budget</option><option value="10000">Up to ₹10,000</option><option value="15000">Up to ₹15,000</option><option value="20000">Up to ₹20,000</option><option value="25000">Up to ₹25,000</option><option value="30000">Up to ₹30,000</option><option value="50000">Up to ₹50,000</option></select></div><button type="button" onclick="runSearch()">Search →</button></div><div class="popular"><b>Popular:</b><button onclick="searchArea('Kamla Nagar')">Kamla Nagar</button><button onclick="searchArea('Vijay Nagar')">Vijay Nagar</button><button onclick="searchArea('Hudson Lane')">Hudson Lane</button><button onclick="searchArea('GTB Nagar')">GTB Nagar</button><button onclick="searchArea('Mukherjee Nagar')">Mukherjee Nagar</button><button onclick="searchArea('Roop Nagar')">Roop Nagar</button></div></div></section>
-<section class="tabs-strip"><div class="tabs"><span id="tabAll" class="tab active" onclick="setPropertyType('all')">▥ All <b id="heroCount">0</b></span><span id="tabPg" class="tab" onclick="setPropertyType('pg')">♧ PGs <b id="pgCount">0</b></span><span id="tabRoom" class="tab" onclick="setPropertyType('room')">▣ Rooms <b id="roomCount">0</b></span><span id="tabFlat" class="tab" onclick="setPropertyType('flat')">⌂ Flats <b id="flatCount">0</b></span></div></section>
+<section class="tabs-strip"><div class="tabs"><span id="tabAll" class="tab active" onclick="setPropertyType('all')">▥ All <b id="heroCount">0</b></span><span id="tabPg" class="tab" onclick="setPropertyType('pg')">♧ PGs <b id="pgCount">0</b></span><span id="tabRoom" class="tab" onclick="setPropertyType('room')">▣ Rooms <b id="roomCount">0</b></span><span id="tabFlat" class="tab" onclick="setPropertyType('flat')">⌂ Flats <b id="flatCount">0</b></span><a class="tab tiffin-tab" href="tiffin.html">🍱 Tiffin Services</a></div></section>
 <section><div class="container"><div class="stats">
 <div class="stat"><strong id="statActive">0</strong><span>Active listings</span></div>
 <div class="stat"><strong id="statVerified">0</strong><span>Verified stays</span></div>
@@ -468,6 +477,7 @@ body.home-page .bottom-actions, body:not(.property-page) .bottom-actions { displ
 <button type="button" class="quick-filter" data-filter="verified" onclick="setQuickFilter(this,'verified')">✓ Verified only</button>
 <div class="quick-sort"><span>Sort</span><select id="quickSort" onchange="setQuickSort(this.value)"><option value="featured">Featured</option><option value="newest">Newest</option><option value="priceLow">Rent: Low to High</option><option value="priceHigh">Rent: High to Low</option></select></div>
 </div></div>
+<section class="category-hub" aria-label="Liventa Stay categories"><div class="container"><div class="head"><div><div class="eyebrow">EXPLORE LIVENTA STAY</div><h2>Choose what you need</h2><p>PGs, rooms, flats and Liventa Stay's own pure-veg tiffin service.</p></div></div><div class="category-grid"><button class="category-card" type="button" onclick="setPropertyType('pg')"><span class="category-icon">♧</span><strong>PGs</strong><small>Boys, Girls & Co-living</small><b>Explore PGs →</b></button><button class="category-card" type="button" onclick="setPropertyType('room')"><span class="category-icon">▣</span><strong>Rooms</strong><small>Single, Double & Sharing</small><b>Explore Rooms →</b></button><button class="category-card" type="button" onclick="setPropertyType('flat')"><span class="category-icon">⌂</span><strong>Flats</strong><small>Student & shared flats</small><b>Explore Flats →</b></button><a class="category-card tiffin-card" href="tiffin.html"><span class="category-icon">🍱</span><strong>Tiffin Services</strong><small>Liventa Stay • Pure Veg</small><b>View Tiffin Service →</b></a></div></div></section>
 <section class="featured listing-section" id="featured" data-type="all"><div class="container"><div class="head"><div><div class="eyebrow">TOP PICKS</div><h2>Featured Stays</h2><p>Featured PGs, rooms and flats with quick enquiry.</p></div><span class="count" id="featuredCount">0 stays</span></div>
 <div id="featuredGrid" class="grid"><div class="fast-skeleton" style="grid-column:1/-1"><div></div><div></div><div></div></div></div></div></section>
 <section class="trust-strip" aria-label="Liventa Stay benefits"><div class="trust-card"><b>✓ Verified details</b><span>Show verification only when the property record has been checked.</span></div><div class="trust-card"><b>📸 Real property media</b><span>Photos and video help you inspect a stay before visiting.</span></div><div class="trust-card"><b>📅 Easy visit scheduling</b><span>Choose a date and time and send the request with property details.</span></div><div class="trust-card"><b>⭐ Moderated reviews</b><span>Signed-in reviews can be submitted and approved before publishing.</span></div></section>
@@ -1032,7 +1042,12 @@ async function loadSiteLogo(){
     const {data,error}=await sb.from('site_settings').select('logo_url').eq('id',1).maybeSingle();
     if(error) return;
     const mark=document.getElementById('brandMark');
-    if(data?.logo_url && mark){ mark.outerHTML=`<img id="brandMark" class="logo-img" src="${data.logo_url}" alt="Liventa Stay logo">`; }
+    if(data?.logo_url && mark){
+      const img=document.createElement('img');
+      img.id='brandMark'; img.className='logo-img'; img.alt='Liventa Stay logo'; img.src=data.logo_url;
+      img.onerror=()=>{ img.outerHTML='<div id="brandMark" class="mark logo-fallback">LS</div>'; };
+      mark.replaceWith(img);
+    }
   }catch(e){ console.warn('Logo load skipped',e); }
 }
 /* Reliable property loading: show last successful data immediately, then refresh from Supabase. */
@@ -1047,6 +1062,7 @@ function writePropertyCache(rows){
   try{
     const value=JSON.stringify(rows);
     localStorage.setItem('liventa_properties_cache',value);
+    localStorage.setItem('liventa_properties_cache_at',String(Date.now()));
     sessionStorage.setItem('liventa_properties_cache',value);
   }catch(_){ }
 }
@@ -1060,7 +1076,10 @@ async function fetchPropertiesWithTimeout(ms=10000){
     new Promise((_,reject)=>setTimeout(()=>reject(new Error('Property request timed out')),ms))
   ]);
 }
+let propertyLoadPromise=null;
 async function loadProperties(attempt=0){
+  if(propertyLoadPromise && attempt===0) return propertyLoadPromise;
+  const run=async()=>{
   const loadingTarget=document.getElementById('featuredGrid');
   if(!DATA.length && attempt===0 && loadingTarget){
     loadingTarget.innerHTML='<div class="section-empty" style="display:block">Loading stays…</div>';
@@ -1087,6 +1106,9 @@ async function loadProperties(attempt=0){
     }
     return false;
   }
+  };
+  propertyLoadPromise=run().finally(()=>{propertyLoadPromise=null;});
+  return propertyLoadPromise;
 }
 function openLeadForm(){document.getElementById('leadModal')?.classList.add('show')} function closeLeadForm(){document.getElementById('leadModal')?.classList.remove('show')}
 async function submitLead(){const name=document.getElementById('leadName').value.trim(),phone=document.getElementById('leadPhone').value.trim(),type=document.getElementById('leadType').value,area=document.getElementById('leadArea').value,budget=document.getElementById('leadBudget').value,room=document.getElementById('leadRoom').value.trim(),gender=document.getElementById('leadGender').value,move=document.getElementById('leadMove').value,notes=document.getElementById('leadNotes').value.trim(); if(!name||!/^[0-9]{10}$/.test(phone)||!budget){document.getElementById('leadMsg').textContent='Please enter your name, valid 10-digit mobile number and budget.';return;} const payload={name,phone,property_type:type.toLowerCase(),area,budget:Number(budget),room_requirement:room||null,gender,move_in:move||null,notes:notes||null,status:'new',source:'website'}; try{await sb.from('leads').insert(payload)}catch(e){console.warn('Lead table unavailable',e)} const msg=`Hi Liventa Stay, I need a ${type}.%0AName: ${encodeURIComponent(name)}%0AMobile: ${encodeURIComponent(phone)}%0AArea: ${encodeURIComponent(area)}%0ABudget: ${encodeURIComponent('₹'+budget)}/month%0ARoom/BHK: ${encodeURIComponent(room||'Any')}%0AGender: ${encodeURIComponent(gender)}%0AMove-in: ${encodeURIComponent(move||'Flexible')}%0ARequirement: ${encodeURIComponent(notes||'None')}`; window.open(waUrl(decodeURIComponent(msg)),'_blank'); document.getElementById('leadMsg').textContent='Requirement sent. We’ll contact you on WhatsApp.'; setTimeout(closeLeadForm,900)}
