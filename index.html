@@ -405,7 +405,7 @@ body.page-leaving{opacity:0;transition:opacity .18s ease}
 <style id="final-home-ux">
 /* Final home UX: simple first screen, stable navigation, fast paint */
 .nav{position:sticky;top:0;z-index:200;box-shadow:0 2px 14px rgba(35,20,70,.04)}
-#featuredGrid .card img{display:block;content-visibility:auto}.photo img{loading:lazy}
+#featuredGrid .card img{display:block;content-visibility:visible}.photo img{display:block}
 .tabs-strip,.quick-filter-wrap{display:none!important}
 #pgSection,#roomSection,#flatSection,#all{display:none!important}
 .guide-strip{display:none!important}
@@ -437,7 +437,19 @@ body.home-page .bottom-actions, body:not(.property-page) .bottom-actions { displ
 .logo-fallback{display:grid!important;place-items:center!important;width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#5d22c9,#873de4)!important;color:#fff!important;font-weight:950;font-size:16px;box-shadow:0 7px 16px #5d22c922}
 .logo-img{display:block!important;width:42px!important;height:42px!important;object-fit:contain!important;border-radius:13px!important;background:#fff!important;border:1px solid #e8e5f0!important}
 .photo img,.detail-img img{display:block!important;width:100%!important;height:100%!important;object-fit:cover!important}
-</style></head><body class="data-pending home-page">
+</style>
+<style id="liventa-final-polish">
+.category-hub,#trust,#how,#faq,#local-seo,.guide-strip,section.container:has(.lead-cta){display:none!important;}
+.featured{background:#fff;padding-top:28px;padding-bottom:34px;}
+.areas-after{padding-top:34px;padding-bottom:38px;}
+#featuredGrid .card .photo img{opacity:1!important;visibility:visible!important;}
+.card-photo-wrap{background:#ece9f2;}
+.brand #brandMark{flex:0 0 auto;}
+.logo-img{display:block!important;opacity:1!important;visibility:visible!important;}
+#featuredGrid .card{content-visibility:visible!important;}
+@media(max-width:700px){.featured{padding-top:22px;padding-bottom:28px;}.areas-after{padding-top:28px;padding-bottom:30px;}}
+</style>
+</head><body class="data-pending home-page">
 <header class="nav"><div class="nav-inner">
 <a class="brand" href="/"><div id="brandMark" class="mark logo-fallback">LS</div><div class="brand-copy"><b>LIVENTA</b><span>STAY</span></div></a>
 <div class="grow"></div>
@@ -479,7 +491,7 @@ body.home-page .bottom-actions, body:not(.property-page) .bottom-actions { displ
 </div></div>
 <section class="category-hub" aria-label="Liventa Stay categories"><div class="container"><div class="head"><div><div class="eyebrow">EXPLORE LIVENTA STAY</div><h2>Choose what you need</h2><p>PGs, rooms, flats and Liventa Stay's own pure-veg tiffin service.</p></div></div><div class="category-grid"><button class="category-card" type="button" onclick="setPropertyType('pg')"><span class="category-icon">♧</span><strong>PGs</strong><small>Boys, Girls & Co-living</small><b>Explore PGs →</b></button><button class="category-card" type="button" onclick="setPropertyType('room')"><span class="category-icon">▣</span><strong>Rooms</strong><small>Single, Double & Sharing</small><b>Explore Rooms →</b></button><button class="category-card" type="button" onclick="setPropertyType('flat')"><span class="category-icon">⌂</span><strong>Flats</strong><small>Student & shared flats</small><b>Explore Flats →</b></button><a class="category-card tiffin-card" href="tiffin.html"><span class="category-icon">🍱</span><strong>Tiffin Services</strong><small>Liventa Stay • Pure Veg</small><b>View Tiffin Service →</b></a></div></div></section>
 <section class="featured listing-section" id="featured" data-type="all"><div class="container"><div class="head"><div><div class="eyebrow">TOP PICKS</div><h2>Featured Stays</h2><p>Featured PGs, rooms and flats with quick enquiry.</p></div><span class="count" id="featuredCount">0 stays</span></div>
-<div id="featuredGrid" class="grid"><div class="fast-skeleton" style="grid-column:1/-1"><div></div><div></div><div></div></div></div></div></section>
+<div id="featuredGrid" class="grid"><div class="fast-skeleton" id="initialListingSkeleton" style="grid-column:1/-1"><div></div><div></div><div></div></div></div></div></section>
 <section class="trust-strip" aria-label="Liventa Stay benefits"><div class="trust-card"><b>✓ Verified details</b><span>Show verification only when the property record has been checked.</span></div><div class="trust-card"><b>📸 Real property media</b><span>Photos and video help you inspect a stay before visiting.</span></div><div class="trust-card"><b>📅 Easy visit scheduling</b><span>Choose a date and time and send the request with property details.</span></div><div class="trust-card"><b>⭐ Moderated reviews</b><span>Signed-in reviews can be submitted and approved before publishing.</span></div></section>
 <section class="guide-strip"><h2>Plan your stay with confidence</h2><p>Compare rent, sharing, amenities, locality, media and visit options before you decide.</p><div class="guide-links"><a href="#featured">Featured stays</a><a href="#areas">Browse areas</a><a href="#all-properties">All properties</a></div></section>
 <section id="areas" class="areas-after"><div class="container"><div class="head"><div><div class="eyebrow">EXPLORE BY LOCATION</div><h2>Browse by Area</h2><p>Choose your preferred area and explore nearby PGs, rooms and flats.</p></div></div><div class="area-grid" id="areaGrid"></div></div></section>
@@ -637,7 +649,7 @@ async function loadSiteSettings(){
   try{
     const {data}=await sb.from('site_settings').select('*').eq('id',1).maybeSingle();
     if(!data) return;
-    if(data.logo_url){ document.querySelectorAll('.brand .mark').forEach(x=>{x.textContent=''; x.style.background='center/cover no-repeat url("'+data.logo_url.replace(/"/g,'')+'")';}); }
+    if(data.logo_url) applyBrandLogo(data.logo_url);
     if(data.banner_kicker) document.getElementById('promoKicker').textContent=data.banner_kicker;
     if(data.banner_title) document.getElementById('promoTitle').innerHTML=htmlEscape(data.banner_title).replace(/\n/g,'<br>');
     if(data.banner_highlight){ document.getElementById('promoTitle').innerHTML=htmlEscape(data.banner_title||'Find a stay that feels like')+' <strong>'+htmlEscape(data.banner_highlight)+'</strong>'; }
@@ -716,7 +728,7 @@ function normalizeRow(r) {
     rating: Number(r.rating || 4.8),
     review_count: r.review_count ?? r.reviews ?? r.rating_count ?? '',
     img: (Array.isArray(r.media_urls) && r.media_urls[0]) || r.image_url || 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1100&q=85',
-    media_urls: Array.isArray(r.media_urls) ? r.media_urls : [],
+    media_urls: Array.isArray(r.media_urls) ? r.media_urls.filter(x=>typeof x==='string' && x.trim()) : [],
     video_url: r.video_url || '',
     room_type: r.room_type || 'Private / Sharing',
     amenities: r.amenities || 'Wi-Fi, AC, Furnished',
@@ -773,7 +785,7 @@ function cardHTML(d, i){
   return `<article class="card" data-i="${i}" data-loc="${String(d.loc).toLowerCase()}" data-gender="${htmlEscape(d.gender)}">
     <div class="photo">
       <div class="card-photo-wrap ${media.length>1?'multi':''}" data-media='${htmlEscape(mediaJson)}' data-index="0" onclick="cardPhotoClick(event,this,${i})" ontouchstart="cardTouchStart(event,this)" ontouchend="cardTouchEnd(event,this)">
-        <img src="${media[0]||d.img}" alt="${safeName}" loading="lazy">
+        <img src="${media[0]||d.img}" alt="${safeName}" loading="${i<6?'eager':'lazy'}" decoding="async" fetchpriority="${i<3?'high':'auto'}" onerror="this.onerror=null;this.src='${htmlEscape(d.img||'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1100&q=85')}'>
         ${media.length>1?`<div class="card-photo-nav"><button type="button" onclick="event.stopPropagation();cardPhotoPrev(this)">‹</button><button type="button" onclick="event.stopPropagation();cardPhotoNext(this)">›</button></div><div class="card-photo-dots">${media.map((_,k)=>`<i class="${k===0?'active':''}"></i>`).join('')}</div>`:''}
       </div>
       <div class="card-badge-row">${badges.join('')}</div>
@@ -932,7 +944,7 @@ function renderSection(gridId, emptyId, countId, items, sort, label){
 }
 function renderAllSections(){
   const pg=DATA.filter(d=>matchesLocal(d,'pg','pg')); const room=DATA.filter(d=>matchesLocal(d,'room','room')); const flat=DATA.filter(d=>matchesLocal(d,'flat','flat'));
-  const featured=DATA.filter(d=>d.featured && matchesCommon(d) && (activePropertyType==='all'||propertyTypeOf(d)===activePropertyType));
+  const featured=DATA.filter(d=>matchesCommon(d) && (activePropertyType==='all'||propertyTypeOf(d)===activePropertyType));
   renderSection('featuredGrid','featuredEmpty','featuredCount',featured,document.getElementById('featuredPgSort')?.value||'featured','Stays');
   renderSection('pgGrid','pgEmpty','pgSectionCount',pg,document.getElementById('pgSort')?.value||'newest','PGs');
   renderSection('roomGrid','roomEmpty','roomSectionCount',room,document.getElementById('roomSort')?.value||'newest','Rooms');
@@ -1037,17 +1049,27 @@ function openDetails(i){
 function closeDetails(e){if(!e||e.target.id==='modal'){document.getElementById('modal').classList.remove('show'); const v=document.getElementById('dvideo'); if(v){v.pause();v.removeAttribute('src');}}}
 document.addEventListener('click',e=>{if(!e.target.closest('.nav-inner'))document.getElementById('menu').classList.remove('show')});
 
+function applyBrandLogo(url){
+  const clean=String(url||'').trim();
+  if(!clean) return;
+  try{localStorage.setItem('liventa_logo_url',clean);}catch(_){ }
+  document.querySelectorAll('#brandMark').forEach(mark=>{
+    if(mark.tagName==='IMG' && mark.src===clean) return;
+    const img=document.createElement('img');
+    img.id='brandMark'; img.className='logo-img'; img.alt='Liventa Stay logo';
+    img.loading='eager'; img.decoding='async'; img.src=clean;
+    img.onerror=()=>{ img.outerHTML='<div id="brandMark" class="mark logo-fallback">LS</div>'; };
+    mark.replaceWith(img);
+  });
+}
 async function loadSiteLogo(){
   try{
+    const cached=localStorage.getItem('liventa_logo_url')||'';
+    if(cached) applyBrandLogo(cached);
+  }catch(_){ }
+  try{
     const {data,error}=await sb.from('site_settings').select('logo_url').eq('id',1).maybeSingle();
-    if(error) return;
-    const mark=document.getElementById('brandMark');
-    if(data?.logo_url && mark){
-      const img=document.createElement('img');
-      img.id='brandMark'; img.className='logo-img'; img.alt='Liventa Stay logo'; img.src=data.logo_url;
-      img.onerror=()=>{ img.outerHTML='<div id="brandMark" class="mark logo-fallback">LS</div>'; };
-      mark.replaceWith(img);
-    }
+    if(!error && data?.logo_url) applyBrandLogo(data.logo_url);
   }catch(e){ console.warn('Logo load skipped',e); }
 }
 /* Reliable property loading: show last successful data immediately, then refresh from Supabase. */
@@ -1112,8 +1134,8 @@ async function loadProperties(attempt=0){
 }
 function openLeadForm(){document.getElementById('leadModal')?.classList.add('show')} function closeLeadForm(){document.getElementById('leadModal')?.classList.remove('show')}
 async function submitLead(){const name=document.getElementById('leadName').value.trim(),phone=document.getElementById('leadPhone').value.trim(),type=document.getElementById('leadType').value,area=document.getElementById('leadArea').value,budget=document.getElementById('leadBudget').value,room=document.getElementById('leadRoom').value.trim(),gender=document.getElementById('leadGender').value,move=document.getElementById('leadMove').value,notes=document.getElementById('leadNotes').value.trim(); if(!name||!/^[0-9]{10}$/.test(phone)||!budget){document.getElementById('leadMsg').textContent='Please enter your name, valid 10-digit mobile number and budget.';return;} const payload={name,phone,property_type:type.toLowerCase(),area,budget:Number(budget),room_requirement:room||null,gender,move_in:move||null,notes:notes||null,status:'new',source:'website'}; try{await sb.from('leads').insert(payload)}catch(e){console.warn('Lead table unavailable',e)} const msg=`Hi Liventa Stay, I need a ${type}.%0AName: ${encodeURIComponent(name)}%0AMobile: ${encodeURIComponent(phone)}%0AArea: ${encodeURIComponent(area)}%0ABudget: ${encodeURIComponent('₹'+budget)}/month%0ARoom/BHK: ${encodeURIComponent(room||'Any')}%0AGender: ${encodeURIComponent(gender)}%0AMove-in: ${encodeURIComponent(move||'Flexible')}%0ARequirement: ${encodeURIComponent(notes||'None')}`; window.open(waUrl(decodeURIComponent(msg)),'_blank'); document.getElementById('leadMsg').textContent='Requirement sent. We’ll contact you on WhatsApp.'; setTimeout(closeLeadForm,900)}
-loadSiteSettings();
 loadSiteLogo();
+loadSiteSettings();
 updateAuthUI();
 sb.auth.onAuthStateChange(async (_event, session)=>{authUser=session?.user||null; if(authUser) await ensureProfile(authUser); updateAccountProfile(authUser);});
 loadAreas();
