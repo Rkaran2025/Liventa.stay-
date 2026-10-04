@@ -35,6 +35,7 @@ h1{margin:0 0 8px}.muted{color:#777b8b}.grid{display:grid;grid-template-columns:
 .banner-device-card h4{margin:0 0 8px;color:#43258f}
 .banner-device-preview{width:100%;height:120px;object-fit:cover;border-radius:12px;background:#eee;display:none;margin-top:8px}
 @media(max-width:720px){.facility-groups,.banner-device-grid{grid-template-columns:1fr}.facility-grid,.quick-specs{grid-template-columns:1fr 1fr}}
+.carousel-admin-grid{display:grid;grid-template-columns:1fr;gap:14px}.carousel-admin-card{min-width:0}.carousel-admin-card .banner-device-grid{margin-top:10px}.carousel-admin-card input[type=file]{font-size:12px;padding:8px}
 </style>
 </head>
 <body>
@@ -74,29 +75,58 @@ h1{margin:0 0 8px}.muted{color:#777b8b}.grid{display:grid;grid-template-columns:
     </div>
 
     <div class="panel">
-      <h2>Homepage Banner</h2>
-      <p class="muted">Manage the homepage banner text, button, and optional banner image here.</p>
-      <div class="field"><label>BANNER KICKER</label><input id="bannerKicker" placeholder="LIVENTA STAY • 0% BROKERAGE"></div>
-      <div class="row"><div class="field"><label>MAIN TITLE</label><input id="bannerTitle" placeholder="Find a stay that feels like"></div><div class="field"><label>HIGHLIGHT TEXT</label><input id="bannerHighlight" placeholder="home."></div></div>
-      <div class="field"><label>SUBTITLE</label><textarea id="bannerSubtitle" placeholder="Verified PGs, hostels and student homes around Delhi University..."></textarea></div>
-      <div class="row"><div class="field"><label>BUTTON TEXT</label><input id="bannerCtaText" placeholder="Explore verified stays →"></div><div class="field"><label>BUTTON LINK</label><input id="bannerCtaLink" value="#featured"></div></div>
-      <div class="banner-device-grid">
-        <div class="banner-device-card">
-          <h4>🖥️ Desktop Banner</h4>
-          <input id="bannerImageDesktop" type="file" accept="image/png,image/jpeg,image/webp" onchange="previewBanner('desktop')">
-          <div class="logo-help">Recommended: 1600×600 (wide). Desktop par ye image use hogi.</div>
-          <img id="bannerPreviewDesktop" class="banner-device-preview" alt="Desktop banner preview">
+      <h2>Homepage Banner Carousel</h2>
+      <p class="muted">Website ke 3 rotating banner slides yahan se manage karein. Text, button link aur desktop/mobile images alag-alag change ho sakti hain.</p>
+      <div class="carousel-admin-grid">
+      <div class="banner-device-card carousel-admin-card">
+        <h4>Banner Slide 1</h4>
+        <div class="field"><label>SMALL HEADING</label><input id="slide1Kicker" placeholder="LIVENTA STAY"></div>
+        <div class="row"><div class="field"><label>MAIN TITLE</label><input id="slide1Title" placeholder="Your next stay"></div><div class="field"><label>HIGHLIGHT</label><input id="slide1Highlight" placeholder="closer to campus."></div></div>
+        <div class="field"><label>DESCRIPTION</label><textarea id="slide1Subtitle" placeholder="Short banner description"></textarea></div>
+        <div class="row"><div class="field"><label>BUTTON TEXT</label><input id="slide1CtaText" placeholder="Explore stays →"></div><div class="field"><label>BUTTON LINK</label><input id="slide1CtaLink" placeholder="#featured"></div></div>
+        <div class="banner-device-grid">
+          <div><label>DESKTOP IMAGE</label><input id="slide1Desktop" type="file" accept="image/png,image/jpeg,image/webp" onchange="previewCarouselImage(1,'desktop')"><img id="slide1DesktopPreview" class="banner-device-preview" alt="Slide 1 desktop preview"></div>
+          <div><label>MOBILE IMAGE</label><input id="slide1Mobile" type="file" accept="image/png,image/jpeg,image/webp" onchange="previewCarouselImage(1,'mobile')"><img id="slide1MobilePreview" class="banner-device-preview" alt="Slide 1 mobile preview"></div>
         </div>
-        <div class="banner-device-card">
-          <h4>📱 Mobile Banner</h4>
-          <input id="bannerImageMobile" type="file" accept="image/png,image/jpeg,image/webp" onchange="previewBanner('mobile')">
-          <div class="logo-help">Recommended: 900×1200 (portrait). Mobile par ye image use hogi.</div>
-          <img id="bannerPreviewMobile" class="banner-device-preview" alt="Mobile banner preview">
-        </div>
+        <div class="logo-help">Desktop aur mobile images alag upload kar sakte hain. Mobile image na dene par desktop image use hogi.</div>
       </div>
-      <div class="logo-help" style="margin-top:8px">Agar mobile image nahi doge, website desktop banner ko fallback ke roop me use karegi.</div>
-      <div class="actions"><button class="btn purple" onclick="saveBannerSettings()">Save Banner</button><button class="btn light" onclick="resetBannerSettings()">Use Default Banner</button></div>
-      <div id="bannerMsg"></div>
+      <div class="banner-device-card carousel-admin-card">
+        <h4>Banner Slide 2</h4>
+        <div class="field"><label>SMALL HEADING</label><input id="slide2Kicker" placeholder="LIVENTA STAY"></div>
+        <div class="row"><div class="field"><label>MAIN TITLE</label><input id="slide2Title" placeholder="Your next stay"></div><div class="field"><label>HIGHLIGHT</label><input id="slide2Highlight" placeholder="closer to campus."></div></div>
+        <div class="field"><label>DESCRIPTION</label><textarea id="slide2Subtitle" placeholder="Short banner description"></textarea></div>
+        <div class="row"><div class="field"><label>BUTTON TEXT</label><input id="slide2CtaText" placeholder="Explore stays →"></div><div class="field"><label>BUTTON LINK</label><input id="slide2CtaLink" placeholder="#featured"></div></div>
+        <div class="banner-device-grid">
+          <div><label>DESKTOP IMAGE</label><input id="slide2Desktop" type="file" accept="image/png,image/jpeg,image/webp" onchange="previewCarouselImage(2,'desktop')"><img id="slide2DesktopPreview" class="banner-device-preview" alt="Slide 2 desktop preview"></div>
+          <div><label>MOBILE IMAGE</label><input id="slide2Mobile" type="file" accept="image/png,image/jpeg,image/webp" onchange="previewCarouselImage(2,'mobile')"><img id="slide2MobilePreview" class="banner-device-preview" alt="Slide 2 mobile preview"></div>
+        </div>
+        <div class="logo-help">Desktop aur mobile images alag upload kar sakte hain. Mobile image na dene par desktop image use hogi.</div>
+      </div>
+      <div class="banner-device-card carousel-admin-card">
+        <h4>Banner Slide 3</h4>
+        <div class="field"><label>SMALL HEADING</label><input id="slide3Kicker" placeholder="LIVENTA STAY"></div>
+        <div class="row"><div class="field"><label>MAIN TITLE</label><input id="slide3Title" placeholder="Your next stay"></div><div class="field"><label>HIGHLIGHT</label><input id="slide3Highlight" placeholder="closer to campus."></div></div>
+        <div class="field"><label>DESCRIPTION</label><textarea id="slide3Subtitle" placeholder="Short banner description"></textarea></div>
+        <div class="row"><div class="field"><label>BUTTON TEXT</label><input id="slide3CtaText" placeholder="Explore stays →"></div><div class="field"><label>BUTTON LINK</label><input id="slide3CtaLink" placeholder="#featured"></div></div>
+        <div class="banner-device-grid">
+          <div><label>DESKTOP IMAGE</label><input id="slide3Desktop" type="file" accept="image/png,image/jpeg,image/webp" onchange="previewCarouselImage(3,'desktop')"><img id="slide3DesktopPreview" class="banner-device-preview" alt="Slide 3 desktop preview"></div>
+          <div><label>MOBILE IMAGE</label><input id="slide3Mobile" type="file" accept="image/png,image/jpeg,image/webp" onchange="previewCarouselImage(3,'mobile')"><img id="slide3MobilePreview" class="banner-device-preview" alt="Slide 3 mobile preview"></div>
+        </div>
+        <div class="logo-help">Desktop aur mobile images alag upload kar sakte hain. Mobile image na dene par desktop image use hogi.</div>
+      </div>
+      </div>
+      <div class="actions"><button class="btn purple" onclick="saveCarouselSettings()">Save All Banner Slides</button><button class="btn light" onclick="resetCarouselSettings()">Restore Default Slides</button></div>
+      <div id="carouselMsg"></div>
+    </div>
+
+    <div class="panel">
+      <h2>Social Media Links</h2>
+      <p class="muted">Footer ke Instagram, Facebook aur YouTube icons ke destination links yahan se update honge.</p>
+      <div class="field"><label>INSTAGRAM PROFILE URL</label><input id="instagramUrl" type="url" placeholder="https://www.instagram.com/yourprofile/"></div>
+      <div class="field"><label>FACEBOOK PAGE URL</label><input id="facebookUrl" type="url" placeholder="https://www.facebook.com/yourpage/"></div>
+      <div class="field"><label>YOUTUBE CHANNEL URL</label><input id="youtubeUrl" type="url" placeholder="https://www.youtube.com/@yourchannel"></div>
+      <div class="actions"><button class="btn purple" onclick="saveSocialLinks()">Save Social Links</button><button class="btn light" onclick="resetSocialLinks()">Use Default Links</button></div>
+      <div id="socialMsg"></div>
     </div>
 
     <div class="panel">
@@ -275,58 +305,78 @@ async function resetSiteLogo(){
     msg('logoMsg','The default LS logo has been restored.',true);
   }catch(e){msg('logoMsg',e.message||String(e));}
 }
-async function loadBannerSettings(){
+const DEFAULT_CAROUSEL_SLIDES = [
+  {kicker:'LIVENTA STAY • VERIFIED STUDENT HOMES',title:'Your next stay,',highlight:'closer to campus.',subtitle:'Find PGs, rooms and flats near North Campus. PG & room brokerage ₹0; flat brokerage applicable.',cta_text:'Explore stays →',cta_link:'#featured',image_desktop_url:'',image_mobile_url:''},
+  {kicker:'COMFORT THAT FEELS LIKE HOME',title:'A better place',highlight:'to call home.',subtitle:'Explore comfortable rooms and student-friendly stays around North Campus.',cta_text:'Explore rooms →',cta_link:'#featured',image_desktop_url:'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1800&q=85',image_mobile_url:''},
+  {kicker:'FIND YOUR NEXT STAY',title:'More choice',highlight:'closer to campus.',subtitle:'Browse verified PGs, private rooms and flats in your preferred location.',cta_text:'View properties →',cta_link:'#featured',image_desktop_url:'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1800&q=85',image_mobile_url:''}
+];
+let carouselSavedSlides = DEFAULT_CAROUSEL_SLIDES.map(x=>({...x}));
+async function loadCarouselSettings(){
   const {data,error}=await sb.from('site_settings').select('*').eq('id',1).maybeSingle();
-  if(error||!data) return;
-  for(const [id,key] of [['bannerKicker','banner_kicker'],['bannerTitle','banner_title'],['bannerHighlight','banner_highlight'],['bannerSubtitle','banner_subtitle'],['bannerCtaText','banner_cta_text'],['bannerCtaLink','banner_cta_link']]) document.getElementById(id).value=data[key]||'';
-  const bd=document.getElementById('bannerPreviewDesktop'), bm=document.getElementById('bannerPreviewMobile');
-  const du=data.banner_image_desktop_url||data.banner_image_url;
-  const mu=data.banner_image_mobile_url||data.banner_image_url;
-  if(du){bd.src=du;bd.style.display='block'}else{bd.style.display='none'}
-  if(mu){bm.src=mu;bm.style.display='block'}else{bm.style.display='none'}
+  if(error) return msg('carouselMsg','Carousel settings load nahi hui: '+error.message);
+  let slides=Array.isArray(data?.carousel_slides)?data.carousel_slides:[];
+  if(!slides.length){
+    slides=DEFAULT_CAROUSEL_SLIDES.map(x=>({...x}));
+    slides[0]={...slides[0],kicker:data?.banner_kicker||slides[0].kicker,title:data?.banner_title||slides[0].title,highlight:data?.banner_highlight||slides[0].highlight,subtitle:data?.banner_subtitle||slides[0].subtitle,cta_text:data?.banner_cta_text||slides[0].cta_text,cta_link:data?.banner_cta_link||slides[0].cta_link,image_desktop_url:data?.banner_image_desktop_url||data?.banner_image_url||'',image_mobile_url:data?.banner_image_mobile_url||''};
+  }
+  carouselSavedSlides=Array.from({length:3},(_,i)=>({...DEFAULT_CAROUSEL_SLIDES[i],...(slides[i]||{})}));
+  carouselSavedSlides.forEach((s,i)=>{
+    const n=i+1;
+    for(const [suffix,key] of [['Kicker','kicker'],['Title','title'],['Highlight','highlight'],['Subtitle','subtitle'],['CtaText','cta_text'],['CtaLink','cta_link']]){const el=document.getElementById('slide'+n+suffix);if(el)el.value=s[key]||'';}
+    for(const [device,key] of [['Desktop','image_desktop_url'],['Mobile','image_mobile_url']]){const img=document.getElementById('slide'+n+device+'Preview');if(img){if(s[key]){img.src=s[key];img.style.display='block'}else img.style.display='none';}}
+  });
 }
-function previewBanner(device){
-  const input=document.getElementById(device==='mobile'?'bannerImageMobile':'bannerImageDesktop');
-  const img=document.getElementById(device==='mobile'?'bannerPreviewMobile':'bannerPreviewDesktop');
-  const f=input?.files?.[0]; if(!f) return;
-  if(!String(f.type||'').startsWith('image/')) return msg('bannerMsg','Please select an image file.');
-  if(f.size>20*1024*1024) return msg('bannerMsg','The banner image must be smaller than 20 MB.');
-  img.src=URL.createObjectURL(f); img.style.display='block';
+function previewCarouselImage(slide,device){
+  const file=document.getElementById('slide'+slide+(device==='mobile'?'Mobile':'Desktop'))?.files?.[0];if(!file)return;
+  if(!String(file.type||'').startsWith('image/'))return msg('carouselMsg','Please choose a valid image file.');
+  if(file.size>20*1024*1024)return msg('carouselMsg','Each banner image must be smaller than 20 MB.');
+  const img=document.getElementById('slide'+slide+(device==='mobile'?'Mobile':'Desktop')+'Preview');img.src=URL.createObjectURL(file);img.style.display='block';
 }
-async function saveBannerSettings(){
+async function saveCarouselSettings(){
   try{
-    const fd=document.getElementById('bannerImageDesktop').files[0];
-    const fm=document.getElementById('bannerImageMobile').files[0];
-    const payload={id:1,banner_kicker:document.getElementById('bannerKicker').value.trim(),banner_title:document.getElementById('bannerTitle').value.trim(),banner_highlight:document.getElementById('bannerHighlight').value.trim(),banner_subtitle:document.getElementById('bannerSubtitle').value.trim(),banner_cta_text:document.getElementById('bannerCtaText').value.trim(),banner_cta_link:document.getElementById('bannerCtaLink').value.trim()||'#featured'};
-    for(const [f,key,kind] of [[fd,'banner_image_desktop_url','desktop'],[fm,'banner_image_mobile_url','mobile']]){
-      if(f){
-        if(f.size>20*1024*1024) return msg('bannerMsg','Banner image must be smaller than 20 MB.');
-        const ext=(f.name.split('.').pop()||'jpg').toLowerCase();
-        const path='branding/banner-'+kind+'-'+Date.now()+'.'+ext;
-        const up=await sb.storage.from('site-assets').upload(path,f,{upsert:false,contentType:f.type});
-        if(up.error) throw up.error;
-        payload[key]=sb.storage.from('site-assets').getPublicUrl(path).data.publicUrl;
+    const slides=[];
+    for(let i=1;i<=3;i++){
+      const old=carouselSavedSlides[i-1]||DEFAULT_CAROUSEL_SLIDES[i-1];
+      const item={kicker:document.getElementById('slide'+i+'Kicker').value.trim(),title:document.getElementById('slide'+i+'Title').value.trim(),highlight:document.getElementById('slide'+i+'Highlight').value.trim(),subtitle:document.getElementById('slide'+i+'Subtitle').value.trim(),cta_text:document.getElementById('slide'+i+'CtaText').value.trim(),cta_link:document.getElementById('slide'+i+'CtaLink').value.trim()||'#featured',image_desktop_url:old.image_desktop_url||'',image_mobile_url:old.image_mobile_url||''};
+      for(const [device,key] of [['desktop','image_desktop_url'],['mobile','image_mobile_url']]){
+        const file=document.getElementById('slide'+i+(device==='desktop'?'Desktop':'Mobile')).files[0];if(!file)continue;
+        if(file.size>20*1024*1024)throw new Error('Slide '+i+' '+device+' image must be smaller than 20 MB.');
+        const ext=(file.name.split('.').pop()||'jpg').toLowerCase();const path='branding/carousel-slide-'+i+'-'+device+'-'+Date.now()+'.'+ext;
+        const up=await sb.storage.from('site-assets').upload(path,file,{upsert:false,contentType:file.type});if(up.error)throw up.error;
+        item[key]=sb.storage.from('site-assets').getPublicUrl(path).data.publicUrl;
       }
+      slides.push(item);
     }
-    if(fd && !payload.banner_image_desktop_url) throw new Error('Desktop banner upload failed.');
-    if(fm && !payload.banner_image_mobile_url) throw new Error('Mobile banner upload failed.');
-    if(!fd && !fm){
-      const old=await sb.from('site_settings').select('banner_image_url,banner_image_desktop_url,banner_image_mobile_url').eq('id',1).maybeSingle();
-      if(!old.error){
-        if(old.data?.banner_image_desktop_url) payload.banner_image_desktop_url=old.data.banner_image_desktop_url;
-        if(old.data?.banner_image_mobile_url) payload.banner_image_mobile_url=old.data.banner_image_mobile_url;
-        if(old.data?.banner_image_url) payload.banner_image_url=old.data.banner_image_url;
-      }
-    }
-    const r=await sb.from('site_settings').upsert(payload,{onConflict:'id'}); if(r.error) throw r.error;
-    document.getElementById('bannerImageDesktop').value=''; document.getElementById('bannerImageMobile').value='';
-    await loadBannerSettings(); msg('bannerMsg','Desktop + Mobile banner saved. Public website refresh karein.',true);
-  }catch(e){msg('bannerMsg',e.message||String(e));}
+    const first=slides[0];
+    const payload={id:1,carousel_slides:slides,banner_kicker:first.kicker,banner_title:first.title,banner_highlight:first.highlight,banner_subtitle:first.subtitle,banner_cta_text:first.cta_text,banner_cta_link:first.cta_link,banner_image_desktop_url:first.image_desktop_url||null,banner_image_mobile_url:first.image_mobile_url||null};
+    const r=await sb.from('site_settings').upsert(payload,{onConflict:'id'});if(r.error)throw r.error;
+    carouselSavedSlides=slides.map(x=>({...x}));
+    for(let i=1;i<=3;i++){document.getElementById('slide'+i+'Desktop').value='';document.getElementById('slide'+i+'Mobile').value='';}
+    await loadCarouselSettings();msg('carouselMsg','All 3 banner slides saved. Public website refresh karein.',true);
+  }catch(e){msg('carouselMsg',e.message||String(e));}
 }
-async function resetBannerSettings(){
-  const r=await sb.from('site_settings').upsert({id:1,banner_kicker:null,banner_title:null,banner_highlight:null,banner_subtitle:null,banner_cta_text:null,banner_cta_link:null,banner_image_url:null},{onConflict:'id'});
-  if(r.error) return msg('bannerMsg',r.error.message);
-  await loadBannerSettings(); msg('bannerMsg','The default banner has been restored.',true);
+async function resetCarouselSettings(){
+  const defaults=DEFAULT_CAROUSEL_SLIDES.map(x=>({...x}));
+  const r=await sb.from('site_settings').upsert({id:1,carousel_slides:defaults,banner_kicker:defaults[0].kicker,banner_title:defaults[0].title,banner_highlight:defaults[0].highlight,banner_subtitle:defaults[0].subtitle,banner_cta_text:defaults[0].cta_text,banner_cta_link:defaults[0].cta_link,banner_image_desktop_url:null,banner_image_mobile_url:null,banner_image_url:null},{onConflict:'id'});
+  if(r.error)return msg('carouselMsg',r.error.message);
+  carouselSavedSlides=defaults;await loadCarouselSettings();msg('carouselMsg','Default 3-slide carousel restored.',true);
+}
+async function loadSocialLinks(){
+  const {data,error}=await sb.from('site_settings').select('instagram_url,facebook_url,youtube_url').eq('id',1).maybeSingle();if(error)return;
+  document.getElementById('instagramUrl').value=data?.instagram_url||'https://www.instagram.com/';
+  document.getElementById('facebookUrl').value=data?.facebook_url||'https://www.facebook.com/';
+  document.getElementById('youtubeUrl').value=data?.youtube_url||'https://www.youtube.com/';
+}
+function validSocialUrl(v){try{const u=new URL(v);return u.protocol==='https:'||u.protocol==='http:';}catch(e){return false;}}
+async function saveSocialLinks(){
+  const payload={id:1,instagram_url:document.getElementById('instagramUrl').value.trim(),facebook_url:document.getElementById('facebookUrl').value.trim(),youtube_url:document.getElementById('youtubeUrl').value.trim()};
+  if(Object.values(payload).slice(1).some(v=>!validSocialUrl(v)))return msg('socialMsg','Har social link me valid https:// ya http:// URL dalein.');
+  const r=await sb.from('site_settings').upsert(payload,{onConflict:'id'});if(r.error)return msg('socialMsg',r.error.message);
+  msg('socialMsg','Social media links saved. Public website refresh karein.',true);
+}
+async function resetSocialLinks(){
+  const payload={id:1,instagram_url:'https://www.instagram.com/',facebook_url:'https://www.facebook.com/',youtube_url:'https://www.youtube.com/'};
+  const r=await sb.from('site_settings').upsert(payload,{onConflict:'id'});if(r.error)return msg('socialMsg',r.error.message);await loadSocialLinks();msg('socialMsg','Default social links restored.',true);
 }
 
 async function loadGlobalWhatsapp(){
@@ -388,7 +438,8 @@ function showApp(user){
   loadList();
   loadAreas();
   loadSiteLogo();
-  loadBannerSettings();
+  loadCarouselSettings();
+  loadSocialLinks();
   loadGlobalWhatsapp();
   renderFacilityPanel();
 }
