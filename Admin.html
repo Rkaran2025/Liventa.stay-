@@ -420,15 +420,25 @@ async function deleteArea(id){
   loadAreas();
 }
 
+async function getRole(userId){
+  const r=await sb.from('profiles').select('role').eq('id',userId).maybeSingle();
+  if(r.error){ console.error('Role check failed:',r.error); return null; }
+  return r.data?.role || 'visitor';
+}
+
 async function login(){
   const email=document.getElementById('email').value.trim();
   const password=document.getElementById('password').value;
   if(!email||!password) return msg('loginMsg','Email and password required.');
   const {data,error}=await sb.auth.signInWithPassword({email,password});
   if(error) return msg('loginMsg',error.message);
+  const role=await getRole(data.user.id);
+  if(role!=='admin'){
+    await sb.auth.signOut();
+    return msg('loginMsg','Access denied. Admin account required.');
+  }
   showApp(data.user);
 }
-
 async function logout(){await sb.auth.signOut(); location.reload()}
 
 function showApp(user){
@@ -729,7 +739,11 @@ async function deleteProperty(id){
 
 (async()=>{
   const {data}=await sb.auth.getSession();
-  if(data.session){ showApp(data.session.user); }
+  if(data.session){
+    const role=await getRole(data.session.user.id);
+    if(role==='admin') showApp(data.session.user);
+    else await sb.auth.signOut();
+  }
 })();
 </script>
 </body>
