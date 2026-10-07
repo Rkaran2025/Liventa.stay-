@@ -1,4 +1,8 @@
 <!doctype html><html lang="en-IN"><head>
+<link rel="icon" type="image/png" sizes="48x48" href="/favicon.png">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Liventa Stay | PG & Hostels in Kamla Nagar, Delhi</title><meta name="description" content="Find PGs, hostels and student stays in Kamla Nagar, Delhi with Liventa Stay. Browse stays, prices, photos and amenities."/><meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"/><link rel="canonical" href="https://liventastay.in/"/><meta property="og:type" content="website"/><meta property="og:site_name" content="Liventa Stay"/><meta property="og:title" content="Liventa Stay | PG & Hostels in Kamla Nagar, Delhi"/><meta property="og:description" content="Find PGs, hostels and student stays in Kamla Nagar, Delhi with Liventa Stay."/><meta property="og:url" content="https://liventastay.in/"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="Liventa Stay | PG & Hostels in Kamla Nagar, Delhi"/><meta name="twitter:description" content="Find PGs, hostels and student stays in Kamla Nagar, Delhi with Liventa Stay."/>
 <style>
@@ -716,15 +720,37 @@ async function confirmVisit(){
 }
 function getUserDisplay(user){
   const md=user?.user_metadata||{};
-  const name=md.full_name||md.name||md.user_name||md.preferred_username||(user?.email||'Account').split('@')[0];
-  const avatar=md.avatar_url||md.picture||md.photo_url||'';
+  const identity=user?.identities?.find(i=>i?.provider==='google')?.identity_data||user?.identities?.[0]?.identity_data||{};
+  const name=md.full_name||md.name||identity.full_name||identity.name||md.user_name||md.preferred_username||(user?.email||'Account').split('@')[0];
+  const avatar=md.avatar_url||md.picture||md.photo_url||identity.avatar_url||identity.picture||identity.photo_url||'';
   const initials=String(name||'A').trim().split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase()||'A';
   return {name,avatar,initials,email:user?.email||''};
 }
 function applyAvatar(el, profile){
   if(!el) return;
-  if(profile.avatar){el.innerHTML='';el.style.backgroundImage='url("'+String(profile.avatar).replace(/"/g,'')+'")';el.style.backgroundSize='cover';el.style.backgroundPosition='center';}
-  else{el.style.backgroundImage='';el.textContent=profile.initials;}
+  el.style.backgroundSize='cover';
+  el.style.backgroundPosition='center';
+  el.style.backgroundRepeat='no-repeat';
+  if(profile.avatar){
+    const avatarUrl=String(profile.avatar).replace(/["\\]/g,'');
+    el.textContent='';
+    el.style.backgroundImage='url("'+avatarUrl+'")';
+    el.setAttribute('data-avatar-url',avatarUrl);
+    el.setAttribute('role','img');
+    el.setAttribute('aria-label',(profile.name||'Account')+' profile photo');
+    const testImg=new Image();
+    testImg.onload=()=>{};
+    testImg.onerror=()=>{
+      el.style.backgroundImage='';
+      el.textContent=profile.initials;
+      el.removeAttribute('data-avatar-url');
+    };
+    testImg.src=avatarUrl;
+  }else{
+    el.style.backgroundImage='';
+    el.removeAttribute('data-avatar-url');
+    el.textContent=profile.initials;
+  }
 }
 function updateAccountProfile(user){
   const signed=!!user, p=getUserDisplay(user||{});
@@ -888,7 +914,8 @@ async function signInWithGoogle(){
   const btn=document.getElementById('authGoogle');
   btn.disabled=true;setAuthMessage('Opening Google sign-in…',false);
   try{
-    const redirect='https://liventastay.in/index.html';
+    const liveRedirect='https://liventastay.in/';
+    const redirect=liveRedirect;
     const {error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:redirect,queryParams:{prompt:'select_account'}}});
     if(error)throw error;
   }catch(e){setAuthMessage(e.message||String(e));btn.disabled=false;}
@@ -1456,16 +1483,25 @@ async function loadSiteLogo(){
   }catch(e){ console.warn('Logo load skipped',e); }
 }
 async function loadProperties(){
-  const {data,error}=await sb.from('properties').select('*').order('created_at',{ascending:false});
-  if(error){
-    console.error(error);
-    DATA=[];
-    document.getElementById('grid').innerHTML='<p class="muted">Unable to load live properties. Please refresh the page.</p>';
-    return;
+  // Load live properties on the first page load as well; retry only transient
+  // Supabase requests so a manual refresh is not needed.
+  for(let attempt=0;attempt<3;attempt++){
+    try{
+      const {data,error}=await sb.from('properties').select('*').order('created_at',{ascending:false});
+      if(!error){
+        // Database is the source of truth: no fake 20-property fallback.
+        DATA=(data||[]).map(normalizeRow);
+        render();
+        return;
+      }
+      console.error(error);
+    }catch(e){
+      console.error(e);
+    }
+    if(attempt<2) await new Promise(resolve=>setTimeout(resolve,700*(attempt+1)));
   }
-  // Database is the source of truth: no fake 20-property fallback.
-  DATA=(data||[]).map(normalizeRow);
-  render();
+  DATA=[];
+  document.getElementById('grid').innerHTML='<p class="muted">Unable to load live properties. Please refresh the page.</p>';
 }
 function openLeadForm(){document.getElementById('leadModal')?.classList.add('show')} function closeLeadForm(){document.getElementById('leadModal')?.classList.remove('show')}
 async function submitLead(){const name=document.getElementById('leadName').value.trim(),phone=document.getElementById('leadPhone').value.trim(),type=document.getElementById('leadType').value,area=document.getElementById('leadArea').value,budget=document.getElementById('leadBudget').value,room=document.getElementById('leadRoom').value.trim(),gender=document.getElementById('leadGender').value,move=document.getElementById('leadMove').value,notes=document.getElementById('leadNotes').value.trim(); if(!name||!/^[0-9]{10}$/.test(phone)||!budget){document.getElementById('leadMsg').textContent='Please enter your name, valid 10-digit mobile number and budget.';return;} const payload={name,phone,property_type:type.toLowerCase(),area,budget:Number(budget),room_requirement:room||null,gender,move_in:move||null,notes:notes||null,status:'new',source:'website'}; try{await sb.from('leads').insert(payload)}catch(e){console.warn('Lead table unavailable',e)} const msg=`Hi Liventa Stay, I need a ${type}.%0AName: ${encodeURIComponent(name)}%0AMobile: ${encodeURIComponent(phone)}%0AArea: ${encodeURIComponent(area)}%0ABudget: ${encodeURIComponent('₹'+budget)}/month%0ARoom/BHK: ${encodeURIComponent(room||'Any')}%0AGender: ${encodeURIComponent(gender)}%0AMove-in: ${encodeURIComponent(move||'Flexible')}%0ARequirement: ${encodeURIComponent(notes||'None')}`; window.open(waUrl(decodeURIComponent(msg)),'_blank'); document.getElementById('leadMsg').textContent='Requirement sent. We’ll contact you on WhatsApp.'; setTimeout(closeLeadForm,900)}
