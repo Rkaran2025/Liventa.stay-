@@ -73,6 +73,7 @@ main{max-width:1200px;margin:auto;padding:18px 16px 110px}.crumb{font-size:11px;
   .about{font-size:13px!important;line-height:1.8!important}
   .landmark{font-size:12px!important}
 }
+.property-rating #propertyReviewCount{font-size:12px;color:#667085;font-weight:600}.property-rating #propertyAverageRating{font-weight:800;color:#1f2937}.review-item p{overflow-wrap:anywhere}
 </style>
 <script type="application/ld+json" id="propertySchema">{"@context":"https://schema.org","@type":"Accommodation","name":"Liventa Stay Property","url":"https://liventastay.in/property.html"}</script>
 <style id="liventa-pro-features">
@@ -180,15 +181,13 @@ body.property-page{background:#fbfaff}.nav{position:sticky;top:0;z-index:200;bac
 </head>
 <body class="property-page">
 <header class="nav"><div class="nav-inner">
-<a class="brand" href="index.html"><div id="brandMark" class="mark">LS</div><div class="brand-copy"><b>LIVENTA</b><span>STAY</span></div></a>
+<a class="brand" href="index.html" aria-label="Liventa Stay home"><div id="brandMark" class="mark">LS</div><div class="brand-copy"><b>LIVENTA</b><span>STAY</span></div></a>
 <div class="grow"></div>
-<a class="navlink" href="index.html#featured" onclick="sessionStorage.setItem('liventa_property_type','pg')">PGs</a><a class="navlink" href="index.html#featured">Rooms</a><a class="navlink" href="index.html#featured">Flats</a><a class="navlink" href="tiffin.html">Tiffin</a><a class="navlink" href="index.html#areas">Areas</a>
-<button class="round" aria-label="Saved stays" onclick="saveProperty()">♡</button>
+<button class="round" aria-label="Save this stay" title="Save this stay" onclick="saveProperty()">♡</button>
 <a class="list" href="https://wa.me/917454024119?text=Hi%20Liventa%20Stay%2C%20I%20want%20to%20list%20my%20property." target="_blank" rel="noopener">+ List Stay</a>
-<a class="inquiry" href="https://wa.me/917454024119?text=Hi%20Liventa%20Stay%2C%20I%20want%20to%20make%20an%20inquiry%20about%20a%20PG%2Fstudent%20stay." target="_blank" rel="noopener">Inquiry</a>
-<button class="signin" onclick="openPropertyAuth()">Sign In</button><button class="account-profile" id="accountProfile" onclick="openPropertyAuth()" aria-label="Account"><span id="accountAvatar">?</span></button>
-<button class="hamb" onclick="toggleMenu()">☰</button>
-<div id="menu" class="menu"><a href="index.html#featured">PGs</a><a href="index.html#featured">Rooms</a><a href="index.html#featured">Flats</a><a href="tiffin.html">🥗 Tiffin Services</a><a href="index.html#areas">Browse by Area</a><a href="index.html#how">How it works</a><a href="index.html#faq">FAQs</a><a href="index.html#footer">Contact</a></div>
+<button class="signin" onclick="openPropertyAuth()">Sign In</button><button class="account-profile" id="accountProfile" onclick="openPropertyAuth()" aria-label="Account" title="Account"><span id="accountAvatar">?</span></button>
+<button class="hamb" onclick="toggleMenu()" aria-label="Open menu">☰</button>
+<div id="menu" class="menu"><a href="index.html">Home</a><a href="index.html#featured" onclick="sessionStorage.setItem('liventa_property_type','pg')">PGs</a><a href="index.html#featured">Rooms</a><a href="index.html#featured">Flats</a><a href="tiffin.html">🥗 Tiffin Services</a><a href="index.html#areas">Browse by Area</a><a href="index.html#how">How it works</a><a href="index.html#faq">FAQs</a><a href="index.html#footer">Contact</a></div>
 </div></header>
 <main>
 <noscript id="propertyNoScript"><div class="panel" style="margin-bottom:14px"><h2>Liventa Stay Property</h2><p class="about">Please enable JavaScript to load the latest property details, photos, rent, amenities and enquiry options.</p></div></noscript>
@@ -210,7 +209,7 @@ function typeOf(d){const x=(d.property_type+" "+d.name+" "+d.description+" "+d.r
 function amenityIcon(x){const s=String(x).toLowerCase();if(/wifi|internet/.test(s))return"📶";if(/ac|air conditioning/.test(s))return"❄️";if(/food|meal/.test(s))return"🍽️";if(/security|cctv|gate/.test(s))return"🔐";if(/washroom|bath/.test(s))return"🚿";if(/power|backup/.test(s))return"⚡";if(/laundry|clean/.test(s))return"🧺";if(/study|desk/.test(s))return"🪑";if(/furnish/.test(s))return"🛋️";return"✓"}
 let gallery=[],gi=0;
 function allMedia(d){const a=[...(Array.isArray(d.media)?d.media:[])];if(d.video)a.push({video:d.video});if(!a.length)a.push("https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1400&q=88");return a}
-function renderGallery(){const stage=document.getElementById('stage');const thumbs=document.getElementById('thumbs');const count=document.getElementById('gcount');if(!stage)return;const item=gallery[gi];if(item&&typeof item==='object'&&item.video){stage.innerHTML='<video id="mainVideo" controls playsinline src="'+esc(item.video)+'"></video><div class="gallery-type">VIDEO</div>'}else{stage.innerHTML='<img id="mainImage" src="'+esc(item)+'" alt="Property photo"><div class="verified-photo">✓ Verified PG</div>'}document.getElementById('prev').style.display=gallery.length>1?'block':'none';document.getElementById('next').style.display=gallery.length>1?'block':'none';count.textContent=(gi+1)+' / '+gallery.length;thumbs.innerHTML=gallery.map((x,i)=>typeof x==='object'?'<button class="thumb video-thumb '+(i===gi?'active':'')+'" onclick="go('+i+')">▶</button>':'<button class="thumb '+(i===gi?'active':'')+'" onclick="go('+i+')"><img loading="lazy" decoding="async" src="'+esc(x)+'" alt="Property thumbnail"></button>').join('')}
+function renderGallery(){const stage=document.getElementById('stage');const thumbs=document.getElementById('thumbs');const count=document.getElementById('gcount');if(!stage)return;const item=gallery[gi];if(item&&typeof item==='object'&&item.video){stage.innerHTML='<video id="mainVideo" controls playsinline src="'+esc(item.video)+'"></video><div class="gallery-type">VIDEO</div>'}else{stage.innerHTML='<img id="mainImage" src="'+esc(item)+'" alt="Property photo"><div class="verified-photo">✓ Liventa Stay</div>'}document.getElementById('prev').style.display=gallery.length>1?'block':'none';document.getElementById('next').style.display=gallery.length>1?'block':'none';count.textContent=(gi+1)+' / '+gallery.length;thumbs.innerHTML=gallery.map((x,i)=>typeof x==='object'?'<button class="thumb video-thumb '+(i===gi?'active':'')+'" onclick="go('+i+')">▶</button>':'<button class="thumb '+(i===gi?'active':'')+'" onclick="go('+i+')"><img loading="lazy" decoding="async" src="'+esc(x)+'" alt="Property thumbnail"></button>').join('')}
 function go(i){gi=(i+gallery.length)%gallery.length;renderGallery()}
 function next(){go(gi+1)}function prev(){go(gi-1)}
 let sx=0;function touchStart(e){sx=e.changedTouches[0].clientX}function touchEnd(e){const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>45){if(dx<0)next();else prev()}}
@@ -295,20 +294,20 @@ async function init(){try{
   document.getElementById('canonical').href='https://liventastay.in/property.html?id='+encodeURIComponent(String(d.id??requestedId));
   document.getElementById('ogTitle').content=document.title;document.getElementById('ogDescription').content=document.getElementById('metaDescription').content;document.getElementById('ogUrl').content=location.href;document.getElementById('crumbName').textContent=d.name;
   const gender=d.gender||'Boys & Girls';
-  const verifiedText=d.verified ? (d.verification_status || "Verified listing") : "Verification pending";
+  const verifiedText=d.verified ? 'Liventa Stay Verified' : 'Verification pending';
   const selected=(amen.length?amen.slice(0,8):[]).map(x=>x);
   const amenList=(amen.length?amen:[]).slice(0,16);
   const nearby=['Delhi University North Campus','Kamla Nagar Market','GTB Nagar Metro Station','Ramakrishna Mission Hospital'];
   const topMedia=gallery[0]&&typeof gallery[0]==='object'?'':gallery[0];
   document.getElementById('propertyRoot').innerHTML=`<div class="property-head"><div class="property-title">
-<div class="property-rating"><span class="star">★</span> ${d.rating.toFixed(1)} ${d.reviews?'<span>('+esc(d.reviews)+' reviews)</span>':'<span>(Verified)</span>'}</div>
+<div class="property-rating" id="propertyRatingSummary"><span class="star">★</span> <span id="propertyAverageRating">${Number(d.rating||0).toFixed(1)}</span> <span id="propertyReviewCount">(Loading reviews…)</span></div>
 <h1>${esc(d.displayName)}</h1>
 <div class="property-meta">📍 <b>${esc(d.loc)}</b> · ${esc(d.college)} · <b>${esc(gender)}</b></div>
 <div class="property-actions"><button type="button" class="share-btn" onclick="shareProperty()">↗ Share</button></div>
 </div></div>
-<div class="layout"><div class="gallery-card"><div id="stage" class="gallery-stage" ontouchstart="touchStart(event)" ontouchend="touchEnd(event)"><img src="${esc(topMedia)}" alt="${esc(d.name)} property photo"></div><div class="gallery-nav"><button id="prev" onclick="prev()">‹</button><button id="next" onclick="next()">›</button></div><span id="gcount" class="gallery-count">1 / ${gallery.length}</span><div id="thumbs" class="thumbs"></div></div><aside class="enquiry"><h3>Quick Enquiry</h3><p>Get more details about this ${pt.toLowerCase()}</p><a class="btn wa" target="_blank" href="${wa('Hi Liventa Stay, I want details about '+d.name+' in '+d.loc+'.')}">◉ Chat on WhatsApp</a><button type="button" class="btn visit" onclick="scheduleVisit()">📅 Schedule Visit</button><a class="btn call" href="tel:${SITE_WHATSAPP}">☎ Call Now</a><a class="btn home" href="index.html#featured">Browse More Stays →</a></aside></div>
+<div class="layout"><div class="gallery-card"><div id="stage" class="gallery-stage" ontouchstart="touchStart(event)" ontouchend="touchEnd(event)"><img src="${esc(topMedia)}" alt="${esc(d.name)} property photo"></div><div class="gallery-nav"><button id="prev" onclick="prev()">‹</button><button id="next" onclick="next()">›</button></div><span id="gcount" class="gallery-count">1 / ${gallery.length}</span><div id="thumbs" class="thumbs"></div></div><aside class="enquiry"><h3>Quick Enquiry</h3><p>Get more details about this ${pt.toLowerCase()}</p><a class="btn wa" target="_blank" href="${wa('Hi Liventa Stay, I want details about '+d.name+' in '+d.loc+'.')}">WhatsApp · Chat Now</a><button type="button" class="btn visit" onclick="scheduleVisit()">📅 Schedule Visit</button><a class="btn call" href="tel:${SITE_WHATSAPP}">☎ Call Now</a><a class="btn home" href="index.html#featured">Browse More Stays →</a></aside></div>
 <div class="pro-feature-bar"><div class="pro-feature"><b>🏠 Type</b><span>${esc(pt)} · ${esc(d.room)}</span></div><div class="pro-feature"><b>👥 For</b><span>${esc(gender)}</span></div><div class="pro-feature"><b>🛡️ Status</b><span>${esc(verifiedText)}</span></div><div class="pro-feature"><b>🎓 Near</b><span>${esc(d.college)}</span></div></div>
-<div class="audit-card"><div class="audit-head"><div><h3 style="margin:0">Liventa Stay verification</h3><p class="review-note" style="margin:4px 0 0">Only display claims that are recorded for this property.</p></div><span class="audit-badge">${d.verified?'✓ Verified':'Pending'}</span></div><div class="audit-grid"><div class="audit-item"><b>Wi-Fi</b>${esc(d.wifi||'Not specified')}</div><div class="audit-item"><b>Security</b>${esc((amen.find(x=>/security|cctv|gate/i.test(x)))||'Not specified')}</div><div class="audit-item"><b>Power backup</b>${esc(d.power||'Not specified')}</div><div class="audit-item"><b>Verification note</b>${esc(d.verification_note||'Not specified')}</div></div></div>
+<div class="audit-card"><div class="audit-head"><div><h3 style="margin:0">Liventa Stay Verification</h3><p class="review-note" style="margin:4px 0 0">Only display claims that are recorded for this property.</p></div><span class="audit-badge">${d.verified?'✓ Liventa Stay Verified':'Verification pending'}</span></div><div class="audit-grid"><div class="audit-item"><b>Wi-Fi</b>${esc(d.wifi||'Not specified')}</div><div class="audit-item"><b>Security</b>${esc((amen.find(x=>/security|cctv|gate/i.test(x)))||'Not specified')}</div><div class="audit-item"><b>Power backup</b>${esc(d.power||'Not specified')}</div><div class="audit-item"><b>Verification note</b>${esc(d.verification_note||'Not specified')}</div></div></div>
 <div class="panel"><h3 style="margin:0">Important information</h3><div class="important-grid"><div class="important-item"><small>Security deposit</small><b>${esc(d.deposit||'Contact Liventa Stay')}</b></div><div class="important-item"><small>Notice period</small><b>${esc(d.notice||'Contact Liventa Stay')}</b></div><div class="important-item"><small>Furnishing</small><b>${esc(d.furnishing||'Not specified')}</b></div><div class="important-item"><small>Food / meals</small><b>${esc(d.food||'Not specified')}</b></div><div class="important-item"><small>Gate / curfew</small><b>${esc(d.curfew||'Not specified')}</b></div><div class="important-item"><small>Availability</small><b>${esc(d.availability||'Check with Liventa Stay')}</b></div></div></div>
 <div class="spec-head"><div class="spec-location">📍 Location / Area<b id="specLocation"></b></div><div class="spec-rent"><strong id="specRent"></strong><span>/month</span></div></div>
 <div class="stay-snapshot"><div><span>Type</span><b>${esc(pt)}</b></div><div><span>Sharing</span><b>${esc(d.room)}</b></div><div><span>Gender</span><b>${esc(gender)}</b></div><div><span>Furnishing</span><b>${esc(d.furnishing||'On enquiry')}</b></div><div><span>Deposit</span><b>${d.deposit!==''&&d.deposit!=null?'₹'+Number(d.deposit).toLocaleString('en-IN'):'On enquiry'}</b></div><div><span>College distance</span><b>${esc(d.collegeDistance||'On enquiry')}</b></div></div>
@@ -334,7 +333,7 @@ async function init(){try{
 <section class="panel similar"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><div><h3 style="margin-bottom:4px">Similar Stays</h3><p class="review-note" style="margin:0">Nearby options you may like.</p></div><a class="btn home" style="margin-top:0;padding:9px 12px" href="index.html#featured">View All</a></div><div id="similarGrid" class="similar-grid"></div></section>`;
   document.getElementById('specLocation').textContent=d.loc;document.getElementById('specRent').textContent='₹'+d.price.toLocaleString('en-IN');
   document.getElementById('loading').style.display='none';document.getElementById('propertyRoot').style.display='block';
-  loadSimilarStays(d.id,pt,d.loc);loadApprovedReviews(d.id);document.getElementById('bottomActions').innerHTML='<div class="rent-mini"><small>Rent</small><b>₹'+d.price.toLocaleString('en-IN')+'<span>/month</span></b></div><a class="wa" aria-label="WhatsApp" target="_blank" rel="noopener" href="'+wa('Hi Liventa Stay, I want details about '+d.name+' in '+d.loc+'.')+'">◉</a><button type="button" class="visit" onclick="scheduleVisit()">📅 Schedule Visit</button>';renderGallery();
+  loadSimilarStays(d.id,pt,d.loc);loadApprovedReviews(d.id);subscribeToPropertyReviews(d.id);document.getElementById('bottomActions').innerHTML='<div class="rent-mini"><small>Rent</small><b>₹'+d.price.toLocaleString('en-IN')+'<span>/month</span></b></div><a class="wa" aria-label="WhatsApp" target="_blank" rel="noopener" href="'+wa('Hi Liventa Stay, I want details about '+d.name+' in '+d.loc+'.')+'">WhatsApp</a><button type="button" class="visit" onclick="scheduleVisit()">📅 Schedule Visit</button>';renderGallery();
   const schema={"@context":"https://schema.org","@type":"Accommodation","name":d.name,"url":location.href,"description":d.description,"address":{"@type":"PostalAddress","addressLocality":d.loc,"addressRegion":"Delhi","addressCountry":"IN"},"offers":{"@type":"Offer","priceCurrency":"INR","price":String(d.price),"availability":"https://schema.org/InStock"},"provider":{"@type":"Organization","name":"Liventa Stay","url":"https://liventastay.in/"}};document.getElementById('propertySchema').textContent=JSON.stringify(schema);
 }catch(e){
   console.error(e);
@@ -455,19 +454,52 @@ async function propertySignup(){
   if(error){m.textContent=error.message;return;}
   if(data?.session){closeLogin(); if(loginPurpose==='review'){openReview()} else {scheduleVisit();}} else {m.textContent='Account created. Check your email if confirmation is enabled, then login.';}
 }
+async function updatePropertyAuthUI(user){
+  const sign=document.querySelector('.signin'),profile=document.getElementById('accountProfile'),avatar=document.getElementById('accountAvatar');
+  if(sign)sign.style.display=user?'none':'';
+  if(profile)profile.style.display=user?'inline-flex':'none';
+  if(avatar)avatar.textContent=(user?.user_metadata?.full_name||user?.email||'?').trim().charAt(0).toUpperCase();
+}
+sb.auth.onAuthStateChange((_event,session)=>{updatePropertyAuthUI(session?.user||null)});
+sb.auth.getSession().then(({data})=>updatePropertyAuthUI(data?.session?.user||null));
 function saveProperty(){const id=new URLSearchParams(location.search).get('id');const key='liventa_saved_properties';let a=[];try{a=JSON.parse(localStorage.getItem(key)||'[]')}catch(e){};const i=a.indexOf(String(id));if(i>=0){a.splice(i,1);showToast('Removed from saved stays')}else{a.push(String(id));showToast('Saved to your stays')}localStorage.setItem(key,JSON.stringify(a));}
 async function shareProperty(){const url=location.href;try{if(navigator.share){await navigator.share({title:document.title,url});}else{await navigator.clipboard.writeText(url);showToast('Property link copied');}}catch(e){}}
 function showToast(msg){const x=document.getElementById('shareToast');if(!x)return;x.textContent=msg;x.classList.add('show');clearTimeout(window.__toast);window.__toast=setTimeout(()=>x.classList.remove('show'),1800)}
 async function loadApprovedReviews(propertyId){
   const box=document.getElementById('reviewList'); if(!box)return;
-  const {data,error}=await sb.from('property_reviews').select('name,rating,review,created_at').eq('property_id',propertyId).eq('status','approved').order('created_at',{ascending:false}).limit(5);
-  if(error||!data?.length){box.innerHTML='<p class="review-note">No approved reviews yet. Verified users can be the first to share an experience.</p>';return;}
-  box.innerHTML=data.map(r=>'<div class="review-item"><div><b>'+esc(r.name||'Verified user')+'</b> <span class="review-stars">'+('★'.repeat(Math.max(1,Math.min(5,Number(r.rating)||5))))+'</span></div><p>'+esc(r.review||'')+'</p></div>').join('');
+  const countEl=document.getElementById('propertyReviewCount');
+  const avgEl=document.getElementById('propertyAverageRating');
+  const {data,error}=await sb.from('property_reviews')
+    .select('id,name,rating,review,created_at')
+    .eq('property_id',String(propertyId)).eq('status','approved')
+    .order('created_at',{ascending:false});
+  if(error){
+    console.error('Could not load approved property reviews:',error);
+    box.innerHTML='<p class="review-note">Reviews are temporarily unavailable.</p>';
+    if(countEl)countEl.textContent='(Reviews unavailable)';
+    return;
+  }
+  const rows=data||[];
+  const count=rows.length;
+  const avg=count?rows.reduce((sum,r)=>sum+(Number(r.rating)||0),0)/count:0;
+  if(countEl)countEl.textContent='('+count+' review'+(count===1?'':'s')+')';
+  if(avgEl)avgEl.textContent=avg.toFixed(1);
+  // Keep any other review-count labels on this page in sync with the same approved rows.
+  document.querySelectorAll('[data-property-review-count]').forEach(el=>el.textContent=String(count));
+  if(!count){box.innerHTML='<p class="review-note">No approved reviews yet. Reviews appear here after moderation.</p>';return;}
+  box.innerHTML=rows.slice(0,5).map(r=>'<div class="review-item"><div><b>'+esc(r.name||'Verified user')+'</b> <span class="review-stars">'+('★'.repeat(Math.max(1,Math.min(5,Number(r.rating)||5))))+'</span></div><p>'+esc(r.review||'')+'</p></div>').join('');
 }
+function subscribeToPropertyReviews(propertyId){
+  if(window.__liventaReviewChannel){try{sb.removeChannel(window.__liventaReviewChannel)}catch(e){}}
+  window.__liventaReviewChannel=sb.channel('property-reviews-'+String(propertyId))
+    .on('postgres_changes',{event:'*',schema:'public',table:'property_reviews',filter:'property_id=eq.'+String(propertyId)},()=>loadApprovedReviews(propertyId))
+    .subscribe();
+}
+
 async function loadSimilarStays(currentId,currentType,currentLoc){
   const box=document.getElementById('similarGrid'); if(!box)return;
   const {data,error}=await sb.from('properties').select('id,name,location,locality,rent,monthly_rent,price,image_url,media_urls,gender,property_type').neq('id',currentId).limit(12);
-  if(error||!data?.length){box.innerHTML='<p class="review-note">No approved reviews yet. Verified users can be the first to share an experience.</p>';return;}
+  if(error||!data?.length){box.innerHTML='<p class="review-note">No similar stays are available right now.</p>';return;}
   const loc=String(currentLoc||'').toLowerCase();
   const rows=data.filter(x=>String(x.location||x.locality||'').toLowerCase().includes(loc.split(',')[0].trim())).slice(0,3);
   const use=(rows.length?rows:data).slice(0,2);
@@ -506,4 +538,28 @@ document.addEventListener('click',e=>{
   e.preventDefault();document.body.classList.add('page-leaving');setTimeout(()=>location.href=href,170);
 });
 </script>
+
+<style id="liventa-home-header-order-fix">
+/* Keep the homepage header order on property pages: brand, heart, List Stay, Sign In/account, menu. */
+.nav .nav-inner{display:flex;align-items:center;gap:12px}
+.nav .brand{flex:0 0 auto}.nav .grow{flex:1 1 auto;min-width:4px}
+.nav .round{display:inline-flex!important;align-items:center;justify-content:center;flex:0 0 auto;width:43px;height:43px;border-radius:50%;font-size:22px}
+.nav .list{display:inline-flex!important;align-items:center;justify-content:center;white-space:nowrap;flex:0 0 auto;padding:12px 17px}
+.nav .signin{display:inline-flex!important;align-items:center;justify-content:center;white-space:nowrap;flex:0 0 auto;padding:12px 18px}
+.nav .account-profile{display:none!important;flex:0 0 auto}
+.nav .hamb{display:inline-flex!important;align-items:center;justify-content:center;flex:0 0 auto;width:43px;height:43px;margin-left:0}
+.nav .inquiry,.nav .navlink{display:none!important}
+@media(max-width:700px){
+ .nav{height:64px;padding:7px 9px}.nav-inner{height:50px;gap:6px!important}
+ .nav .brand{gap:5px}.nav .mark,.nav .logo-img{width:34px;height:34px;flex:0 0 34px}
+ .nav .brand b{font-size:13px;line-height:15px}.nav .brand span{font-size:10px;margin-left:1px}
+ .nav .round{width:32px;height:32px;font-size:19px;padding:0}
+ .nav .list{padding:8px 9px;font-size:10px;line-height:1;letter-spacing:-.2px}
+ .nav .signin{padding:8px 10px;font-size:10px;line-height:1}
+ .nav .hamb{width:32px;height:32px;font-size:18px;margin-left:0}
+ .nav .grow{min-width:0}
+}
+@media(max-width:360px){.nav-inner{gap:4px!important}.nav .brand b{font-size:12px}.nav .brand span{font-size:9px}.nav .list{padding:8px 7px;font-size:9px}.nav .signin{padding:8px 7px;font-size:9px}.nav .round,.nav .hamb{width:30px;height:30px}}
+</style>
+
 </body></html>
