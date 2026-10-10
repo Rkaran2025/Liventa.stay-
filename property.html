@@ -445,8 +445,9 @@ body.property-page{background:#fbfaff}.nav{position:sticky;top:0;z-index:200;bac
   .nav-inner>.grow{flex:1 1 auto!important;min-width:2px!important}
   .nav-inner>.round{display:flex!important;align-items:center!important;justify-content:center!important;flex:0 0 54px!important;width:54px!important;height:54px!important;margin:0!important;border-radius:50%!important;font-size:27px!important;background:#fff!important;border:1px solid #eee7f5!important;order:2!important}
   .nav-inner>.list{display:inline-flex!important;align-items:center!important;justify-content:center!important;flex:0 0 auto!important;padding:16px 17px!important;border-radius:28px!important;font-size:14px!important;white-space:nowrap!important;order:3!important}
-  .nav-inner>.inquiry,.nav-inner>.signin{display:none!important}
-  .nav-inner>#accountProfile{display:flex!important;align-items:center!important;justify-content:center!important;flex:0 0 62px!important;width:62px!important;height:62px!important;padding:4px!important;border:1px solid #e5dfec!important;border-radius:50%!important;background:#fff!important;order:4!important}
+  .nav-inner>.inquiry{display:none!important}
+  .nav-inner>.signin{display:inline-flex!important;align-items:center!important;justify-content:center!important;order:4!important;flex:0 0 auto!important;padding:12px 18px!important;font-size:14px!important;white-space:nowrap!important;background:#fff!important;color:#5d22c9!important;border:1px solid #e5dfec!important;border-radius:28px!important}
+  .nav-inner>#accountProfile{display:none!important;align-items:center!important;justify-content:center!important;flex:0 0 62px!important;width:62px!important;height:62px!important;padding:4px!important;border:1px solid #e5dfec!important;border-radius:50%!important;background:#fff!important;order:4!important}
   .nav-inner>#accountProfile .account-avatar{display:block!important;width:52px!important;height:52px!important;flex:0 0 52px!important;border-radius:50%!important;background-color:#eee!important;background-position:center!important;background-size:cover!important;overflow:hidden!important}
   .nav-inner>.hamb{display:flex!important;align-items:center!important;justify-content:center!important;flex:0 0 54px!important;width:54px!important;height:54px!important;margin:0!important;border-radius:50%!important;background:#fff!important;border:1px solid #eee7f5!important;font-size:27px!important;order:5!important}
   #accountMenu{z-index:1500!important;top:88px!important}
@@ -460,6 +461,7 @@ body.property-page{background:#fbfaff}.nav{position:sticky;top:0;z-index:200;bac
  .brand-copy span{font-size:11px!important}
  .nav-inner>.round{flex-basis:43px!important;width:43px!important;height:43px!important;font-size:24px!important}
  .nav-inner>.list{padding:13px 10px!important;font-size:11px!important}
+ .nav-inner>.signin{padding:10px 11px!important;font-size:11px!important}
  .nav-inner>#accountProfile{flex-basis:46px!important;width:46px!important;height:46px!important}
  .nav-inner>#accountProfile .account-avatar{width:38px!important;height:38px!important;flex-basis:38px!important}
  .nav-inner>.hamb{flex-basis:44px!important;width:44px!important;height:44px!important;font-size:23px!important}
@@ -911,7 +913,7 @@ function updateAccountProfile(user){
   const signed=!!user, p=getUserDisplay(user||{});
   const button=document.getElementById('accountProfile');
   const sign=document.querySelector('.signin');
-  if(button) button.style.display=signed?'inline-flex':'none';
+  if(button) button.style.setProperty('display', signed?'inline-flex':'none', 'important');
   if(sign) sign.style.setProperty('display', signed?'none':'inline-flex', 'important');
   if(signed){
     button.title=p.name||'Account';
@@ -1125,4 +1127,76 @@ function openSaved(){
 function htmlEscape(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 
 </script>
+
+<style id="requested-header-favourites-fix">
+/* Only the requested mobile header and Favourite Properties fixes */
+@media(max-width:700px){
+  .nav{height:72px!important;padding:7px 12px!important;overflow:visible!important}
+  .nav-inner{display:flex!important;align-items:center!important;gap:7px!important;width:100%!important;min-width:0!important;overflow:visible!important}
+  .nav-inner>.brand{flex:1 1 auto!important;min-width:0!important;max-width:none!important;gap:7px!important}
+  .nav-inner>.brand .mark,.nav-inner>.brand .logo-img{width:43px!important;height:43px!important;flex:0 0 43px!important}
+  .nav-inner>.brand .brand-copy{display:flex!important;white-space:nowrap!important;align-items:baseline!important;min-width:0!important}
+  .nav-inner>.brand .brand-copy b{font-size:clamp(14px,4.1vw,18px)!important;line-height:1!important}
+  .nav-inner>.brand .brand-copy span{font-size:clamp(10px,2.8vw,13px)!important;letter-spacing:-.3px!important}
+  .nav-inner>.grow{display:none!important}
+  .nav-inner>.round{display:flex!important;align-items:center!important;justify-content:center!important;order:2!important;flex:0 0 43px!important;width:43px!important;height:43px!important;font-size:24px!important;margin:0!important}
+  .nav-inner>.list{display:inline-flex!important;align-items:center!important;justify-content:center!important;order:3!important;flex:0 0 auto!important;padding:12px 10px!important;font-size:11px!important;white-space:nowrap!important}
+  .nav-inner>.inquiry{display:none!important}
+  .nav-inner>.signin{display:inline-flex!important;align-items:center!important;justify-content:center!important;order:4!important;flex:0 0 auto!important;padding:10px 11px!important;font-size:11px!important;white-space:nowrap!important;background:#fff!important;color:#5d22c9!important;border:1px solid #e8def5!important}
+  .nav-inner>#accountProfile{display:none!important;order:4!important;flex:0 0 46px!important;width:46px!important;height:46px!important;padding:3px!important;border-radius:50%!important;align-items:center!important;justify-content:center!important}
+  .nav-inner>#accountProfile .account-avatar{display:block!important;width:38px!important;height:38px!important;flex:0 0 38px!important;border-radius:50%!important;background-position:center!important;background-size:cover!important;overflow:hidden!important}
+  .nav-inner>.hamb{display:flex!important;align-items:center!important;justify-content:center!important;order:5!important;flex:0 0 43px!important;width:43px!important;height:43px!important;margin:0!important;font-size:23px!important}
+  .account-panel{z-index:4000!important;align-items:center!important;justify-content:center!important;padding:12px!important;overflow-y:auto!important;box-sizing:border-box!important}
+  .account-panel-card{width:100%!important;max-width:560px!important;max-height:calc(100dvh - 24px)!important;overflow-x:hidden!important;overflow-y:auto!important;padding:22px 14px!important;border-radius:24px!important;box-sizing:border-box!important;margin:auto!important}
+  .account-panel-card h2{font-size:clamp(23px,6vw,29px)!important;line-height:1.15!important;overflow-wrap:anywhere!important;margin-right:35px!important}
+  #accountPanel .visit-pill{max-width:calc(100% - 35px)!important;white-space:normal!important}
+  .account-panel-content,.saved-list{width:100%!important;min-width:0!important;box-sizing:border-box!important}
+  .saved-item{width:100%!important;min-width:0!important;display:grid!important;grid-template-columns:64px minmax(0,1fr) auto!important;gap:9px!important;padding:10px!important;box-sizing:border-box!important;align-items:center!important}
+  .saved-thumb{width:64px!important;height:64px!important;min-width:0!important;flex:none!important}
+  .saved-item-main{min-width:0!important;width:100%!important}
+  .saved-item-main strong{white-space:normal!important;overflow-wrap:anywhere!important;font-size:12px!important}
+  .saved-price{font-size:12px!important;grid-column:2!important;grid-row:2!important;white-space:nowrap!important}
+  .saved-item .saved-remove{font-size:10px!important;padding:8px 9px!important;white-space:nowrap!important}
+  .saved-item a.saved-remove{grid-column:3!important;grid-row:1!important}
+  .saved-item button.saved-remove{grid-column:3!important;grid-row:2!important}
+}
+@media(max-width:390px){
+  .nav-inner{gap:5px!important}
+  .nav-inner>.brand{gap:5px!important}
+  .nav-inner>.brand .mark,.nav-inner>.brand .logo-img{width:38px!important;height:38px!important;flex-basis:38px!important}
+  .nav-inner>.brand .brand-copy b{font-size:13px!important}
+  .nav-inner>.brand .brand-copy span{font-size:9px!important}
+  .nav-inner>.round{width:38px!important;height:38px!important;flex-basis:38px!important}
+  .nav-inner>.list{padding:10px 8px!important;font-size:10px!important}
+  .nav-inner>.signin{padding:9px 8px!important;font-size:10px!important}
+  .nav-inner>.hamb{width:38px!important;height:38px!important;flex-basis:38px!important}
+  .saved-item{grid-template-columns:54px minmax(0,1fr) auto!important;gap:7px!important;padding:8px!important}
+  .saved-thumb{width:54px!important;height:58px!important}
+  .saved-item .saved-remove{padding:7px 7px!important;font-size:9px!important}
+}
+</style>
+<script id="requested-auth-favourite-behaviour">
+(function(){
+  function syncHeaderAuth(){
+    const signed=!!(window.authUser && window.authUser.id);
+    const sign=document.querySelector('.nav-inner>.signin');
+    const profile=document.getElementById('accountProfile');
+    if(sign) sign.style.setProperty('display',signed?'none':'inline-flex','important');
+    if(profile) profile.style.setProperty('display',signed?'flex':'none','important');
+  }
+  document.addEventListener('DOMContentLoaded',syncHeaderAuth);
+  const oldUpdate=window.updateAccountProfile;
+  if(typeof oldUpdate==='function'){
+    window.updateAccountProfile=function(user){const out=oldUpdate.apply(this,arguments);syncHeaderAuth();return out;};
+  }
+  document.addEventListener('error',function(e){
+    const img=e.target;
+    if(img && img.classList && img.classList.contains('saved-thumb')){
+      img.removeAttribute('src');img.alt='';img.style.visibility='hidden';
+      img.style.background='linear-gradient(135deg,#f1e8ff,#fff7e8)';
+    }
+  },true);
+})();
+</script>
+
 </body></html>
