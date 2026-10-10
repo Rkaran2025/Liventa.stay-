@@ -412,6 +412,60 @@ body.property-page{background:#fbfaff}.nav{position:sticky;top:0;z-index:200;bac
 }
 .nav,.nav a,.nav button{font-family:"Plus Jakarta Sans",Manrope,system-ui,-apple-system,"Segoe UI",sans-serif!important}
 </style>
+
+<style id="mobile-final-fixes">
+@media(max-width:700px){
+ #authModal{z-index:5000!important;align-items:center!important;justify-content:center!important;padding:12px 12px calc(88px + env(safe-area-inset-bottom))!important;overflow-y:auto}
+ #authModal.show{display:flex!important}
+ #authModal .auth-card{width:100%;max-width:560px;max-height:calc(100dvh - 112px - env(safe-area-inset-bottom));overflow-y:auto;padding:24px 20px;border-radius:26px}
+ #authGoogle{display:flex!important;align-items:center;justify-content:center;gap:10px;text-align:center;position:relative}
+ #authGoogle .google-logo-svg{position:absolute;left:calc(50% - 105px);width:22px;height:22px;flex:0 0 22px}
+ .bottom-actions{z-index:900!important}
+ .bottom-actions .wa{font-size:0!important;gap:0!important;padding:0!important}
+ .bottom-actions .wa svg{width:29px!important;height:29px!important;margin:0!important;display:block}
+ .property-fav-btn{position:absolute;right:15px;top:15px;z-index:10;width:44px;height:44px;border:0;border-radius:50%;background:#fff;color:#5d22c9;box-shadow:0 4px 16px #0002;font-size:25px;display:grid;place-items:center;cursor:pointer}
+}
+.account-avatar{width:34px!important;height:34px!important;border-radius:50%!important;background-size:cover!important;background-position:center!important;overflow:hidden}
+.account-avatar[data-avatar-url]{font-size:0!important}
+.account-profile{width:44px!important;height:44px!important;padding:4px!important}
+.google-auth-btn{position:relative;display:flex;align-items:center;justify-content:center;gap:10px;text-align:center}
+.google-auth-btn .google-logo-svg{width:22px;height:22px;flex:0 0 22px}
+</style>
+
+<style id="liventa-reference-header-final">
+/* Mobile header matched to the supplied Liventa Stay screenshot */
+@media(max-width:700px){
+  .nav{height:80px!important;padding:8px 15px!important;z-index:1200!important;overflow:visible!important}
+  .nav-inner{height:100%!important;gap:10px!important;min-width:0!important;overflow:visible!important}
+  .brand{flex:0 1 auto!important;min-width:0!important;gap:9px!important;white-space:nowrap!important}
+  .brand .logo-img,.brand .mark{width:48px!important;height:48px!important;flex:0 0 48px!important;border-radius:15px!important}
+  .brand-copy{display:flex!important;align-items:baseline!important;gap:3px!important;white-space:nowrap!important}
+  .brand-copy b{font-size:clamp(15px,4.3vw,22px)!important;line-height:1!important;letter-spacing:-.7px!important}
+  .brand-copy span{font-size:clamp(11px,3.2vw,16px)!important;line-height:1!important;letter-spacing:-.3px!important}
+  .nav-inner>.grow{flex:1 1 auto!important;min-width:2px!important}
+  .nav-inner>.round{display:flex!important;align-items:center!important;justify-content:center!important;flex:0 0 54px!important;width:54px!important;height:54px!important;margin:0!important;border-radius:50%!important;font-size:27px!important;background:#fff!important;border:1px solid #eee7f5!important;order:2!important}
+  .nav-inner>.list{display:inline-flex!important;align-items:center!important;justify-content:center!important;flex:0 0 auto!important;padding:16px 17px!important;border-radius:28px!important;font-size:14px!important;white-space:nowrap!important;order:3!important}
+  .nav-inner>.inquiry,.nav-inner>.signin{display:none!important}
+  .nav-inner>#accountProfile{display:flex!important;align-items:center!important;justify-content:center!important;flex:0 0 62px!important;width:62px!important;height:62px!important;padding:4px!important;border:1px solid #e5dfec!important;border-radius:50%!important;background:#fff!important;order:4!important}
+  .nav-inner>#accountProfile .account-avatar{display:block!important;width:52px!important;height:52px!important;flex:0 0 52px!important;border-radius:50%!important;background-color:#eee!important;background-position:center!important;background-size:cover!important;overflow:hidden!important}
+  .nav-inner>.hamb{display:flex!important;align-items:center!important;justify-content:center!important;flex:0 0 54px!important;width:54px!important;height:54px!important;margin:0!important;border-radius:50%!important;background:#fff!important;border:1px solid #eee7f5!important;font-size:27px!important;order:5!important}
+  #accountMenu{z-index:1500!important;top:88px!important}
+}
+@media(max-width:430px){
+ .nav{padding-left:12px!important;padding-right:12px!important}
+ .nav-inner{gap:7px!important}
+ .brand .logo-img,.brand .mark{width:43px!important;height:43px!important;flex-basis:43px!important}
+ .brand{gap:6px!important}
+ .brand-copy b{font-size:15px!important}
+ .brand-copy span{font-size:11px!important}
+ .nav-inner>.round{flex-basis:43px!important;width:43px!important;height:43px!important;font-size:24px!important}
+ .nav-inner>.list{padding:13px 10px!important;font-size:11px!important}
+ .nav-inner>#accountProfile{flex-basis:46px!important;width:46px!important;height:46px!important}
+ .nav-inner>#accountProfile .account-avatar{width:38px!important;height:38px!important;flex-basis:38px!important}
+ .nav-inner>.hamb{flex-basis:44px!important;width:44px!important;height:44px!important;font-size:23px!important}
+}
+</style>
+
 </head>
 <body class="property-page">
 <header class="nav"><div class="nav-inner">
@@ -444,7 +498,11 @@ function typeOf(d){const x=(d.property_type+" "+d.name+" "+d.description+" "+d.r
 function amenityIcon(x){const s=String(x).toLowerCase();if(/wifi|internet/.test(s))return"📶";if(/ac|air conditioning/.test(s))return"❄️";if(/food|meal/.test(s))return"🍽️";if(/security|cctv|gate/.test(s))return"🔐";if(/washroom|bath/.test(s))return"🚿";if(/power|backup/.test(s))return"⚡";if(/laundry|clean/.test(s))return"🧺";if(/study|desk/.test(s))return"🪑";if(/furnish/.test(s))return"🛋️";return"✓"}
 let gallery=[],gi=0;
 function allMedia(d){const a=[...(Array.isArray(d.media)?d.media:[])];if(d.video)a.push({video:d.video});if(!a.length)a.push("https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1400&q=88");return a}
-function renderGallery(){const stage=document.getElementById('stage');const thumbs=document.getElementById('thumbs');const count=document.getElementById('gcount');if(!stage)return;const item=gallery[gi];if(item&&typeof item==='object'&&item.video){stage.innerHTML='<video id="mainVideo" controls playsinline src="'+esc(item.video)+'"></video><div class="gallery-type">VIDEO</div>'}else{stage.innerHTML='<img id="mainImage" src="'+esc(item)+'" alt="Property photo"><div class="verified-photo">✓ Liventa Stay</div>'}document.getElementById('prev').style.display=gallery.length>1?'block':'none';document.getElementById('next').style.display=gallery.length>1?'block':'none';count.textContent=(gi+1)+' / '+gallery.length;thumbs.innerHTML=gallery.map((x,i)=>typeof x==='object'?'<button class="thumb video-thumb '+(i===gi?'active':'')+'" onclick="go('+i+')">▶</button>':'<button class="thumb '+(i===gi?'active':'')+'" onclick="go('+i+')"><img loading="lazy" decoding="async" src="'+esc(x)+'" alt="Property thumbnail"></button>').join('')}
+function currentPropertyId(){const u=new URL(location.href);return String(u.searchParams.get('id')||window.__currentPropertyId||'');}
+function togglePropertyFavorite(){const id=currentPropertyId();if(!id){showToast('Property is still loading. Please try again.');return;}let a=getSaved();if(a.includes(id)){a=a.filter(x=>x!==id);showToast('Removed from favourites');}else{a.push(id);showToast('Property saved to favourites');}setSaved(a);updatePropertyFavoriteButton();}
+function updatePropertyFavoriteButton(){const b=document.querySelector('.property-fav-btn');if(!b)return;const id=currentPropertyId(),saved=getSaved().includes(id);b.innerHTML=saved?'♥':'♡';b.style.color=saved?'#e54875':'#5d22c9';b.setAttribute('aria-pressed',saved?'true':'false');}
+function renderGallery(){const stage=document.getElementById('stage');const thumbs=document.getElementById('thumbs');const count=document.getElementById('gcount');if(!stage)return;const item=gallery[gi];if(item&&typeof item==='object'&&item.video){stage.innerHTML='<video id="mainVideo" controls playsinline src="'+esc(item.video)+'"></video><div class="gallery-type">VIDEO</div>'}else{stage.innerHTML='<img id="mainImage" src="'+esc(item)+'" alt="Property photo"><div class="verified-photo">✓ Liventa Stay</div>'}if(!stage.querySelector('.property-fav-btn')){const fav=document.createElement('button');fav.type='button';fav.className='property-fav-btn';fav.setAttribute('aria-label','Save property to favourites');fav.onclick=togglePropertyFavorite;stage.appendChild(fav);}updatePropertyFavoriteButton();
+document.getElementById('prev').style.display=gallery.length>1?'block':'none';document.getElementById('next').style.display=gallery.length>1?'block':'none';count.textContent=(gi+1)+' / '+gallery.length;thumbs.innerHTML=gallery.map((x,i)=>typeof x==='object'?'<button class="thumb video-thumb '+(i===gi?'active':'')+'" onclick="go('+i+')">▶</button>':'<button class="thumb '+(i===gi?'active':'')+'" onclick="go('+i+')"><img loading="lazy" decoding="async" src="'+esc(x)+'" alt="Property thumbnail"></button>').join('')}
 function go(i){gi=(i+gallery.length)%gallery.length;renderGallery()}
 function next(){go(gi+1)}function prev(){go(gi-1)}
 let sx=0;function touchStart(e){sx=e.changedTouches[0].clientX}function touchEnd(e){const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>45){if(dx<0)next();else prev()}}
@@ -521,7 +579,7 @@ async function init(){try{
   }
   try{sessionStorage.setItem(cacheKey,JSON.stringify(data));}catch(e){}
 
-  const d=norm(data),pt=typeOf(d); d.displayName=displayPropertyName(d.name);
+  const d=norm(data),pt=typeOf(d); window.__currentPropertyId=String(d.id??requestedId); d.displayName=displayPropertyName(d.name);
   window.__currentPropertyName=d.displayName;window.__currentPropertyLocation=d.loc;
   const amen=String(d.amenities||'').split(',').map(x=>x.trim()).filter(Boolean);
   gallery=allMedia(d);gi=0;
